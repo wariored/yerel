@@ -1,0 +1,18 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Cheikh Tidjane Konteye -- Backend Developer and Data Scientist -- @wariored_kontey -- http://cheikhkonteye.com
+    Papa Momar Nokho -- Full Stack Developer  --  papamomarnokho@gmail.com
+    Cheikh Sadibou Diouf -- Full Stack Developer  --  papamomarnokho@gmail.com
+
+# THANKS
+
+    <name>
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    Jquery, Bootstrap 4
+    Django

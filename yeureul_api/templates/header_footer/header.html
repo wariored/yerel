@@ -1,0 +1,114 @@
+{% load staticfiles %}
+<!-- Navbar -->
+<nav class="navbar top-navbar" role="navigation">
+    <div class="container">
+        <div class="navbar-header col-sm-2">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}"><img alt="logo" src="{% static 'externals/images/logo.png' %}"></a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'index' %}">Accueil</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Categories Pages
+                        <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="categories.html"><i class="fa fa-fw fa-angle-right"></i> Categories</a>
+                        </li>
+                        <li>
+                            <a href="category-grid.html"><i class="fa fa-fw fa-angle-right"></i> Category Grid</a>
+                        </li>
+                        <li>
+                            <a href="single.html"><i class="fa fa-fw fa-angle-right"></i> Single Item</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">Blog <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="blog.html"><i class="fa fa-fw fa-angle-right"></i> Blog</a>
+                        </li>
+                        <li>
+                            <a href="blog_details.html"><i class="fa fa-fw fa-angle-right"></i> Blog Details</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Other Pages <b
+                            class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="create_post.html"><i class="fa fa-fw fa-angle-right"></i> Post Your Ad</a>
+                        </li>
+                        <li>
+                            <a href="settings.html"><i class="fa fa-fw fa-angle-right"></i> Settings</a>
+                        </li>
+                        <li>
+                            <a href="close-account.html"><i class="fa fa-fw fa-angle-right"></i> Close account</a>
+                        </li>
+                        <li>
+                            <a href="my-ads.html"><i class="fa fa-fw fa-angle-right"></i> My Ads</a>
+                        </li>
+                        <li>
+                            <a href="favourite.html"><i class="fa fa-fw fa-angle-right"></i> Favourite Ads</a>
+                        </li>
+                        <li>
+                            <a href="privacy.html"><i class="fa fa-fw fa-angle-right"></i> Privacy Policy</a>
+                        </li>
+                        <li>
+                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> 404</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            {% if not user.is_authenticated %}
+            <div class="user-login pull-right">
+                <a href="{% url 'signup' %}">S'inscrire</a>
+                <span>ou</span>
+                <a class="btn btn-md btn-primary" href="{% url 'login' %}">Connexion</a>
+            </div>
+            {% else %}
+            <div class="user-dropdown pull-right">
+                <ul class="nav navbar-right top-nav">
+                    <li class="dropdown">
+                        <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{% static 'externals/images/user.jpg' %}"
+                                alt="User Image" class="user-dp"> Jhone Doe <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="settings.html"><i class="fa fa-fw fa-user"></i> Profile</a>
+                            </li>
+                            <li>
+                                <a href="my-ads.html"><i class="fa fa-fw fa-pencil"></i> My Ads</a>
+                            </li>
+                            <li>
+                                <a href="favourite.html"><i class="fa fa-fw fa-heart"></i> Favourite Ads</a>
+                            </li>
+                            <li>
+                                <a href="ad-alerts.html"><i class="fa fa-fw fa-clock-o"></i> Ad Alerts</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'settings' %}"><i class="fa fa-fw fa-gear"></i> Paramètres</a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}"><i class="fa fa-fw fa-power-off"></i> Se déconnecter</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+<!-- End Navbar -->

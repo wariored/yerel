@@ -1,0 +1,57 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>OBootstrap Classified | Bootstrap Responsive Website Template</title>
+
+    <!-- Favicon Icon -->
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static 'externals/images/apple-icon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'externals/images/favicon.png' %}">
+
+    <!-- Bootstrap CSS -->
+    <link href="{% static 'externals/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'externals/css/style.css' %}" rel="stylesheet">
+
+    <!-- Owl Carousel -->
+    <link rel="stylesheet" href="{% static 'externals/plugins/owl-carousel/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'externals/plugins/owl-carousel/owl.theme.css' %}">
+
+    <!-- Font Awesome -->
+    <link href="{% static 'externals/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    {% block stylesheets %}{% endblock stylesheets %}
+</head>
+
+<body>
+    <!-- Preloder -->
+    <div id="preloader"></div>
+    <!-- End Preloder -->
+    {% include "header_footer/header.html" %}
+    {% block content %}{% endblock %}
+    {% include "header_footer/footer.html" %}
+    <!-- jQuery -->
+    <script src="{% static 'externals/js/jquery.js' %}"></script>
+
+    <!-- Custom js -->
+    <script src="{% static 'externals/js/custom.js' %}"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="{% static 'externals/js/bootstrap.min.js' %}"></script>
+
+    <!-- Owl Carousel -->
+    <script src="{% static 'externals/plugins/owl-carousel/owl.carousel.js' %}"></script>
+    <!-- Filestyle -->
+    <script src="{% static 'externals/plugins/bootstrap-filestyle/bootstrap-filestyle.js' %}"></script>
+    {% block javascripts %}{% endblock javascripts %}
+
+
+</body>
+
+</html>

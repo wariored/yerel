@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!-- Breadcumb -->
+    <section class="breadcumb_area">
+        <div class="container">
+           <div class="row">
+              <div class="col-xs-12 text-center">
+                 <div class="breadcumb_section">
+                    <div class="page_title">
+                       <h3>
+                       {% block authentication_title %}
+                           
+                       {% endblock authentication_title %}
+                           </h3>
+                    </div>
+                    <div class="page_pagination">
+                       <ul>
+                          
+                          {% block authentication_pagination %}
+                              
+                          {% endblock authentication_pagination %}
+                              
+                       </ul>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+     </section>
+     <!-- End Breadcumb -->
+     {% block authentication_content %}
+     {% endblock authentication_content %}
+{% endblock content %}
+    

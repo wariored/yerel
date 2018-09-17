@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block content %}
+<!-- Breadcumb -->
+<section class="profile-breadcumb">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 text-left">
+                <div class="breadcumb_section">
+                    <div class="page_pagination">
+                        <ul>
+                            {% block account_pagination %}
+
+                            {% endblock account_pagination %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Breadcumb -->
+<!-- Settings -->
+<section class="settings">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="widget profile-widget margin-bottom-none">
+                    <div class="widget-body">
+                        <div class="avatar">
+                            <a class="btn-icon" title="" data-placement="left" data-toggle="tooltip" href="#"
+                                data-original-title="Edit">
+                                <i class="fa fa-camera"></i>
+                            </a>
+                            <img class="profile-dp" alt="User Image" src="{% static 'externals/images/user.jpg' %}">
+                        </div>
+                        <div class="profile-info">
+                            <h2 class="seller-name">{{user.username}}</h2>
+                            <p class="seller-detail"> Inscrit le : <strong>{{user.date_joined|date:'d-M-Y'}}</strong></p>
+                        </div>
+                        <div class="list-group">
+                            <a class="list-group-item" href="my-ads.html">
+                                <span class="label label-info">15</span>
+                                <i class="fa fa-fw fa-pencil"></i> Mes annonces
+                            </a>
+                            <a class="list-group-item" href="favourite.html">
+                                <span class="label label-success">10</span>
+                                <i class="fa fa-fw fa-heart"></i> Annonces Favoris
+                            </a>
+                            <a class="list-group-item" href="ad-alerts.html">
+                                <i class="fa fa-fw fa-clock-o"></i> Alertes
+                            </a>
+                            <a class="list-group-item" href="{% url 'settings' %}">
+                                <i class="fa fa-fw fa-gear"></i> Paramètres
+                            </a>
+                            <a class="list-group-item" href="{% url 'logout' %}">
+                                <i class="fa fa-fw fa-power-off"></i> Se déconnecter</a>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="close-account.html" class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Supprimer le compte</a>
+            </div>
+            
+            {% block account_content %}
+                
+            {% endblock account_content %}
+                
+
+        </div>
+    </div>
+</section>
+<!-- End Settings -->
+
+{% endblock content %}

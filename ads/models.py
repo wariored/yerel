@@ -1,6 +1,7 @@
 from django.db import models
-from django.utils import timezone
-import datetime
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 
 class Category(models.Model):
 	"""
@@ -9,17 +10,51 @@ class Category(models.Model):
 	name = models.CharField(max_length=30, null=False)
 	creation_date = models.DateTimeField('date created', auto_now_add=True)
 	icon = models.CharField(max_length=250, null=True)
+	sup_category = models.ForeignKey('self', related_name='subcategory', null=True, blank=True, on_delete=models.PROTECT)
 	#owner = models.ForeignKey('auth.User', related_name='categories', on_delete=models.PROTECT)
 	def __str__(self):
 		return self.name
 
-class Subcategory(models.Model):
+class AdUser(models.Model):
 	"""
-	A subcategory have at least one subcategory that we store here
+	User who add an Ad, might be not authenticated
 	"""
-	category = models.ForeignKey(Category, related_name='categ_subcategs', on_delete=models.CASCADE)
-	name = models.CharField(max_length=30, null=False)
+	given_name = models.CharField(max_length=50)
+	phone_number= models.IntegerField()
+	email= models.EmailField()
+	user = models.ForeignKey(User, related_name='user_ad_user', null=True, on_delete=models.CASCADE)
 	creation_date = models.DateTimeField('date created', auto_now_add=True)
-	#owner = models.ForeignKey('auth.User', related_name='subcategories', on_delete=models.PROTECT)
+	def __str__(self):
+		return self.phone_number + ' ' + self.given_name
+
+class Location(models.Model):
+	name = models.CharField(max_length=30)
 	def __str__(self):
 		return self.name
+
+AD_CONDITION = (
+    ('N', 'New'),
+    ('U', 'Used'),
+)
+class Ad(models.Model):
+	"""
+	Where to store an Ad
+	"""
+	title = models.CharField(max_length=50)
+	price = models.FloatField(max_length=30, validators=[MinValueValidator(500)])
+	condition = models.CharField(max_length=1, choices=AD_CONDITION, blank=True)
+	description = models.TextField(max_length=1000)
+	subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
+	location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
+	creation_date = models.DateTimeField('date created')
+	update_date = models.DateTimeField('date updated', auto_now_add=True)
+	#owner = models.ForeignKey('auth.User', related_name='subcategories', on_delete=models.PROTECT)
+	def __str__(self):
+		return self.title
+
+class AdFile(models.Model):
+	"file related to an Ad"
+	ad = models.ForeignKey(Category, related_name='files', on_delete=models.PROTECT)
+	media = models.FileField(upload_to='media/')
+	def __str__(self):
+		return self.media

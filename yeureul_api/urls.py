@@ -17,31 +17,41 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
-from ads.viewset import CategoryViewSet, SubcategoryViewSet
-from rest_framework import routers, serializers, viewsets
+from . import views
+#from ads.viewset import CategoryViewSet, SubcategoryViewSet
+#from rest_framework import routers, serializers, viewsets
 
 # Serializers define the API representation.
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'is_staff')
+#class UserSerializer(serializers.HyperlinkedModelSerializer):
+    #class Meta:
+        #model = User
+        #fields = ('url', 'username', 'email', 'is_staff')
 
 # ViewSets define the view behavior.
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+#class UserViewSet(viewsets.ModelViewSet):
+    #queryset = User.objects.all()
+    #serializer_class = UserSerializer
 
 # Routers provide an easy way of automatically determining the URL conf.
-router = routers.DefaultRouter()
-router.register(r'users', UserViewSet)
-router.register(r'categories', CategoryViewSet)
-router.register(r'subcategories', SubcategoryViewSet)
+#router = routers.DefaultRouter()
+#router.register(r'users', UserViewSet)
+#router.register(r'categories', CategoryViewSet)
+#router.register(r'subcategories', SubcategoryViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    #path('admin/', admin.site.urls),
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^', include('ads.urls')),
+    path('admin/', admin.site.urls),
+    url(r'^(?P<filename>(robots.txt)|(humans.txt))$', views.home_files, name='home_files'),
+    #url(r'^', include(router.urls)),
+    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^$', views.index, name='index'),
+    url(r'^login/$', views.login_view, name='login'),
+    url(r'^login_verification/$', views.login_verification, name='login_verification'),
+    url(r'^signup/$', views.signup_view, name='signup'),
+    url(r'^signup_verification/$', views.signup_verification, name='signup_verification'),
+    url(r'^logout/$', views.logout_view, name='logout'),
+    url(r'^contact/$', views.contact, name='contact'),
+    url(r'^account/settings/$', views.settings, name='settings'),
+    path('ads/', include('ads.urls')),
 ]

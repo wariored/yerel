@@ -1,0 +1,80 @@
+{% extends "registration/base_authentication.html" %}
+
+{% block authentication_title %}
+S'inscrire
+{% endblock authentication_title %}
+
+{% block authentication_pagination %}
+<li><a href="{% url 'index' %}">Accueil</a></li>
+<li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+<li>S'inscrire</li>
+{% endblock authentication_pagination %}
+
+
+{% block authentication_content %}
+{% if signup_error == 'password_error' %}
+<div class="alert alert-warning text-center">
+    Les deux mots de passe ne sont pas identiques ou mot de passe trop court
+</div>
+{% elif signup_error == 'email_error' %}
+<div class="alert alert-warning text-center">
+    Adresse email non valide
+</div>
+{% elif signup_error == 'terms_error' %}
+<div class="alert alert-warning text-center">
+    Veuillez accepter les termes et conditions
+</div>
+{% elif signup_error == True %}
+<div class="alert alert-warning text-center">
+    L'adresse email ou le nom d'utilisateur est déja utilisé
+</div>
+{% endif %}
+
+<!-- Login -->
+<section class="login">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 col-sm-offset-4">
+                <div class="login-panel widget">
+                    <div class="login-body">
+                        <form method="POST" action="{% url 'signup_verification' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label class="control-label">Nom d'utilisateur <span class="required">*</span></label>
+                                <input name="username" type="text" placeholder="Nom d'utilisateur" class="form-control" value="{{dict_signup_values.username}}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">Email <span class="required">*</span></label>
+                                <input name='email' type="text" placeholder="Email Address" class="form-control" value="{{dict_signup_values.email}}">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Mot de passe <span class="required">*</span></label>
+                                <input name="password_1" type="password" placeholder="Password" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Confirmer mot de passe <span class="required">*</span></label>
+                                <input name="password_2" type="password" placeholder="Confirm Password" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <button class="btn btn-block btn-lg btn-primary">S'inscrire</button>
+                            </div>
+                            <div class="login-footer">
+                                <div class="checkbox checkbox-primary pull-left">
+                                    <input value="1" name='terms' id="checkbox_terms" type="checkbox">
+                                    <label for="checkbox_terms">
+                                        J'accepte les termes et conditions
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-center margin-bottom-none"><a href="{% url 'login' %}"><strong>Vous avez déja un compte?
+                        </strong></a></p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Login -->
+{% endblock authentication_content %}
