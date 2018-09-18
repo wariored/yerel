@@ -153,3 +153,16 @@ STATICFILES_DIRS = (
 )
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'media')
+MEDIA_URL = '/media/'
+MAX_UPLOAD_SIZE = "2621440"
+
+BASE_URL = 'http://localhost:8000/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'yeureul01@gmail.com'
+EMAIL_HOST_PASSWORD = 'yeureul123'

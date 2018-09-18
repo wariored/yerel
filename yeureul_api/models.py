@@ -8,9 +8,12 @@ class UserInfo(models.Model):
 	"""
 	Other User informations
 	"""
-	user = models.ForeignKey(User, related_name='user_info', on_delete=models.CASCADE)
-	phone_number= models.IntegerField()
-	address = models.CharField(max_length=200, null=True)
-	avatar = models.FileField(upload_to='avatar/')
+	user = models.OneToOneField(User, related_name='info', on_delete=models.CASCADE)
+	phone_number= models.IntegerField(null=True, blank=True)
+	address = models.CharField(max_length=200, null=True, blank=True)
+	avatar = models.FileField(upload_to='avatar/', null=True, blank=True)
+	activated_account = models.BooleanField(default=False)
 	creation_date = models.DateTimeField('date created')
 	updated_date = models.DateTimeField('date updated', auto_now_add=True)
+	def __str__(self):
+		return self.user.username

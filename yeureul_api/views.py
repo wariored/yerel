@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponseRedirect, HttpResponse
-from django.conf import settings
+from django.conf import settings as conf_settings
+from django.db import transaction
+from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm
@@ -10,6 +12,17 @@ from django.core.mail import EmailMessage
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.utils import timezone
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+from .models import UserInfo
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
+
+
 
 # index of the site
 def index(request):
@@ -38,7 +51,7 @@ def login_verification(request):
     """
     redirect_to = request.GET.get('next', '/')
     if request.user.is_authenticated:
-        return redirect(settings.LOGIN_REDIRECT_URL)
+        return redirect('login')
     if request.method == "POST":
         email_or_username = request.POST['email_or_username']
         password = request.POST['password']
@@ -51,7 +64,6 @@ def login_verification(request):
                 if not request.POST.get('remember_me', None):
                     request.session.set_expiry(0)
                 return redirect(redirect_to)
-            return HttpResponse("You are not allowed to log in")
         request.session['login_error'] = True
         return redirect('/login/?next=%s' % redirect_to)
 
@@ -67,6 +79,7 @@ def signup_view(request):
             {"signup_error": signup_error, 'dict_signup_values': dict_signup_values})
     return render(request, 'registration/signup.html')
 
+@transaction.atomic
 def signup_verification(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -90,15 +103,33 @@ def signup_verification(request):
             request.session['dict_signup_values'] = dict_signup_values
             return redirect('signup')
         if not (User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists()):
-            User.objects.create_user(username, email, password_1)
+            User.objects.create_user(username.lower(), email, password_1)
             user = authenticate(request, username=username, password=password_1)
             login(request, user)
-            request.session['signup_success'] = True
+            uid, token = uid_token_generator(user)
+            url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
+            html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
+            plain_message = strip_tags(html_message)
+            email = EmailMessage('Yeureul.org Email activation', plain_message, to=[user.email])
+            email.send()
+            UserInfo.objects.create(user=user, creation_date=timezone.now(), activated_account=False)
             return redirect('settings')
         else:
             request.session['signup_error'] = True
             request.session['dict_signup_values'] = dict_signup_values
             return redirect('signup')
+
+def account_validation(request, uidb64=None, token=None):
+    if uid_token_decoder(uidb64, token):
+        user_info = UserInfo.objects.get(user=request.user)
+        if user_info.activated_account == False:
+            user_info.activated_account = True
+            user_info.save()
+            request.session['activation_success'] = True
+        return redirect('settings')
+
+    return HttpResponse("Une erreur est survenue")
+    
 
 # to logout a user
 @login_required
@@ -136,7 +167,86 @@ def password_change(request):
 
 @login_required
 def settings(request):
-    return render(request, 'registration/account/settings.html')
+    update_profile_error = request.session.get('update_profile_error')
+    update_profile_success = request.session.get('update_profile_success')
+    if update_profile_error:
+        del request.session['update_profile_error']
+    elif update_profile_success:
+        del request.session['update_profile_success']
+    if request.session.get('activation_success'):
+        activation_success = request.session['activation_success']
+        del request.session['activation_success']
+        return render(request, 'registration/account/settings.html', {'activation_success': activation_success})
 
+    return render(request, 'registration/account/settings.html', {'update_profile_success': update_profile_success,
+        'update_profile_error': update_profile_error})
+
+@transaction.atomic
+def update_profile(request):
+    if request.method == "POST":
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        address = request.POST.get('address')
+        phone_number = request.POST.get('phone_number')
+        avatar = request.FILES.get('avatar')
+        old_password = request.POST.get('old_password')
+        password_1 = request.POST.get('password_1')
+        password_2 = request.POST.get('password_2')
+
+        user = User.objects.get(username__exact=request.user.username)
+        user_info = UserInfo.objects.get(user=user)
+        if old_password:
+            if request.user.check_password(old_password):
+                if password_1:
+                    if len(password_1) >= 5 and password_1 == password_2:
+                        user.set_password(password_1)
+                    else:
+                        request.session['update_profile_error'] = 'password'
+            else:
+                request.session['update_profile_error'] = 'old_password'
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if address:
+            user_info.address = address
+        if phone_number:
+            user_info.phone_number = phone_number
+        if avatar:
+            if avatar.size < conf_settings.MAX_UPLOAD_SIZE:
+                user_info.avatar = avatar
+            else:
+                request.session['update_profile_error'] = 'avatar'
+        if not request.session.get('update_profile_error'):
+            user_info.save()
+            user.save()
+            request.session['update_profile_success'] = True
+
+
+    return redirect('settings')
 def contact(request):
     return render(request, 'yeureul_api/contact_us.html')
+
+
+def uid_token_generator(user):
+    uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
+    token = default_token_generator.make_token(user)
+    return uid, token
+
+def uid_token_decoder(uidb64, token):
+    if uidb64 is not None and token is not None:
+        from django.utils.http import urlsafe_base64_decode
+        uid = force_text(urlsafe_base64_decode(uidb64).decode())
+        try:
+            from django.contrib.auth import get_user_model
+            from django.contrib.auth.tokens import default_token_generator
+            user_model = get_user_model()
+            user = user_model.objects.get(pk=uid)
+            return default_token_generator.check_token(user, token)
+        except:
+            pass
+
+    return False
+
+
+

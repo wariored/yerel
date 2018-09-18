@@ -50,8 +50,11 @@ urlpatterns = [
     url(r'^login_verification/$', views.login_verification, name='login_verification'),
     url(r'^signup/$', views.signup_view, name='signup'),
     url(r'^signup_verification/$', views.signup_verification, name='signup_verification'),
+    path('account/validate/<str:uidb64>/<str:token>/',
+        views.account_validation, name='user_activation_link'),
     url(r'^logout/$', views.logout_view, name='logout'),
     url(r'^contact/$', views.contact, name='contact'),
     url(r'^account/settings/$', views.settings, name='settings'),
+    url(r'^account/settings/update_profile/$', views.update_profile, name='update_profile'),
     path('ads/', include('ads.urls')),
 ]

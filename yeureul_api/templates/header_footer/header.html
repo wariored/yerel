@@ -83,19 +83,16 @@
                 <ul class="nav navbar-right top-nav">
                     <li class="dropdown">
                         <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="{% static 'externals/images/user.jpg' %}"
-                                alt="User Image" class="user-dp"> Jhone Doe <b class="caret"></b></a>
+                                alt="User Image" class="user-dp">{{user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="settings.html"><i class="fa fa-fw fa-user"></i> Profile</a>
+                                <a href="my-ads.html"><i class="fa fa-fw fa-pencil"></i> Mes annonces</a>
                             </li>
                             <li>
-                                <a href="my-ads.html"><i class="fa fa-fw fa-pencil"></i> My Ads</a>
+                                <a href="favourite.html"><i class="fa fa-fw fa-heart"></i> Annonces favories</a>
                             </li>
                             <li>
-                                <a href="favourite.html"><i class="fa fa-fw fa-heart"></i> Favourite Ads</a>
-                            </li>
-                            <li>
-                                <a href="ad-alerts.html"><i class="fa fa-fw fa-clock-o"></i> Ad Alerts</a>
+                                <a href="ad-alerts.html"><i class="fa fa-fw fa-clock-o"></i> Alertes</a>
                             </li>
                             <li>
                                 <a href="{% url 'settings' %}"><i class="fa fa-fw fa-gear"></i> Paramètres</a>
