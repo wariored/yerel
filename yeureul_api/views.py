@@ -14,6 +14,7 @@ from django.core.validators import validate_email
 from django.utils import timezone
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+import os
 
 from .models import UserInfo
 
@@ -184,14 +185,15 @@ def settings(request):
 @transaction.atomic
 def update_profile(request):
     if request.method == "POST":
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        address = request.POST.get('address')
-        phone_number = request.POST.get('phone_number')
-        avatar = request.FILES.get('avatar')
-        old_password = request.POST.get('old_password')
-        password_1 = request.POST.get('password_1')
-        password_2 = request.POST.get('password_2')
+        first_name = request.POST.get('first_name', None)
+        last_name = request.POST.get('last_name', None)
+        address = request.POST.get('address', None)
+        phone_number = request.POST.get('phone_number', None)
+        avatar = request.FILES.get('avatar', None)
+        old_password = request.POST.get('old_password', None)
+        password_1 = request.POST.get('password_1', None)
+        password_2 = request.POST.get('password_2', None)
+        print(avatar)
 
         user = User.objects.get(username__exact=request.user.username)
         user_info = UserInfo.objects.get(user=user)
@@ -200,20 +202,31 @@ def update_profile(request):
                 if password_1:
                     if len(password_1) >= 5 and password_1 == password_2:
                         user.set_password(password_1)
+                        login(request, user)
                     else:
                         request.session['update_profile_error'] = 'password'
+                else:
+                    request.session['update_profile_error'] = 'password'
             else:
                 request.session['update_profile_error'] = 'old_password'
-        if first_name:
+        if not first_name or not last_name:
+            request.session['update_profile_error'] = 'first_last_name'
+        else:
             user.first_name = first_name
-        if last_name:
             user.last_name = last_name
-        if address:
-            user_info.address = address
-        if phone_number:
+        try:
+            int(phone_number)
+        except:
+            if not request.session.get('update_profile_error'):
+                request.session['update_profile_error'] = 'phone_number'
+        else:
             user_info.phone_number = phone_number
+        user_info.address = address
+        
         if avatar:
-            if avatar.size < conf_settings.MAX_UPLOAD_SIZE:
+            if avatar.size < int(conf_settings.MAX_UPLOAD_SIZE):
+                path = user_info.avatar.path
+                _delete_file(path)
                 user_info.avatar = avatar
             else:
                 request.session['update_profile_error'] = 'avatar'
@@ -248,5 +261,9 @@ def uid_token_decoder(uidb64, token):
 
     return False
 
+
+def _delete_file(path):
+    """ Deletes file from filesystem. """
+    os.remove(path)
 
 

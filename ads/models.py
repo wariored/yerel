@@ -1,7 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+import uuid
+import os
 
+def get_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return os.path.join('ads_file/', filename)
 
 class Category(models.Model):
 	"""
@@ -56,6 +62,6 @@ class Ad(models.Model):
 class AdFile(models.Model):
 	"file related to an Ad"
 	ad = models.ForeignKey(Ad, related_name='files', on_delete=models.CASCADE)
-	media = models.FileField(upload_to='ads_files/')
+	media = models.FileField(upload_to=get_file_path)
 	def __str__(self):
 		return self.media

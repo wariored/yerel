@@ -28,13 +28,15 @@
     <div class="alert alert-warning text-center">La taille de l'avatar est ne doit pas dépassée 2.5MB</div>
     {% elif update_profile_error == 'first_last_name' %}
     <div class="alert alert-warning text-center">Le prénom et le nom sont requis</div>
+    {% elif update_profile_error == 'phone_number' %}
+    <div class="alert alert-warning text-center">Le numéro de téléphone est obligatoire et doit être composé de chiffres</div>
     {% endif %}
     <div class="widget my-profile margin-bottom-none">
         <div class="widget-header">
             <h1>Mom Compte</h1>
         </div>
         <div class="widget-body">
-            <form method="POST" action="{% url 'update_profile' %}">
+            <form method="POST" action="{% url 'update_profile' %}" enctype='multipart/form-data'>
                 {% csrf_token %}
                 <div class="row">
                     <div class="col-sm-6">
@@ -54,19 +56,19 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label">Prénom<span class="required">*</span></label>
+                            <label class="control-label">Prénom <span class="required">*</span></label>
                             <input name="first_name" class="form-control border-form" type="text" value="{{user.first_name}}">
                         </div>
                     </div>
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label class="control-label">Nom<span class="required">*</span></label>
+                            <label class="control-label">Nom <span class="required">*</span></label>
                             <input name="last_name" class="form-control border-form" type="text" value="{{user.last_name}}">
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Numéro de téléphone </label>
+                    <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
                     <div class="input-group">
                         <span class="input-group-addon">+221</span>
                         <input name="phone_number" type="text" class="form-control border-form"
@@ -78,8 +80,8 @@
                     <input name="address" class="form-control border-form" type="text" value="{{user.info.address}}">
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Avatar</label>
-                    <input name="avatar" type="file" class="filestyle">
+                    <label for="avatar" class="control-label">Avatar</label>
+                    <input id="avatar" name="avatar" type="file" class="filestyle">
                     <span class="help-block"></span>
                 </div>
                 <div class="row">
@@ -122,7 +124,7 @@
             <div class="similar-ads">
                 <a href="single.html">
                     <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src="images/categories/restaurant/1.png" alt="">
+                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/restaurant/1.png' %} " alt="">
                     </div>
                     <div class="similar-ad-right">
                         <h4>Duis autem vel eum iriure do hen...</h4>
@@ -134,7 +136,7 @@
             <div class="similar-ads">
                 <a href="single.html">
                     <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src="images/categories/pets/1.png" alt="">
+                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/pets/1.png' %}" alt="">
                     </div>
                     <div class="similar-ad-right">
                         <h4>Duis autem vel eum iriure do hen...</h4>
@@ -146,7 +148,7 @@
             <div class="similar-ads">
                 <a href="single.html">
                     <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src="images/categories/real_estate/2.png" alt="">
+                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
                     </div>
                     <div class="similar-ad-right">
                         <h4>Duis autem vel eum iriure do hen...</h4>
@@ -158,7 +160,7 @@
             <div class="similar-ads">
                 <a href="single.html">
                     <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src="images/categories/cars/1.png" alt="">
+                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/cars/1.png' %}" alt="">
                     </div>
                     <div class="similar-ad-right">
                         <h4>Duis autem vel eum iriure do hen...</h4>
@@ -170,7 +172,7 @@
             <div class="similar-ads">
                 <a href="single.html">
                     <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src="images/categories/job/1.png" alt="">
+                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/job/1.png' %}" alt="">
                     </div>
                     <div class="similar-ad-right">
                         <h4>Duis autem vel eum iriure do hen...</h4>
@@ -182,7 +184,7 @@
             <div class="similar-ads">
                 <a href="single.html">
                     <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src="images/categories/real_estate/2.png" alt="">
+                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
                     </div>
                     <div class="similar-ad-right">
                         <h4>Duis autem vel eum iriure do hen...</h4>

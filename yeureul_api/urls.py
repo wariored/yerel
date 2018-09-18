@@ -18,6 +18,8 @@ from django.urls import path
 from django.conf.urls import url, include
 from django.contrib.auth.models import User
 from . import views
+from django.conf import settings as conf_settings
+from django.conf.urls.static import static
 #from ads.viewset import CategoryViewSet, SubcategoryViewSet
 #from rest_framework import routers, serializers, viewsets
 
@@ -57,4 +59,4 @@ urlpatterns = [
     url(r'^account/settings/$', views.settings, name='settings'),
     url(r'^account/settings/update_profile/$', views.update_profile, name='update_profile'),
     path('ads/', include('ads.urls')),
-]
+]+ static(conf_settings.MEDIA_URL, document_root=conf_settings.MEDIA_ROOT)

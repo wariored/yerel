@@ -32,7 +32,14 @@
                                 data-original-title="Edit">
                                 <i class="fa fa-camera"></i>
                             </a>
+                            
+                            {% if user.info.avatar is not None %}
+                            <img class="profile-dp" alt="User Image" src="{{user.info.avatar.url}}">
+                            {% else %}
                             <img class="profile-dp" alt="User Image" src="{% static 'externals/images/user.jpg' %}">
+                            {% endif %}
+                                
+                            
                         </div>
                         <div class="profile-info">
                             <h2 class="seller-name">{{user.username}}</h2>
