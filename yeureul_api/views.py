@@ -16,7 +16,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import os
 
-from .models import UserInfo
+from .models import UserInfo, UserKey
 
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
@@ -38,12 +38,27 @@ def home_files(request, filename):
 
 def login_view(request):
     redirect_to = request.GET.get('next', '/')
+    close_account = request.session.get('close_account', None)
+    reset_password = request.session.get('reset_password', None)
+    reset_password = request.session.get('reset_password', None)
     if request.user.is_authenticated:
         return redirect('index')
-    if request.session.get('login_error'):
+    if close_account is not None:
+        del request.session['close_account']
+    if reset_password is not None:
+         del request.session['reset_password']
+    if request.session.get('login_error') is not None:
         del request.session['login_error']
-        return render(request, 'registration/login.html', {"login_error": True, 'redirect_to': redirect_to})
-    return render(request, 'registration/login.html', {'redirect_to': redirect_to})
+        return render(request, 'registration/login.html', 
+            {   "login_error": True, 'redirect_to': redirect_to,
+                'close_account': close_account
+            }
+        )
+    return render(request, 'registration/login.html', 
+        {   'redirect_to': redirect_to, 'close_account': close_account,
+            'reset_password': reset_password
+        }
+    )
 
 
 def login_verification(request):
@@ -55,16 +70,22 @@ def login_verification(request):
         return redirect('login')
     if request.method == "POST":
         email_or_username = request.POST['email_or_username']
+        email_or_username = email_or_username.lower()
         password = request.POST['password']
         user = authenticate(request, username=email_or_username, password=password)
         if user is None:
-            user = authenticate(request, email=email_or_username, password=password)
+            user = User.objects.get(email__iexact=email_or_username)
+            if not user.check_password(password):
+                user = None
         if user is not None:
             if user.is_active:
                 login(request, user)
                 if not request.POST.get('remember_me', None):
                     request.session.set_expiry(0)
                 return redirect(redirect_to)
+            else:
+                request.session['close_account'] = True
+                return redirect('/login/?next=%s' % redirect_to)
         request.session['login_error'] = True
         return redirect('/login/?next=%s' % redirect_to)
 
@@ -107,7 +128,7 @@ def signup_verification(request):
             User.objects.create_user(username.lower(), email, password_1)
             user = authenticate(request, username=username, password=password_1)
             login(request, user)
-            uid, token = uid_token_generator(user)
+            uid, token = uid_token_generator(user, key_type="A")
             url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
             html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
             plain_message = strip_tags(html_message)
@@ -121,16 +142,76 @@ def signup_verification(request):
             return redirect('signup')
 
 def account_validation(request, uidb64=None, token=None):
-    if uid_token_decoder(uidb64, token):
+    if uid_token_decoder(uidb64, token, request.user, key_type="A"):
         user_info = UserInfo.objects.get(user=request.user)
         if user_info.activated_account == False:
             user_info.activated_account = True
             user_info.save()
-            request.session['activation_success'] = True
-        return redirect('settings')
+            request.session['activation'] = True
+            return redirect('settings')
+    request.session['activation'] = 'key_expired'
+    return redirect('settings')
 
-    return HttpResponse("Une erreur est survenue")
-    
+def before_password_reset(request):
+    if request.user.is_authenticated:
+        return redirect('index')
+    if request.method == "POST":
+        email = request.POST['email']
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return render(request, 'registration/before_password_reset.html', {'not_exist': True, 'email': email})
+        else:
+            uid, token = uid_token_generator(user, key_type="P")
+            url = conf_settings.BASE_URL + "account/reset_password/%s/%s" % (uid, token)
+            html_message = render_to_string('mails/password_reset.html', {'user': user.username, 'link': url})
+            plain_message = strip_tags(html_message)
+            email = EmailMessage('Yeureul.org mot de passe oublié ', plain_message, to=[user.email])
+            email.send()
+            return render(request, 'registration/before_password_reset.html', {'success': True})
+    return render(request, 'registration/before_password_reset.html')
+def account_reset_password(request, uidb64=None, token=None):
+    user_key = get_object_or_404(UserKey, key_type="P", token=token)
+    user = User.objects.get(pk=user_key.user.id)
+    if uid_token_decoder(uidb64=uidb64, token=token, user=user, key_type="P"):
+        request.session['token'] = True
+        request.session['user_id'] = user.id
+        return redirect('password_reset')
+    request.session['reset_password'] = False
+    return redirect('login')
+
+def password_reset(request):
+    if request.session.get('token') == True or request.session.get('reset_password'):
+        if request.session.get('reset_password'):
+            user_id = request.session['reset_password']     
+            error = True
+            del request.session['reset_password']
+        else:
+            user_id = request.session['user_id']
+            error = False
+            del request.session['token']
+            del request.session['user_id']
+        return render(request, 'registration/password_reset.html', {'user_id': user_id, 'error': error})
+    return redirect('index')
+
+def password_reset_verification(request):
+    if request.method == "POST":
+        password_1 = request.POST['password_1']
+        password_2 = request.POST['password_2']
+        user_id = request.POST['user_id']
+        if password_1:
+            if len(password_1) >= 5 and password_1 == password_2:
+                user = get_object_or_404(User, id=user_id)
+                user.set_password(password_1)
+                user.save()
+                request.session['reset_password'] = True
+                return redirect('login')
+            else:
+                request.session['reset_password'] = user_id
+        else:
+            request.session['reset_password'] = user_id
+        return redirect('password_reset')  
+    return redirect('login')
 
 # to logout a user
 @login_required
@@ -140,31 +221,7 @@ def logout_view(request):
     return redirect('index')
 
 
-def password_reset(request):
-    return render(request, 'registration/password_reset.html')
 
-
-@login_required
-def password_change(request):
-    if request.method == "POST":
-        oldpassword = request.POST['oldpassword']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        if ((password1 != password2) or (password1 == "")):
-            errorMessage = "New password sould not be empty and should be the same than the repeated password"
-            return render(request, 'registration/password_change.html', {"errorMessage": errorMessage})
-        if request.user.check_password(oldpassword):
-            request.user.password = password1
-            successMessage = "Your password has been successfully changed"
-            u = User.objects.get(username__exact=request.user.username)
-            u.set_password(password1)
-            u.save()
-            login(request, u)
-            return render(request, 'registration/password_change.html', {"successMessage": successMessage})
-        else:
-            errorMessage = "Your current password is not correct. Please, provide a correct one"
-            return render(request, 'registration/password_change.html', {"errorMessage": errorMessage})
-    return render(request, 'registration/password_change.html')
 
 @login_required
 def settings(request):
@@ -174,10 +231,10 @@ def settings(request):
         del request.session['update_profile_error']
     elif update_profile_success:
         del request.session['update_profile_success']
-    if request.session.get('activation_success'):
-        activation_success = request.session['activation_success']
-        del request.session['activation_success']
-        return render(request, 'registration/account/settings.html', {'activation_success': activation_success})
+    if request.session.get('activation'):
+        activation = request.session['activation']
+        del request.session['activation']
+        return render(request, 'registration/account/settings.html', {'activation': activation})
 
     return render(request, 'registration/account/settings.html', {'update_profile_success': update_profile_success,
         'update_profile_error': update_profile_error})
@@ -237,16 +294,42 @@ def update_profile(request):
 
 
     return redirect('settings')
+
 def contact(request):
     return render(request, 'yeureul_api/contact_us.html')
 
+@login_required
+def close_account(request):
+    return render(request, 'registration/account/close_account.html')
 
-def uid_token_generator(user):
+@login_required
+def close_account_verification(request):
+    if request.method == "POST":
+        close = request.POST['close']
+        if close == 'yes':
+            user = User.objects.get(pk=request.user.id)
+            user.is_active = False
+            user.save()
+            request.session['close_account'] = True
+            return redirect('login')
+
+    return redirect('close_account')
+
+
+def uid_token_generator(user, key_type):
     uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
+    key_to_update, key_created = UserKey.objects.get_or_create(user=user, key_type=key_type)
+    if not key_created:#do not forget to make a constraint for only 2 entries in UserKey
+        key_to_update.key_expires = timezone.now() + timezone.timedelta(days=1)
+        key_to_update.token = token
+        key_to_update.save()
+    else:
+        key_created.token = token
+        key_created.save()
     return uid, token
 
-def uid_token_decoder(uidb64, token):
+def uid_token_decoder(uidb64, token, user, key_type):
     if uidb64 is not None and token is not None:
         from django.utils.http import urlsafe_base64_decode
         uid = force_text(urlsafe_base64_decode(uidb64).decode())
@@ -255,10 +338,14 @@ def uid_token_decoder(uidb64, token):
             from django.contrib.auth.tokens import default_token_generator
             user_model = get_user_model()
             user = user_model.objects.get(pk=uid)
-            return default_token_generator.check_token(user, token)
+            user_key = UserKey.objects.get(user=user, key_type=key_type, token=token)
+            if user_key.key_expires < timezone.now():
+                return False
+            else:
+                return default_token_generator.check_token(user, token)
         except:
             pass
-
+            
     return False
 
 

@@ -33,7 +33,7 @@
                                 <i class="fa fa-camera"></i>
                             </a>
                             
-                            {% if user.info.avatar is not None %}
+                            {% if user.info.avatar is not None and user.info.avatar.url is not None %}
                             <img class="profile-dp" alt="User Image" src="{{user.info.avatar.url}}">
                             {% else %}
                             <img class="profile-dp" alt="User Image" src="{% static 'externals/images/user.jpg' %}">
@@ -66,7 +66,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="close-account.html" class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Supprimer le compte</a>
+                <a href="{% url 'close_account' %}" class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Supprimer le compte</a>
             </div>
             
             {% block account_content %}

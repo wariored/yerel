@@ -13,8 +13,10 @@
 
 
 <div class="col-sm-6">
-    {% if activation_success %}
+    {% if activation == True %}
     <div class="alert alert-success text-center">Votre compte a été activé avec succès</div>
+    {% elif activation == 'key_expired' %}
+    <div class="alert alert-danger text-center">Ce lien d'activation a expiré. Il n'est plus valable</div>
     {% endif %}
     {% if update_profile_success is not None %}
     <div class="alert alert-success text-center">Votre compte a été mis à jour</div>
@@ -25,7 +27,7 @@
     <div class="alert alert-warning text-center">Entrer deux mots de passe identiques pour changer votre mot de passe
         (5 caractères minimum)</div>
     {% elif update_profile_error == 'avatar' %}
-    <div class="alert alert-warning text-center">La taille de l'avatar est ne doit pas dépassée 2.5MB</div>
+    <div class="alert alert-warning text-center">La taille de l'avatar ne doit pas dépasser 2.5MB</div>
     {% elif update_profile_error == 'first_last_name' %}
     <div class="alert alert-warning text-center">Le prénom et le nom sont requis</div>
     {% elif update_profile_error == 'phone_number' %}
@@ -108,7 +110,7 @@
                     <div class="text-right">
                         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Mettre
                             à jour</button>
-                        <button class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Annuler</button>
+                        <a href="{% url 'settings' %}" class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Annuler</a>
                     </div>
                 </div>
             </form>

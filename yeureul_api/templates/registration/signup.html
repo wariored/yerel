@@ -13,19 +13,19 @@ S'inscrire
 
 {% block authentication_content %}
 {% if signup_error == 'password_error' %}
-<div class="alert alert-warning text-center">
+<div class="alert alert-danger text-center">
     Les deux mots de passe ne sont pas identiques ou mot de passe trop court
 </div>
 {% elif signup_error == 'email_error' %}
-<div class="alert alert-warning text-center">
+<div class="alert alert-danger text-center">
     Adresse email non valide
 </div>
 {% elif signup_error == 'terms_error' %}
-<div class="alert alert-warning text-center">
+<div class="alert alert-danger text-center">
     Veuillez accepter les termes et conditions
 </div>
 {% elif signup_error == True %}
-<div class="alert alert-warning text-center">
+<div class="alert alert-danger text-center">
     L'adresse email ou le nom d'utilisateur est déja utilisé
 </div>
 {% endif %}

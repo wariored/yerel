@@ -1,0 +1,54 @@
+{% extends 'registration/account/base_account.html' %}
+{% load staticfiles %}
+
+{% block account_pagination %}
+<li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
+<li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+<li>Mon compte</li>
+<li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+<li>Supprimer compte</li>
+{% endblock account_pagination %}
+
+{% block account_content %}
+<!-- Close Account -->
+
+<div class="col-sm-9">
+    <div class="widget my-profile margin-bottom-none">
+        <div class="widget-header">
+            <h1>Ferméture de votre compte </h1>
+        </div>
+        <div class="widget-body">
+            <form class="row" method="POST" action="{% url 'close_account_verification' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="col-sm-12 control-label">
+                        Le compte sera inactif pendant 10 jours et sera définitivement supprimé de notre site, ainsi
+                        que les annonces
+                        liées à ce compte.
+                        <br> Êtes-vous vraiment sûr de vouloir fermer votre compte?
+                        <span class="required">*</span>
+
+                    </label>
+                    <div class="col-sm-12">
+                        <div class="radio radio-info radio-inline">
+                            <input checked="" type="radio" name="close" value="no" id="inlineRadio2">
+                            <label for="inlineRadio2"> Non </label>
+                        </div>
+                        <div class="radio radio-info radio-inline">
+                            <input type="radio" name="close" value="yes" id="inlineRadio1">
+                            <label for="inlineRadio1"> Oui </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Supprimer</button>
+                        <a href="{% url 'settings' %}" class="btn btn-danger" type="submit"><i class="fa fa-close"></i>
+                            Annuler</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Close Account -->
+    {% endblock account_content %}

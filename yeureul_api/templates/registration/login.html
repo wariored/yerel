@@ -14,10 +14,26 @@ Se connecter
 {% block authentication_content %}
 
 
-{% if login_error %}
+{% if login_error == True %}
 <div class="alert alert-warning text-center">Identifiants de connexion invalides. Veuillez réessayer<br>
-Si vous avez desactivé votre compte par erreur, veuillez nous contacter!</div>
+    Veuillez nous contacter si votre compte a été désactivé.
+</div>
 {% endif %}
+{% if close_account is not None %}
+<div class="alert alert-danger text-center">Votre compte a été désactivé. La suppression sera effective dans
+    10 jours.<br>
+    Si toutefois vous voulez réactiver votre compte, veuillez nous contacter le plus tôt possible<br>
+</div>
+{% endif %}
+
+{% if reset_password == False %}
+<div class="alert alert-danger text-center">Le lien d'activation a expiré, veuillez en créer un nouveau
+</div>
+{% elif reset_password == True %}
+<div class="alert alert-success text-center">Mot de passe modifié avec succès
+</div>
+{% endif %}
+    
 
 <!-- Login -->
 <section class="login">
@@ -46,7 +62,7 @@ Si vous avez desactivé votre compte par erreur, veuillez nous contacter!</div>
                                         Se rappeler de moi
                                     </label>
                                 </div>
-                                <p class="text-center pull-right"> <a href="forgot-password.html"> Mot de passe oublié?
+                                <p class="text-center pull-right"> <a href="{% url 'before_password_reset' %}"> Mot de passe oublié?
                                     </a> </p>
                                 <div class="clearfix"></div>
                             </div>
