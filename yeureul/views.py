@@ -390,8 +390,8 @@ def uid_token_generator(user, key_type):
         key_to_update.token = token
         key_to_update.save()
     else:
-        key_created.token = token
-        key_created.save()
+        key_to_update.token = token
+        key_to_update.save()
     return uid, token
 
 
