@@ -9,6 +9,17 @@ Nous Contacter
 <li>Contact</li>
 {% endblock authentication_pagination %}
 {% block authentication_content %}
+
+{% if contact == 'message_error' %}
+<div class="alert alert-warning text-center">Le contenu du message ne doit pas etre vide.</div>
+{% elif contact == 'success' %}
+<div class="alert alert-success text-center">Merci de nous avoir contacter. L'équipe va vite analyser votre message.</div>
+{% elif contact == 'name_message_error' %}
+<div class="alert alert-warning text-center">Le nom et le message sont obligatoires.</div>
+{% elif contact == 'email_error' %}
+<div class="alert alert-warning text-center">L'email ne semble pas valide.</div>
+{% endif %}
+
 <!-- Contact Us -->
 <section class="contact">
     <div class="container">
@@ -18,17 +29,18 @@ Nous Contacter
                     <div class="widget-header">
                         <h1>Contactez Nous</h1>
                     </div>
-                    <form method="POST" action="#" id="contactForm" novalidate="novalidate">
+                    <form method="POST" action="{% url 'contact_verification' %}" id="contactForm" novalidate="novalidate">
+                        {% csrf_token %}
                         <div class="form-group">
                             <div class="row">
                                 {% if not user.is_authenticated %}
                                 <div class="col-md-6">Votre Nom<span class="required">*</span></label>
-                                    <input type="text" name="" value="" placeholder="Enter Name" class="form-control"
+                                    <input type="text" name="name" value="{{list_values.name}}" placeholder="Entrer Nom" class="form-control"
                                         maxlength="100">
-                                </div> 
+                                </div>
                                 <div class="col-md-6">
                                     <label class="control-label">Votre adresse mail <span class="required">*</span></label>
-                                    <input type="email" name="" value="" placeholder="Enter Email Address" class="form-control">
+                                    <input type="email" name="email" value="{{list_values.email}}" placeholder="Entrer Adresse mail" class="form-control">
                                 </div>
                                 {% endif %}
 
@@ -36,11 +48,11 @@ Nous Contacter
                         </div>
                         <div class="form-group">
                             <label class="control-label">Sujet</label>
-                            <input type="text" name="" value="" placeholder="Enter The Subject" class="form-control">
+                            <input type="text" name="subject" value="{{list_values.subject}}"" placeholder="Enter Sujet" class="form-control">
                         </div>
                         <div class="form-group">
                             <label class="control-label">Message <span class="required">*</span></label>
-                            <textarea placeholder="Enter Message" name="message" class="form-control" rows="3"></textarea>
+                            <textarea value="{{list_values.message}}" placeholder="Entrer Message" name="message" class="form-control" rows="3"></textarea>
                         </div>
                         <div class="text-right">
                             <input type="submit" class="btn btn-primary" value="Envoyer Message">
@@ -51,11 +63,13 @@ Nous Contacter
             <div class="col-md-6">
                 <div class="widget margin-bottom-none">
                     <div class="widget-header">
-                        <h1>Get in Touch</h1>
+                        <h1>Entrer en contact avec nous</h1>
                     </div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget leo at velit imperdiet
-                        varius. In eu ipsum vitae velit congue iaculis vitae at risus. Lorem ipsum dolor sit amet,
-                        consectetur adipiscing elit.</p>
+                    <p>L'objectif de <strong>Yeureul</strong> est de vous faciliter la vie en mettant en place
+                        un système de navigation simple et moderne.<br>
+                        Nous sommes ouvert à toute suggestion ou critique et répondrons à vos messages sous
+                        24h si nécessaire.
+                    </p>
                     <hr>
                     <h4 class="heading-primary"><strong>Yeureul</strong></h4>
                     <ul class="list list-icons list-icons-style-3 mt-xlg">

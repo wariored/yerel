@@ -16,18 +16,25 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 import os
 
-from .models import UserInfo, UserKey
+from .models import UserInfo, UserKey, ContactMessage
+from ads.models import Category, AdUser, Ad, AdFile, Location
 
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 
 
-
-
 # index of the site
 def index(request):
-    return render(request, 'yeureul_api/index.html')
+    categories_t_1 = Category.objects.filter(category_type='T',
+                                             name__in=['Restaurant', 'Immobilier', 'Shopping', 'Voitures'])
+    categories_t_2 = Category.objects.filter(category_type='T', name__in=['Emploi', 'Hotels', 'Services', 'Animaux'])
+    return render(request, 'yeureul/index.html',
+                  {
+            'categories_t_1': categories_t_1,
+            'categories_t_2': categories_t_2,
+        }
+                  )
 
 
 # robots and humans files
@@ -35,30 +42,24 @@ def home_files(request, filename):
     return render(request, filename, content_type="text/plain")
 
 
-
 def login_view(request):
     redirect_to = request.GET.get('next', '/')
     close_account = request.session.get('close_account', None)
-    reset_password = request.session.get('reset_password', None)
     reset_password = request.session.get('reset_password', None)
     if request.user.is_authenticated:
         return redirect('index')
     if close_account is not None:
         del request.session['close_account']
     if reset_password is not None:
-         del request.session['reset_password']
+        del request.session['reset_password']
     if request.session.get('login_error') is not None:
         del request.session['login_error']
-        return render(request, 'registration/login.html', 
-            {   "login_error": True, 'redirect_to': redirect_to,
-                'close_account': close_account
-            }
-        )
-    return render(request, 'registration/login.html', 
-        {   'redirect_to': redirect_to, 'close_account': close_account,
-            'reset_password': reset_password
-        }
-    )
+        return render(request, 'registration/login.html',
+                      dict(login_error=True, redirect_to=redirect_to, close_account=close_account)
+                      )
+    return render(request, 'registration/login.html',
+                  dict(redirect_to=redirect_to, close_account=close_account, reset_password=reset_password)
+                  )
 
 
 def login_verification(request):
@@ -74,9 +75,13 @@ def login_verification(request):
         password = request.POST['password']
         user = authenticate(request, username=email_or_username, password=password)
         if user is None:
-            user = User.objects.get(email__iexact=email_or_username)
-            if not user.check_password(password):
-                user = None
+            try:
+                user = User.objects.get(email__iexact=email_or_username)
+            except:
+                pass
+            else:
+                if not user.check_password(password):
+                    user = None
         if user is not None:
             if user.is_active:
                 login(request, user)
@@ -89,6 +94,7 @@ def login_verification(request):
         request.session['login_error'] = True
         return redirect('/login/?next=%s' % redirect_to)
 
+
 def signup_view(request):
     if request.user.is_authenticated:
         return redirect('index')
@@ -97,9 +103,10 @@ def signup_view(request):
         dict_signup_values = request.session['dict_signup_values']
         del request.session['signup_error']
         del request.session['dict_signup_values']
-        return render(request, 'registration/signup.html', 
-            {"signup_error": signup_error, 'dict_signup_values': dict_signup_values})
+        return render(request, 'registration/signup.html',
+                      {"signup_error": signup_error, 'dict_signup_values': dict_signup_values})
     return render(request, 'registration/signup.html')
+
 
 @transaction.atomic
 def signup_verification(request):
@@ -141,6 +148,7 @@ def signup_verification(request):
             request.session['dict_signup_values'] = dict_signup_values
             return redirect('signup')
 
+
 def account_validation(request, uidb64=None, token=None):
     if uid_token_decoder(uidb64, token, request.user, key_type="A"):
         user_info = UserInfo.objects.get(user=request.user)
@@ -151,6 +159,21 @@ def account_validation(request, uidb64=None, token=None):
             return redirect('settings')
     request.session['activation'] = 'key_expired'
     return redirect('settings')
+
+
+@login_required
+def regenerate_activation_link(request):
+    if request.user.info.activated_account:
+        return redirect('settings')
+    uid, token = uid_token_generator(request.user, key_type="A")
+    url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
+    html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
+    plain_message = strip_tags(html_message)
+    email = EmailMessage('Yeureul.org Email activation', plain_message, to=[request.user.email])
+    email.send()
+    request.session['activation'] = 'regenerate_activation_link'
+    return redirect('settings')
+
 
 def before_password_reset(request):
     if request.user.is_authenticated:
@@ -170,6 +193,8 @@ def before_password_reset(request):
             email.send()
             return render(request, 'registration/before_password_reset.html', {'success': True})
     return render(request, 'registration/before_password_reset.html')
+
+
 def account_reset_password(request, uidb64=None, token=None):
     user_key = get_object_or_404(UserKey, key_type="P", token=token)
     user = User.objects.get(pk=user_key.user.id)
@@ -180,10 +205,11 @@ def account_reset_password(request, uidb64=None, token=None):
     request.session['reset_password'] = False
     return redirect('login')
 
+
 def password_reset(request):
     if request.session.get('token') == True or request.session.get('reset_password'):
         if request.session.get('reset_password'):
-            user_id = request.session['reset_password']     
+            user_id = request.session['reset_password']
             error = True
             del request.session['reset_password']
         else:
@@ -193,6 +219,7 @@ def password_reset(request):
             del request.session['user_id']
         return render(request, 'registration/password_reset.html', {'user_id': user_id, 'error': error})
     return redirect('index')
+
 
 def password_reset_verification(request):
     if request.method == "POST":
@@ -210,8 +237,9 @@ def password_reset_verification(request):
                 request.session['reset_password'] = user_id
         else:
             request.session['reset_password'] = user_id
-        return redirect('password_reset')  
+        return redirect('password_reset')
     return redirect('login')
+
 
 # to logout a user
 @login_required
@@ -219,8 +247,6 @@ def logout_view(request):
     logout(request)
     request.session['lastConnectionDate'] = str(timezone.now())
     return redirect('index')
-
-
 
 
 @login_required
@@ -237,7 +263,8 @@ def settings(request):
         return render(request, 'registration/account/settings.html', {'activation': activation})
 
     return render(request, 'registration/account/settings.html', {'update_profile_success': update_profile_success,
-        'update_profile_error': update_profile_error})
+                                                                  'update_profile_error': update_profile_error})
+
 
 @transaction.atomic
 def update_profile(request):
@@ -250,8 +277,6 @@ def update_profile(request):
         old_password = request.POST.get('old_password', None)
         password_1 = request.POST.get('password_1', None)
         password_2 = request.POST.get('password_2', None)
-        print(avatar)
-
         user = User.objects.get(username__exact=request.user.username)
         user_info = UserInfo.objects.get(user=user)
         if old_password:
@@ -279,7 +304,7 @@ def update_profile(request):
         else:
             user_info.phone_number = phone_number
         user_info.address = address
-        
+
         if avatar:
             if avatar.size < int(conf_settings.MAX_UPLOAD_SIZE):
                 path = user_info.avatar.path
@@ -292,15 +317,56 @@ def update_profile(request):
             user.save()
             request.session['update_profile_success'] = True
 
-
     return redirect('settings')
 
+
 def contact(request):
-    return render(request, 'yeureul_api/contact_us.html')
+    contact_error = request.session.get('contact', None)
+    list_values = request.session.get('list_values', None)
+    if contact_error:
+        del request.session['contact']
+    if list_values:
+        del request.session['list_values']
+    return render(request, 'yeureul/contact_us.html', {'contact': contact_error, 'list_values': list_values})
+
+
+@transaction.atomic
+def contact_verification(request):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            subject = request.POST['subject']
+            message = request.POST['message']
+            if not message:
+                request.session['contact'] = 'message_error'
+                return redirect('contact')
+            ContactMessage.objects.create(user=request.user, subject=subject, message=message)
+            request.session['contact'] = 'success'
+        else:
+            name = request.POST['name']
+            email = request.POST['email']
+            subject = request.POST['subject']
+            message = request.POST['message']
+            list_values = {'name': name, 'email': email, 'subject': subject, 'message': message}
+            if not name or not message:
+                request.session['contact'] = 'name_message_error'
+                request.session['list_values'] = list_values
+                return redirect('contact')
+            else:
+                try:
+                    validate_email(email)
+                except:
+                    request.session['contact'] = 'email_error'
+                    request.session['list_values'] = list_values
+                    return redirect('contact')
+            ContactMessage.objects.create(name=name, email=email, subject=subject, message=message)
+            request.session['contact'] = 'success'
+    return redirect('contact')
+
 
 @login_required
 def close_account(request):
     return render(request, 'registration/account/close_account.html')
+
 
 @login_required
 def close_account_verification(request):
@@ -312,15 +378,14 @@ def close_account_verification(request):
             user.save()
             request.session['close_account'] = True
             return redirect('login')
-
-    return redirect('close_account')
+    return redirect('settings')
 
 
 def uid_token_generator(user, key_type):
     uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
     key_to_update, key_created = UserKey.objects.get_or_create(user=user, key_type=key_type)
-    if not key_created:#do not forget to make a constraint for only 2 entries in UserKey
+    if not key_created:  # do not forget to make a constraint for only 2 entries in UserKey
         key_to_update.key_expires = timezone.now() + timezone.timedelta(days=1)
         key_to_update.token = token
         key_to_update.save()
@@ -328,6 +393,7 @@ def uid_token_generator(user, key_type):
         key_created.token = token
         key_created.save()
     return uid, token
+
 
 def uid_token_decoder(uidb64, token, user, key_type):
     if uidb64 is not None and token is not None:
@@ -345,12 +411,10 @@ def uid_token_decoder(uidb64, token, user, key_type):
                 return default_token_generator.check_token(user, token)
         except:
             pass
-            
+
     return False
 
 
 def _delete_file(path):
     """ Deletes file from filesystem. """
     os.remove(path)
-
-

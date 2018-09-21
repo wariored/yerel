@@ -15,14 +15,14 @@
             <ul class="nav navbar-nav">
                 <li><a href="{% url 'index' %}">Accueil</a></li>
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Categories Pages
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> categories Zone
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="categories.html"><i class="fa fa-fw fa-angle-right"></i> Categories</a>
+                            <a href="{% url 'ads:categories' %}"><i class="fa fa-fw fa-angle-right"></i> Categories</a>
                         </li>
                         <li>
-                            <a href="category-grid.html"><i class="fa fa-fw fa-angle-right"></i> Category Grid</a>
+                            <a href="category-grid.html"><i class="fa fa-fw fa-angle-right"></i> Grille des Categories</a>
                         </li>
                         <li>
                             <a href="single.html"><i class="fa fa-fw fa-angle-right"></i> Single Item</a>
@@ -39,32 +39,29 @@
                             <a href="blog.html"><i class="fa fa-fw fa-angle-right"></i> Blog</a>
                         </li>
                         <li>
-                            <a href="blog_details.html"><i class="fa fa-fw fa-angle-right"></i> Blog Details</a>
+                            <a href="blog_details.html"><i class="fa fa-fw fa-angle-right"></i> Blog Détails</a>
                         </li>
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Other Pages <b
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Autres Pages <b
                             class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="create_post.html"><i class="fa fa-fw fa-angle-right"></i> Post Your Ad</a>
-                        </li>
-                        <li>
-                            <a href="settings.html"><i class="fa fa-fw fa-angle-right"></i> Settings</a>
-                        </li>
-                        <li>
-                            <a href="close-account.html"><i class="fa fa-fw fa-angle-right"></i> Close account</a>
-                        </li>
-                        <li>
-                            <a href="my-ads.html"><i class="fa fa-fw fa-angle-right"></i> My Ads</a>
-                        </li>
-                        <li>
-                            <a href="favourite.html"><i class="fa fa-fw fa-angle-right"></i> Favourite Ads</a>
+                            <a href="create_post.html"><i class="fa fa-fw fa-angle-right"></i> Poster votre annonce</a>
                         </li>
                         <li>
                             <a href="privacy.html"><i class="fa fa-fw fa-angle-right"></i> Privacy Policy</a>
                         </li>
+                        <li>
+                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler chez Nous</a>
+                        </li>
+                        <li>
+                                <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>
+                            </li>
+                        <li>
+                                <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Nos partenaires</a>
+                            </li>
                         <li>
                             <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> 404</a>
                         </li>
@@ -92,7 +89,7 @@
 
 
                             <b class="caret"></b>
-                            
+
                         </a>
                         <ul class="dropdown-menu">
                             <li>

@@ -7,7 +7,8 @@
         <div class="row">
             <div class="main-search-box text-center">
                 <h1 class="intro-title">Vendre ou acheter quelque chose en ligne</h1>
-                <p class="sub-title">Achetez et vendez tout, des voitures d'occasion aux téléphones portables et ordinateurs, 
+                <p class="sub-title">Achetez et vendez tout, des voitures d'occasion aux téléphones portables et
+                    ordinateurs,
                     ou recherchez des biens, des emplois et plus encore</p>
                 {% include 'static_content/search_form.html' %}
             </div>
@@ -40,14 +41,14 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="carousel-section-header">
-                    <h1>Trending Ads <a href="categories.html" class="btn btn-md btn-primary pull-right">Show More
-                            Items <b>24727</b> <i class="fa fa-arrow-right"></i></a></h1>
+                    <h1>Trending Ads <a href="categories.html" class="btn btn-md btn-primary pull-right">Voir
+                            plus d'annonces<b>24727</b> <i class="fa fa-arrow-right"></i></a></h1>
                 </div>
                 <div id="owl-carousel-featured" class="owl-carousel owl-carousel-featured">
                     <div class="item">
                         <div class="item-ads-grid icon-blue">
                             <div class="item-badge-grid featured-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/restaurant/1.png' %}" class="img-responsive img-center">
@@ -73,7 +74,7 @@
                     <div class="item">
                         <div class="item-ads-grid icon-green">
                             <div class="item-badge-grid hot-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/real_estate/1.png' %}" class="img-responsive img-center">
@@ -99,7 +100,7 @@
                     <div class="item">
                         <div class="item-ads-grid icon-brown">
                             <div class="item-badge-grid premium-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/cars/1.png' %}" class="img-responsive img-center">
@@ -125,7 +126,7 @@
                     <div class="item">
                         <div class="item-ads-grid highlight-ads icon-violet">
                             <div class="item-badge-grid btn-primary">
-                                <a href="#">Premium Ad</a>
+                                <a href="#">Annonce Premium </a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/shopping/1.png' %}" class="img-responsive img-center">
@@ -151,7 +152,7 @@
                     <div class="item">
                         <div class="item-ads-grid icon-dark-blue">
                             <div class="item-badge-grid featured-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/job/1.png' %}" class="img-responsive img-center">
@@ -177,7 +178,7 @@
                     <div class="item">
                         <div class="item-ads-grid icon-orange">
                             <div class="item-badge-grid featured-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/hotels/1.png' %}" class="img-responsive img-center">
@@ -203,7 +204,7 @@
                     <div class="item">
                         <div class="item-ads-grid icon-light-blue">
                             <div class="item-badge-grid featured-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/services/1.png' %}" class="img-responsive img-center">
@@ -229,7 +230,7 @@
                     <div class="item">
                         <div class="item-ads-grid icon-light-green">
                             <div class="item-badge-grid featured-ads">
-                                <a href="#">HOT</a>
+                                <a href="#">TOP</a>
                             </div>
                             <div class="item-img-grid">
                                 <img alt="" src="{% static 'externals/images/categories/pets/1.png' %}" class="img-responsive img-center">
@@ -263,6 +264,8 @@
 <section class="categories-list">
     <div class="container">
         <div class="row">
+            {% for category in categories_t_1 %}
+            {% if category.name == 'Restaurant' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget blue-widget">
                     <div class="widget-header">
@@ -271,52 +274,54 @@
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Cafe <span class="item-numbers">155</span></a></li>
-                            <li><a href="#">Fast Food <span class="item-numbers">80</span></a></li>
-                            <li><a href="#">Restaurants <span class="item-numbers">65</span></a></li>
-                            <li><a href="#">Pubs <span class="item-numbers">35</span></a></li>
-                            <li><a href="#">Food Truck <span class="item-numbers">12</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">7</span></a></li>
+
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% if category.name == 'Immobilier' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget green-widget">
                     <div class="widget-header">
                         <small>98,156 Ads</small>
-                        <h1><i class="fa fa-home shortcut-icon icon-green"></i> Real Estate</h1>
+                        <h1><i class="fa fa-home shortcut-icon icon-green"></i> Immobilier</h1>
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">For Sale <span class="item-numbers">135</span></a></li>
-                            <li><a href="#">For Rent <span class="item-numbers">116</span></a></li>
-                            <li><a href="#">To Share <span class="item-numbers">65</span></a></li>
-                            <li><a href="#">Land & Estates <span class="item-numbers">47</span></a></li>
-                            <li><a href="#">Appartments <span class="item-numbers">23</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">4</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% if category.name == 'Voitures' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
+
                 <div class="widget brown-widget">
                     <div class="widget-header">
                         <small>98,156 Ads</small>
-                        <h1><i class="fa fa-car shortcut-icon icon-brown"></i> Cars</h1>
+                        <h1><i class="fa fa-car shortcut-icon icon-brown"></i> Voitures</h1>
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Car Parts <span class="item-numbers">98</span></a></li>
-                            <li><a href="#">Cars <span class="item-numbers">65</span></a></li>
-                            <li><a href="#">Motobikes <span class="item-numbers">55</span></a></li>
-                            <li><a href="#">Wanted <span class="item-numbers">28</span></a></li>
-                            <li><a href="#">Rentacar <span class="item-numbers">15</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">12</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% if category.name == 'Shopping' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget violet-widget">
                     <div class="widget-header">
@@ -325,54 +330,56 @@
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Food <span class="item-numbers">68</span></a></li>
-                            <li><a href="#">Wear <span class="item-numbers">44</span></a></li>
-                            <li><a href="#">Accessories <span class="item-numbers">23</span></a></li>
-                            <li><a href="#">IT & Sofware <span class="item-numbers">19</span></a></li>
-                            <li><a href="#">For Kids <span class="item-numbers">5</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">3</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% endfor %}
         </div>
+        {% for category in categories_t_2 %}
         <div class="row">
+            {% if category.name == 'Emploi' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget dark-blue-widget margin-bottom-none">
                     <div class="widget-header">
                         <small>98,156 Ads</small>
-                        <h1><i class="fa fa-briefcase shortcut-icon icon-dark-blue"></i> Job</h1>
+                        <h1><i class="fa fa-briefcase shortcut-icon icon-dark-blue"></i> Emploi</h1>
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Accountancy <span class="item-numbers">78</span></a></li>
-                            <li><a href="#">Banking <span class="item-numbers">45</span></a></li>
-                            <li><a href="#">Managerment <span class="item-numbers">30</span></a></li>
-                            <li><a href="#">Secretarial & PA <span class="item-numbers">28</span></a></li>
-                            <li><a href="#">Voluntary Work <span class="item-numbers">16</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">9</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir plus <span class="item-numbers">9</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% if category.name == 'Hotels' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget orange-widget margin-bottom-none">
                     <div class="widget-header">
                         <small>98,156 Ads</small>
-                        <h1><i class="fa fa-building-o shortcut-icon icon-orange"></i> Hotels</h1>
+                        <h1><i class="fa fa-building-o shortcut-icon icon-orange"></i> {{ category.name }}</h1>
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Artists <span class="item-numbers">95</span></a></li>
-                            <li><a href="#">Events & Nightlife <span class="item-numbers">86</span></a></li>
-                            <li><a href="#">Hotel Stuff <span class="item-numbers">60</span></a></li>
-                            <li><a href="#">Classes <span class="item-numbers">30</span></a></li>
-                            <li><a href="#">Hostel <span class="item-numbers">22</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">19</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% if category.name == 'Services' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget light-blue-widget margin-bottom-none">
                     <div class="widget-header">
@@ -381,34 +388,35 @@
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Computers <span class="item-numbers">55</span></a></li>
-                            <li><a href="#">Clothing <span class="item-numbers">35</span></a></li>
-                            <li><a href="#">Childcare <span class="item-numbers">31</span></a></li>
-                            <li><a href="#">Business <span class="item-numbers">29</span></a></li>
-                            <li><a href="#">Cleaning <span class="item-numbers">18</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">8</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
+
             </div>
+            {% endif %}
+            {% if category.name == 'Animaux' %}
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="widget light-green-widget margin-bottom-none">
                     <div class="widget-header">
                         <small>98,156 Ads</small>
-                        <h1><i class="fa fa-paw shortcut-icon icon-light-green"></i> Pets</h1>
+                        <h1><i class="fa fa-paw shortcut-icon icon-light-green"></i> Animaux</h1>
                     </div>
                     <div class="widget-body">
                         <ul class="trends">
-                            <li><a href="#">Cats <span class="item-numbers">66</span></a></li>
-                            <li><a href="#">Dogs <span class="item-numbers">54</span></a></li>
-                            <li><a href="#">Birds <span class="item-numbers">34</span></a></li>
-                            <li><a href="#">Wanted <span class="item-numbers">12</span></a></li>
-                            <li><a href="#">Pets for Sale <span class="item-numbers">6</span></a></li>
-                            <li><a href="#">Show More <span class="item-numbers">1</span></a></li>
+                            {% for subcategory in category.subcategories.all|slice:":5" %}
+                            <li><a href="#">{{subcategory.name}} <span class="item-numbers">155</span></a></li>
+                            {% endfor %}
+                            <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                         </ul>
                     </div>
                 </div>
             </div>
+            {% endif %}
+            {% endfor %}
         </div>
     </div>
 </section>

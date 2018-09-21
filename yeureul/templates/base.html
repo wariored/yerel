@@ -41,7 +41,7 @@
     {% include "header_footer/header.html" %}
     {% if user.info.activated_account == False  %}
     <div class="alert alert-warning text-center">Votre compte n'est pas activé, veuillez cliquer sur le lien
-        qui vous a été envoyé par mail ou renvoyer le <strong><a href="#">mail</a></strong>
+        qui vous a été envoyé par mail ou renvoyer le <strong><a href="{% url 'regenerate_activation_link' %}">mail</a></strong>
     </div>
     {% endif %}
     {% block content %}{% endblock %}

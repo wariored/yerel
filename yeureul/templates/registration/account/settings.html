@@ -17,6 +17,8 @@
     <div class="alert alert-success text-center">Votre compte a été activé avec succès</div>
     {% elif activation == 'key_expired' %}
     <div class="alert alert-danger text-center">Ce lien d'activation a expiré. Il n'est plus valable</div>
+    {% elif activation == 'regenerate_activation_link' %}
+    <div class="alert alert-success text-center">Un nouveau lien d'activation vous a été envoyé par mail</div>
     {% endif %}
     {% if update_profile_success is not None %}
     <div class="alert alert-success text-center">Votre compte a été mis à jour</div>
