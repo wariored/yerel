@@ -307,8 +307,11 @@ def update_profile(request):
 
         if avatar:
             if avatar.size < int(conf_settings.MAX_UPLOAD_SIZE):
-                path = user_info.avatar.path
-                _delete_file(path)
+                try:
+                    path = user_info.avatar.path
+                    _delete_file(path)
+                except ValueError:
+                    pass
                 user_info.avatar = avatar
             else:
                 request.session['update_profile_error'] = 'avatar'
