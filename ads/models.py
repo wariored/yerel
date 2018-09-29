@@ -68,22 +68,23 @@ class Ad(models.Model):
     title = models.CharField(max_length=50)
     price = models.FloatField(max_length=30, validators=[MinValueValidator(500)])
     condition = models.CharField(max_length=1, choices=AD_CONDITION, blank=True)
-    description = models.TextField(max_length=1000)
+    description = models.TextField(max_length=2000)
+    random_url = models.UUIDField(default=uuid.uuid4)
+    is_active = models.BooleanField(default=False)
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created')
     update_date = models.DateTimeField('date updated', auto_now_add=True)
 
-    # owner = models.ForeignKey('auth.User', related_name='subcategories', on_delete=models.PROTECT)
     def __str__(self):
         return self.title
 
 
 class AdFile(models.Model):
-    """file related to an Ad"""
-    ad = models.ForeignKey(Ad, related_name='files', on_delete=models.CASCADE)
-    media = models.FileField(upload_to=get_file_path)
+    """Images related to an Ad"""
+    ad = models.ForeignKey(Ad, related_name='images', on_delete=models.CASCADE)
+    media = models.ImageField(upload_to=get_file_path)
 
     def __str__(self):
-        return self.media
+        return self.ad.title

@@ -22,6 +22,12 @@ from ads.models import Category, AdUser, Ad, AdFile, Location
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+
+
+def handler404(request, exception):
+    return render(request, 'error404.html', locals())
 
 
 # index of the site
@@ -30,11 +36,11 @@ def index(request):
                                              name__in=['Restaurant', 'Immobilier', 'Shopping', 'Voitures'])
     categories_t_2 = Category.objects.filter(category_type='T', name__in=['Emploi', 'Hotels', 'Services', 'Animaux'])
     return render(request, 'yeureul/index.html',
-                  {
+        {
             'categories_t_1': categories_t_1,
             'categories_t_2': categories_t_2,
         }
-                  )
+    )
 
 
 # robots and humans files
