@@ -12,3 +12,5 @@ Pygments==2.2.0
 pytz==2018.5
 requests==2.19.1
 urllib3==1.23
+Pillow==5.3.0
+dj-database-url==0.5.0

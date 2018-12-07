@@ -11,6 +11,7 @@ def get_file_path(instance, filename):
     return os.path.join('ads_file/', filename)
 
 
+# if there is another category to add, we'll add it here
 CATEGORY_TYPE = (
     ('T', 'TOP'),
     ('B', 'BOTTOM'),
@@ -23,7 +24,8 @@ class Category(models.Model):
     """
     name = models.CharField(max_length=30, null=False)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
-    icon = models.CharField(max_length=250, null=True, blank=True)
+    icon = models.CharField(max_length=70, null=True, blank=True)
+    widget = models.CharField(max_length=20, null=True, blank=True)
     category_type = models.CharField(max_length=10, null=True, blank=True, default='T', choices=CATEGORY_TYPE)
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
                                      on_delete=models.PROTECT)

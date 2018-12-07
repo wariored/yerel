@@ -32,15 +32,15 @@ def handler404(request, exception):
 
 # index of the site
 def index(request):
-    categories_t_1 = Category.objects.filter(category_type='T',
-                                             name__in=['Restaurant', 'Immobilier', 'Shopping', 'Voitures'])
-    categories_t_2 = Category.objects.filter(category_type='T', name__in=['Emploi', 'Hotels', 'Services', 'Animaux'])
+    categories = Category.objects.filter(category_type='T')
+    categories_t_1 = categories[:4]
+    categories_t_2 = categories[4:8]
     return render(request, 'yeureul/index.html',
-        {
-            'categories_t_1': categories_t_1,
-            'categories_t_2': categories_t_2,
-        }
-    )
+                  {
+                      'categories_t_1': categories_t_1,
+                      'categories_t_2': categories_t_2,
+                  }
+                  )
 
 
 # robots and humans files
@@ -72,6 +72,8 @@ def login_verification(request):
     """
     Login a user
     """
+
+    # get path of user before getting on login page
     redirect_to = request.GET.get('next', '/')
     if request.user.is_authenticated:
         return redirect('login')
@@ -83,14 +85,18 @@ def login_verification(request):
         if user is None:
             try:
                 user = User.objects.get(email__iexact=email_or_username)
-            except:
+            except User.DoesNotExist:
                 pass
             else:
+                # if password does not match, assign user to none
                 if not user.check_password(password):
                     user = None
+        # this condition is necessary because we just checked
+        #  before if user exist. If not, user is equal to none
         if user is not None:
             if user.is_active:
                 login(request, user)
+                # if user did not check the remember me box then set session to zero
                 if not request.POST.get('remember_me', None):
                     request.session.set_expiry(0)
                 return redirect(redirect_to)
@@ -102,6 +108,9 @@ def login_verification(request):
 
 
 def signup_view(request):
+    """View for user signing up"""
+
+    # if user has already signed in, redirect to the index view
     if request.user.is_authenticated:
         return redirect('index')
     if request.session.get('signup_error'):
@@ -116,6 +125,8 @@ def signup_view(request):
 
 @transaction.atomic
 def signup_verification(request):
+    """Sign up form verification"""
+
     if request.method == "POST":
         username = request.POST['username']
         email = request.POST['email']
@@ -137,28 +148,44 @@ def signup_verification(request):
             request.session['signup_error'] = 'terms_error'
             request.session['dict_signup_values'] = dict_signup_values
             return redirect('signup')
-        if not (User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists()):
+
+        username_exist = User.objects.filter(username=username).exists()
+        email_exist = User.objects.filter(email=email).exists()
+
+        if not (username_exist or email_exist):
+            # create new user log it in
             User.objects.create_user(username.lower(), email, password_1)
             user = authenticate(request, username=username, password=password_1)
             login(request, user)
+
+            # generate a token with the user as key, key_type="A" is for account Activation
             uid, token = uid_token_generator(user, key_type="A")
             url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
+
+            # add user in UserInfo table
+            UserInfo.objects.create(user=user, creation_date=timezone.now(), activated_account=False)
+
+            # send email activation to the new user
             html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
             plain_message = strip_tags(html_message)
             email = EmailMessage('Yeureul.org Email activation', plain_message, to=[user.email])
             email.send()
-            UserInfo.objects.create(user=user, creation_date=timezone.now(), activated_account=False)
+
             return redirect('settings')
         else:
+            # if we are here, it's because user does exist
+            # generate an error and keep the values typed by the user
+            # values are caught up in signup view
             request.session['signup_error'] = True
             request.session['dict_signup_values'] = dict_signup_values
+
             return redirect('signup')
 
 
 def account_validation(request, uidb64=None, token=None):
     if uid_token_decoder(uidb64, token, request.user, key_type="A"):
         user_info = UserInfo.objects.get(user=request.user)
-        if user_info.activated_account == False:
+        if not user_info.activated_account:
             user_info.activated_account = True
             user_info.save()
             request.session['activation'] = True
@@ -195,7 +222,7 @@ def before_password_reset(request):
             url = conf_settings.BASE_URL + "account/reset_password/%s/%s" % (uid, token)
             html_message = render_to_string('mails/password_reset.html', {'user': user.username, 'link': url})
             plain_message = strip_tags(html_message)
-            email = EmailMessage('Yeureul.org mot de passe oublié ', plain_message, to=[user.email])
+            email = EmailMessage('Yerel.com mot de passe oublié ', plain_message, to=[user.email])
             email.send()
             return render(request, 'registration/before_password_reset.html', {'success': True})
     return render(request, 'registration/before_password_reset.html')
