@@ -5,7 +5,7 @@ from django.conf import settings as conf_settings
 from django.db import transaction
 from django.utils.encoding import force_bytes, force_text
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import User
+
 from django.contrib.auth.forms import PasswordResetForm
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -24,6 +24,9 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
+from django.contrib.auth.models import User
+from . import forms
 
 
 def handler404(request, exception):
@@ -49,62 +52,35 @@ def home_files(request, filename):
 
 
 def login_view(request):
-    redirect_to = request.GET.get('next', '/')
-    close_account = request.session.get('close_account', None)
-    reset_password = request.session.get('reset_password', None)
+    """Login a user"""
+
+    # no need to login if user is already authenticated
     if request.user.is_authenticated:
         return redirect('index')
-    if close_account is not None:
-        del request.session['close_account']
-    if reset_password is not None:
-        del request.session['reset_password']
-    if request.session.get('login_error') is not None:
-        del request.session['login_error']
-        return render(request, 'registration/login.html',
-                      dict(login_error=True, redirect_to=redirect_to, close_account=close_account)
-                      )
-    return render(request, 'registration/login.html',
-                  dict(redirect_to=redirect_to, close_account=close_account, reset_password=reset_password)
-                  )
 
-
-def login_verification(request):
-    """
-    Login a user
-    """
-
-    # get path of user before getting on login page
+    # redirection link
     redirect_to = request.GET.get('next', '/')
-    if request.user.is_authenticated:
-        return redirect('login')
-    if request.method == "POST":
-        email_or_username = request.POST['email_or_username']
-        email_or_username = email_or_username.lower()
-        password = request.POST['password']
-        user = authenticate(request, username=email_or_username, password=password)
-        if user is None:
-            try:
-                user = User.objects.get(email__iexact=email_or_username)
-            except User.DoesNotExist:
-                pass
+
+    if request.method == 'POST':
+        form = forms.LoginForm(data=request.POST)
+        if form.is_valid():
+            email_username = form.data['email_username']
+            password = form.data['password']
+            user = authenticate(request, username=email_username, password=password)
+            if user is None:
+                user = authenticate(request, email=email_username, password=password)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    if not form.data.get('remember_me'):
+                        request.session.set_expiry(0)
+                    return redirect(redirect_to)
             else:
-                # if password does not match, assign user to none
-                if not user.check_password(password):
-                    user = None
-        # this condition is necessary because we just checked
-        #  before if user exist. If not, user is equal to none
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                # if user did not check the remember me box then set session to zero
-                if not request.POST.get('remember_me', None):
-                    request.session.set_expiry(0)
-                return redirect(redirect_to)
-            else:
-                request.session['close_account'] = True
-                return redirect('/login/?next=%s' % redirect_to)
-        request.session['login_error'] = True
-        return redirect('/login/?next=%s' % redirect_to)
+                return render(request, 'registration/login.html', {'form': form, 'login_error': True,
+                                                                   'redirect_to': redirect_to})
+    else:
+        form = forms.LoginForm()
+    return render(request, 'registration/login.html', {'form': form, 'redirect_to': redirect_to})
 
 
 def signup_view(request):

@@ -1,271 +1,339 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load i18n %}
 {% block content %}
     <!-- Categories Page Search-->
-      <section class="categories-page-search">
-         <div class="container">
+    <section class="categories-page-search">
+        <div class="container">
             <div class="row">
-               <div class="main-search-box text-center">
-                  {% include 'static_content/search_form.html' %}
-               </div>
+                <div class="main-search-box text-center">
+                    {% include 'static_content/search_form.html' %}
+                </div>
             </div>
             <div class="row">
-               <div class="col-xs-12 text-center">
-                  <div class="breadcumb_section search_breadcumb">
-                     <div class="page_pagination">
-                        <ul>
-                           <li><a href="{% url 'index' %}">Accueil</a></li>
-                           <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                           <li><a href="{% url 'ads:categories' %}">Categories</a></li>
-                           <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                           <li><a href="#"> Restaurant </a></li>
-                           <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                           <li>Cafe</li>
-                           <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                           <li>There are many variations</li>
-                        </ul>
-                     </div>
-                  </div>
-               </div>
+                <div class="col-xs-12 text-center">
+                    <div class="breadcumb_section search_breadcumb">
+                        <div class="page_pagination">
+                            <ul>
+                                <li><a href="{% url 'index' %}">Accueil</a></li>
+                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                                <li><a href="{% url 'ads:categories' %}">Categories</a></li>
+                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                                <li><a href="#"> {{ ad.subcategory.sup_category.name }} </a></li>
+                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                                <li>{{ ad.subcategory.name }}</li>
+                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                                <li>{{ ad.title|truncatechars:20 }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-         </div>
-      </section>
-      <!-- End Categories Page Search-->
+        </div>
+    </section>
+    <!-- End Categories Page Search-->
 
-	  <!-- Single Detail -->
-      <section class="single-detail">
-         <div class="container">
+    <!-- Single Detail -->
+    <section class="single-detail">
+        <div class="container">
             <div class="row">
-               <div class="col-lg-8 col-md-6 col-sm-6">
-                  <div class="row">
-                     <div class="col-lg-12">
-                        <div class="item single-ads">
-                           <div class="item-ads-grid margin-bottom-none">
-                              <div class="item-title-single">
-                                 <a href="single.html">
-                                    <h1>Lorem Ipsum is simply dummy text of the printing and typesetting industry</h1>
-                                 </a>
-                                 <div class="item-meta">
-                                    <ul>
-                                       <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM -- </li>
-                                       <li class="item-cat"><a href="categories2.html">Restaurant</a> , <a href="categories2.html">Cafe</a></li>
-                                       <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Buffalo </a></li>
-                                       <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                    </ul>
-                                 </div>
-                              </div>
-                              <div class="item-img-grid">
-                                 <div class="favourite-icon">
-                                    <a class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip" href="#" data-original-title="Save Ad">115 <i class="fa fa-heart"></i></a>
-                                 </div>
-                                 <div id="sync1" class="owl-carousel">
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/1.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/2.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/3.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/4.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/5.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/6.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/7.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/big/8.jpg' %}" class="img-responsive img-center"></div>
-                                 </div>
-                                 <div id="sync2" class="owl-carousel">
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/1.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/2.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/3.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/4.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/5.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/6.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/7.jpg' %}" class="img-responsive img-center"></div>
-                                    <div class="item"><img alt="" src="{% static 'externals/images/single-ads/small/8.jpg' %}" class="img-responsive img-center"></div>
-                                 </div>
-                              </div>
-                              <div class="single-item-meta">
-                                 <h4><strong>Specification</strong></h4>
-                                 <table class="table table-condensed table-hover table-bordered">
-                                    <tbody>
-                                       <tr>
-                                          <td>Classified ID</td>
-                                          <td>012345</td>
-                                       </tr>
-                                       <tr>
-                                          <td>Condition</td>
-                                          <td>New</td>
-                                       </tr>
-                                       <tr>
-                                          <td>Brand</td>
-                                          <td>Samsung</td>
-                                       </tr>
-                                       <tr>
-                                          <td>Payments</td>
-                                          <td>PayPal, Credit Card</td>
-                                       </tr>
-                                    </tbody>
-                                 </table>
-                                 <h4><strong>Description</strong></h4>
-                                 <p>
-                                    Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit,sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-                                 </p>
-                                 <ul>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Geotagging &ndash; add location info to your photos</li>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Object tracking &ndash; lock focus on a specific object</li>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Red-eye reduction</li>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Image capture, supported file format: JPEG</li>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Image playback, supported file formats: BMP, GIF, JPEG, PNG; WebP</li>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Video capture, supported file formats: 3GPP, MP4</li>
-                                    <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Video playback, supported file formats: 3GPP, MP4, M4V, AvI, XVID, WEBM</li>
-                                 </ul>
-                              </div>
-                              <div class="item-footer">
-                                 <div class="row">
-                                    <div class="col-xs-12 col-md-5">
-                                       <span class="item-views"> <i class="fa fa-eye"></i> Ad Views : <b>6544</b></span>
+                <div class="col-lg-8 col-md-6 col-sm-6">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="item single-ads">
+                                <div class="item-ads-grid margin-bottom-none">
+                                    <div class="item-title-single">
+                                        <a href="single.html">
+                                            <h1>{{ ad.title }}</h1>
+                                        </a>
+                                        <div class="item-meta">
+                                            <ul>
+                                                <li class="item-date"><i class="fa fa-clock-o"></i>{% language 'fr' %}
+                                                    {{ ad.creation_date }} {% endlanguage %}--
+                                                </li>
+                                                <li class="item-cat"><a
+                                                        href="categories2.html">{{ ad.subcategory.sup_category.name }}</a>
+                                                    , <a
+                                                            href="categories2.html">{{ ad.subcategory.name }}</a></li>
+                                                <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i>
+                                                    {{ ad.location }} </a></li>
+                                                <li class="item-type"><i
+                                                        class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
+                                            </ul>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-12 col-md-7 text-right-md">
-                                       <div class="share-widget text-right">
-                                          <span>Share This Ad : </span>
-                                          <div class="social-links social-bg pull-right">
-                                             <ul>
-                                                <li><a class="fa fa-twitter" target="_blank" href="#"></a></li>
-                                                <li><a class="fa fa-facebook" target="_blank" href="#"></a></li>
-                                                <li><a class="fa fa-google-plus" target="_blank" href="#"></a></li>
-                                                <li><a class="fa fa-instagram" target="_blank" href="#"></a></li>
-                                             </ul>
-                                          </div>
-                                       </div>
+                                    <div class="item-img-grid">
+                                        <div class="favourite-icon">
+                                            <a class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip"
+                                               href="#" data-original-title="Save Ad">115 <i
+                                                    class="fa fa-heart"></i></a>
+                                        </div>
+                                        <div id="sync1" class="owl-carousel">
+                                            {% if ad.images %}
+                                                {% for img in ad.images.all %}
+                                                    <div class="item"><img alt=""
+                                                                           src="{{ img.media.url }}"
+                                                                           class="img-responsive img-center"></div>
+                                                {% endfor %}
+
+                                            {% else %}
+
+                                            {% endif %}
+                                        </div>
+                                        <div id="sync2" class="owl-carousel">
+                                            {% if ad.images %}
+                                                {% for img in ad.images.all %}
+                                                    <div class="item"><img alt=""
+                                                                           src="{{ img.media.url }}"
+                                                                           class="img-responsive img-center"></div>
+                                                {% endfor %}
+                                            {% else %}
+
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                 </div>
-                              </div>
-                           </div>
+                                    <div class="single-item-meta">
+                                        <h4><strong>Spécifications</strong></h4>
+                                        <table class="table table-condensed table-hover table-bordered">
+                                            <tbody>
+                                            <tr>
+                                                <td>Annonce N°</td>
+                                                <td>{{ ad.id }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Condition</td>
+                                                <td>{{ ad.get_condition_display }}</td>
+                                            </tr>
+                                            <!--
+                                            <tr>
+                                               <td>Brand</td>
+                                               <td>Samsung</td>
+                                            </tr>
+                                            <tr>
+                                               <td>Payments</td>
+                                               <td>PayPal, Credit Card</td>
+                                            </tr>
+                                            -->
+                                            </tbody>
+                                        </table>
+                                        <h4><strong>Description</strong></h4>
+                                        <p>
+                                            {{ ad.description }}
+                                        </p>
+                                        <!--
+                                       <ul>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Geotagging &ndash; add location info to your photos</li>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Object tracking &ndash; lock focus on a specific object</li>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Red-eye reduction</li>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Image capture, supported file format: JPEG</li>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Image playback, supported file formats: BMP, GIF, JPEG, PNG; WebP</li>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Video capture, supported file formats: 3GPP, MP4</li>
+                                          <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Video playback, supported file formats: 3GPP, MP4, M4V, AvI, XVID, WEBM</li>
+                                       </ul>
+                                       -->
+                                    </div>
+                                    <div class="item-footer">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-5">
+                                                <span class="item-views"> <i class="fa fa-eye"></i> Nombre de vues : <b>6544</b></span>
+                                            </div>
+                                            <div class="col-xs-12 col-md-7 text-right-md">
+                                                <div class="share-widget text-right">
+                                                    <span>Partager cette annonce : </span>
+                                                    <div class="social-links social-bg pull-right">
+                                                        <ul>
+                                                            <li><a class="fa fa-twitter" target="_blank" href="#"></a>
+                                                            </li>
+                                                            <li><a class="fa fa-facebook" target="_blank" href="#"></a>
+                                                            </li>
+                                                            <li><a class="fa fa-google-plus" target="_blank"
+                                                                   href="#"></a></li>
+                                                            <li><a class="fa fa-instagram" target="_blank" href="#"></a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="col-lg-4 col-md-6 col-sm-6">
-                  <div class="price-widget short-widget">
-                     <strong style="word-wrap: break-word">23500000.00</strong>
-                      <i>F</i>
-                  </div>
-                  <div class="widget user-widget">
-                     <div class="widget-body text-center">
-                        <img class="user-dp" alt="User Image" src="{% static 'externals/images/user.jpg' %}">
-                        <span class="user-status user-online"></span>
-                        <!-- <span class="user-status user-offline"></span> -->
-                        <h2 class="seller-name">John Doe</h2>
-                        <p class="seller-detail"><i class="fa fa-map-marker"></i> Location: <strong>Orlando</strong><br>
-                           <i class="fa fa-clock-o"></i> Joined : <strong>21 June 2017</strong>
-                        </p>
-                     </div>
-                     <div class="widget-footer">
-                        <div class="row">
-                           <div class="col-sm-12">
-                              <div class="profile-action-btns text-center">
-                                 <a href="#" data-toggle="tooltip" data-placement="top" title="0133 4568 9876" class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
-                                 <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message" class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
-                                 <a data-toggle="collapse" data-parent="#accordion" href="#popup" title="Live Chat" class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div class="listing-filters">
-                     <div class="widget listing-filter-block">
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="price-widget short-widget">
+                        <strong style="word-wrap: break-word">{{ ad.price }}</strong>
+                        <i>F</i>
+                    </div>
+                    <div class="widget user-widget">
+                        {% if ad.ad_user.user %}
+                            <div class="widget-body text-center">
+                                <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
+                                <span class="user-status user-online"></span>
+                                <!-- <span class="user-status user-offline"></span> -->
+                                <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
+                                <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
+                                    <strong>non donné</strong><br>
+                                    <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
+                                        {% language 'fr' %}{{ ad.ad_user.user.date_joined }} {% endlanguage %}</strong>
+                                </p>
+                            </div>
+                            <div class="widget-footer">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="profile-action-btns text-center">
+                                            <a href="#" data-toggle="tooltip" data-placement="top"
+                                               title="0133 4568 9876"
+                                               class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
+                                            <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message"
+                                               class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"
+                                               title="Live Chat" class="btn btn-primary btn-lg"><i
+                                                    class="fa fa-comment-o"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="widget-body text-center">
+                                <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
+                                <span class="user-status user-online"></span>
+                                <!-- <span class="user-status user-offline"></span> -->
+                                <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
+                            </div>
+                            <div class="widget-footer">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="profile-action-btns text-center">
+                                            <a href="#" data-toggle="tooltip" data-placement="top"
+                                               title="0133 4568 9876"
+                                               class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
+                                            <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message"
+                                               class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"
+                                               title="Live Chat" class="btn btn-primary btn-lg"><i
+                                                    class="fa fa-comment-o"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="listing-filters">
+                    <div class="widget listing-filter-block">
                         <div class="widget-header">
-                           <h1>Similar ads</h1>
+                            <h1>Annonces similaires</h1>
                         </div>
                         <div class="widget-body">
-						   <div class="similar-ads">
-                              <a href="single.html">
-                                 <div class="similar-ad-left">
-                                    <img class="img-responsive img-center" src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
-                                 </div>
-                                 <div class="similar-ad-right">
-                                    <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                    <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                                 </div>
-                                 <div class="clearfix"></div>
-                              </a>
-                           </div>
-                           <div class="similar-ads">
-                              <a href="single.html">
-                                 <div class="similar-ad-left">
-                                    <img class="img-responsive img-center" src="{% static 'externals/images/categories/restaurant/1.png' %}" alt="">
-                                 </div>
-                                 <div class="similar-ad-right">
-                                    <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                    <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                                 </div>
-                                 <div class="clearfix"></div>
-                              </a>
-                           </div>
-                           <div class="similar-ads">
-                              <a href="single.html">
-                                 <div class="similar-ad-left">
-                                    <img class="img-responsive img-center" src="{% static 'externals/images/categories/pets/1.png' %}" alt="">
-                                 </div>
-                                 <div class="similar-ad-right">
-                                    <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                    <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                                 </div>
-                                 <div class="clearfix"></div>
-                              </a>
-                           </div>
-                           <div class="similar-ads">
-                              <a href="single.html">
-                                 <div class="similar-ad-left">
-                                    <img class="img-responsive img-center" src="{% static 'externals/images/categories/real_estate/2.png' %}" alt="">
-                                 </div>
-                                 <div class="similar-ad-right">
-                                    <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                    <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                                 </div>
-                                 <div class="clearfix"></div>
-                              </a>
-                           </div>
-                           <div class="similar-ads">
-                              <a href="single.html">
-                                 <div class="similar-ad-left">
-                                    <img class="img-responsive img-center" src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
-                                 </div>
-                                 <div class="similar-ad-right">
-                                    <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                    <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                                 </div>
-                                 <div class="clearfix"></div>
-                              </a>
-                           </div>
-                           <div class="similar-ads">
-                              <a href="single.html">
-                                 <div class="similar-ad-left">
-                                    <img class="img-responsive img-center" src="{% static 'externals/images/categories/job/1.png' %}" alt="">
-                                 </div>
-                                 <div class="similar-ad-right">
-                                    <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                    <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                                 </div>
-                                 <div class="clearfix"></div>
-                              </a>
-                           </div>
+                            <div class="similar-ads">
+                                <a href="single.html">
+                                    <div class="similar-ad-left">
+                                        <img class="img-responsive img-center"
+                                             src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
+                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                            Buffalo </p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
+                            <div class="similar-ads">
+                                <a href="single.html">
+                                    <div class="similar-ad-left">
+                                        <img class="img-responsive img-center"
+                                             src="{% static 'externals/images/categories/restaurant/1.png' %}"
+                                             alt="">
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
+                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                            Buffalo </p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
+                            <div class="similar-ads">
+                                <a href="single.html">
+                                    <div class="similar-ad-left">
+                                        <img class="img-responsive img-center"
+                                             src="{% static 'externals/images/categories/pets/1.png' %}" alt="">
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
+                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                            Buffalo </p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
+                            <div class="similar-ads">
+                                <a href="single.html">
+                                    <div class="similar-ad-left">
+                                        <img class="img-responsive img-center"
+                                             src="{% static 'externals/images/categories/real_estate/2.png' %}"
+                                             alt="">
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
+                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                            Buffalo </p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
+                            <div class="similar-ads">
+                                <a href="single.html">
+                                    <div class="similar-ad-left">
+                                        <img class="img-responsive img-center"
+                                             src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
+                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                            Buffalo </p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
+                            <div class="similar-ads">
+                                <a href="single.html">
+                                    <div class="similar-ad-left">
+                                        <img class="img-responsive img-center"
+                                             src="{% static 'externals/images/categories/job/1.png' %}" alt="">
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
+                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                            Buffalo </p>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
                         </div>
-                     </div>
-                  </div>
-                  <div class="widget listing-filter-block filter-categories margin-bottom-none">
-                     <div class="widget-header">
+                    </div>
+                </div>
+                <div class="widget listing-filter-block filter-categories margin-bottom-none">
+                    <div class="widget-header">
                         <h1>Safety Tips</h1>
-                     </div>
-                     <div class="widget-body">
+                    </div>
+                    <div class="widget-body">
                         <ul class="trends">
-                           <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
-                           <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
-                           <li><i class="fa fa-fw fa-key"></i> Polutpat ras lorem</li>
-						   <li><i class="fa fa-fw fa-key"></i> Luctus nec seded justo</li>
-                           <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
-						   <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
+                            <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
+                            <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
+                            <li><i class="fa fa-fw fa-key"></i> Polutpat ras lorem</li>
+                            <li><i class="fa fa-fw fa-key"></i> Luctus nec seded justo</li>
+                            <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
+                            <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
                         </ul>
-                     </div>
-                  </div>
-               </div>
+                    </div>
+                </div>
             </div>
-         </div>
-      </section>
-      <!-- End Category List -->
+        </div>
+        </div>
+    </section>
+    <!-- End Category List -->
 {% endblock %}

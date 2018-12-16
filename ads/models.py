@@ -41,7 +41,7 @@ class AdUser(models.Model):
     User who add an Ad, might be not authenticated
     """
     given_name = models.CharField(max_length=50)
-    phone_number = models.IntegerField(blank=True)
+    phone_number = models.IntegerField(null=True, blank=True)
     email = models.EmailField(blank=True)
     user = models.ForeignKey(User, related_name='ads', null=True, blank=True, on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
@@ -58,8 +58,8 @@ class Location(models.Model):
 
 
 AD_CONDITION = (
-    ('N', 'New'),
-    ('U', 'Used'),
+    ('N', 'Nouvelle'),
+    ('U', 'Utilisée'),
 )
 
 
@@ -89,4 +89,4 @@ class AdFile(models.Model):
     media = models.ImageField(upload_to=get_file_path)
 
     def __str__(self):
-        return self.ad.title
+        return self.ad.title + '_' + str(self.id)

@@ -31,7 +31,6 @@ urlpatterns = [
                   url(r'^(?P<filename>(robots.txt)|(humans.txt))$', views.home_files, name='home_files'),
                   url(r'^$', views.index, name='index'),
                   url(r'^login/$', views.login_view, name='login'),
-                  url(r'^login_verification/$', views.login_verification, name='login_verification'),
                   url(r'^signup/$', views.signup_view, name='signup'),
                   url(r'^signup_verification/$', views.signup_verification, name='signup_verification'),
                   path('account/validate/<str:uidb64>/<str:token>/',

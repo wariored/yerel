@@ -7,6 +7,7 @@ from django.conf import settings as conf_settings
 from django.utils import timezone
 from PIL import Image
 from django.http import Http404
+from django.urls import reverse
 
 
 def categories(request):
@@ -126,7 +127,9 @@ def create_post_verification(request):
                 return redirect('ads:create_post')
             ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email)
         else:
-            ad_user = AdUser.objects.create(user=request.user)
+            user = request.user
+            given_name = user.first_name + ' ' + user.last_name
+            ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name, phone_number=user.info.phone_number)
         subcategory = Category.objects.get(pk=category)
         location = Location.objects.get(pk=location)
         ad = Ad.objects.create(title=title, price=price, condition=condition, description=description,
@@ -146,12 +149,13 @@ def create_post_verification(request):
         if request.user.is_authenticated:
             ad.is_active = True
             ad.save()
+            # end transaction, save into DB
             transaction.savepoint_commit(sid)
-            return redirect('ads:single_item', args=(ad.random_url,))
+            # return the ad view
+            return redirect(reverse('ads:single_item', args=(ad.random_url,)))
         # end transaction, save into DB
         transaction.savepoint_commit(sid)
         # return redirect('ads:single_item', args='')
-
         request.session['create_post_success'] = 'success'
     return redirect('ads:create_post')
 
@@ -161,7 +165,7 @@ def single_item(request, random_url):
         ad = Ad.objects.get(random_url=random_url)
     except ValidationError:
         raise Http404
-    return render(request, 'ads/single_item.html')
+    return render(request, 'ads/single_item.html', {'ad': ad})
     #if request.user.is_authenticated:
 
 
@@ -170,7 +174,7 @@ def single_item_update(request, random_url):
         ad = Ad.objects.get(random_url=random_url)
     except ValidationError:
         raise Http404
-    return render(request, 'ads/single_item.html')
+    return render(request, 'ads/single_item.html', {'ad': ad})
 
 
 def single_item_delete(request, random_url):

@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="carousel-section-header">
-                        <h1>Trending Ads <a href="categories.html" class="btn btn-md btn-primary pull-right">Voir
+                        <h1>Tendances <a href="categories.html" class="btn btn-md btn-primary pull-right">Voir
                             plus d'annonces<b>24727</b> <i class="fa fa-arrow-right"></i></a></h1>
                     </div>
                     <div id="owl-carousel-featured" class="owl-carousel owl-carousel-featured">
@@ -294,7 +294,7 @@
                                 <ul class="trends">
 
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a>
+                                        <li><a href="#">{{ subcategory.name }} <span class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                     <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
@@ -315,7 +315,7 @@
                             <div class="widget-body">
                                 <ul class="trends">
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a>
+                                        <li><a href="#">{{ subcategory.name }} <span class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                     <li><a href="#">Voir plus <span class="item-numbers">9</span></a></li>

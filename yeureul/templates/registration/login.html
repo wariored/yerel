@@ -1,87 +1,102 @@
 {% extends "registration/base_authentication.html" %}
 
+{% load widget_tweaks %}
 {% block authentication_title %}
-Se connecter
+    Se connecter
 {% endblock authentication_title %}
 
 {% block authentication_pagination %}
-<li><a href="{% url 'index' %}">Accueil</a></li>
-<li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-<li>Se connecter</li>
+    <li><a href="{% url 'index' %}">Accueil</a></li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Se connecter</li>
 {% endblock authentication_pagination %}
 
 
 {% block authentication_content %}
 
 
-{% if login_error == True %}
-<div class="alert alert-warning text-center">Identifiants de connexion invalides. Veuillez réessayer<br>
-    Veuillez nous contacter si votre compte a été désactivé.
-</div>
-{% endif %}
-{% if close_account is not None %}
-<div class="alert alert-danger text-center">Votre compte a été désactivé. La suppression sera effective dans
-    10 jours.<br>
-    Si toutefois vous voulez réactiver votre compte, veuillez nous contacter le plus tôt possible<br>
-</div>
-{% endif %}
+    {% if login_error == True %}
+        <div class="alert alert-warning text-center">Identifiants de connexion invalides. Veuillez réessayer<br>
+            Veuillez nous contacter si votre compte a été désactivé.
+        </div>
+    {% endif %}
+    {% if close_account is not None %}
+        <div class="alert alert-danger text-center">Votre compte a été désactivé. La suppression sera effective dans
+            10 jours.<br>
+            Si toutefois vous voulez réactiver votre compte, veuillez nous contacter le plus tôt possible<br>
+        </div>
+    {% endif %}
 
-{% if reset_password == False %}
-<div class="alert alert-danger text-center">Le lien de réinitialisation de mot de passe a expiré,<br> veuillez en créer un nouveau
-</div>
-{% elif reset_password == True %}
-<div class="alert alert-success text-center">Mot de passe modifié avec succès
-</div>
-{% endif %}
-    
+    {% if reset_password == False %}
+        <div class="alert alert-danger text-center">Le lien de réinitialisation de mot de passe a expiré,<br> veuillez
+            en créer un nouveau
+        </div>
+    {% elif reset_password == True %}
+        <div class="alert alert-success text-center">Mot de passe modifié avec succès
+        </div>
+    {% endif %}
 
-<!-- Login -->
-<section class="login">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-4 col-sm-offset-4">
-                <div class="login-panel widget">
-                    <div class="login-body">
-                        <form method="POST" action="/login_verification/?next={{redirect_to}}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label class="control-label">Email <span class="required">*</span></label>
-                                <input type="text" name='email_or_username' placeholder="Email or Username" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Mot de passe <span class="required">*</span></label>
-                                <input type="password" name='password' placeholder="Password" class="form-control">
-                            </div>
-                            <div class="form-group">
-                                <button class="btn btn-block btn-lg btn-primary">Se connecter</button>
-                            </div>
-                            <div class="login-footer">
-                                <div class="checkbox checkbox-primary pull-left">
-                                    <input value="remember_me" name="remember_me" id="checkbox2" type="checkbox">
-                                    <label for="checkbox2">
-                                        Se rappeler de moi
-                                    </label>
+
+    <!-- Login -->
+    <section class="login">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                    <div class="login-panel widget">
+                        <div class="login-body">
+                            <form method="POST" action="/login/?next={{ redirect_to }}">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label class="control-label">Email <span
+                                            class="required">*</span></label>
+                                    {% render_field form.email_username class="form-control" placeholder=form.email_username.label %}
+                                    {% for error in form.email_username.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
                                 </div>
-                                <p class="text-center pull-right"> <a href="{% url 'before_password_reset' %}"> Mot de passe oublié?
-                                    </a> </p>
-                                <div class="clearfix"></div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="login-with-sites">
-                        <!--
-                        <button class="btn-facebook login-icons btn-lg btn-block"> <i class="fa fa-facebook"></i> Se connecter
-                            avec Facebook</button>
-                        <button class="btn-google login-icons btn-lg btn-block"> <i class="fa fa-google"></i> Se connecter avec Google
-                        </button>
-                        -->
-                    </div>
+                                <div class="form-group">
+                                    <label class="control-label">{{ form.password.label }} <span
+                                            class="required">*</span></label>
+                                    {% render_field form.password class="form-control" placeholder=form.password.label %}
+                                    {% for error in form.password.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
 
+                                <div class="form-group">
+                                    <button class="btn btn-block btn-lg btn-primary">Se connecter</button>
+                                </div>
+
+                                <div class="login-footer">
+                                    <div class="checkbox checkbox-primary pull-left">
+                                        {% render_field form.remember_me id='checkbox2' %}
+                                        <label for="checkbox2">
+                                            Se rappeler de moi
+                                        </label>
+                                    </div>
+                                    <p class="text-center pull-right"><a href="{% url 'before_password_reset' %}"> Mot
+                                        de passe oublié?
+                                    </a></p>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="login-with-sites">
+                            <!--
+                            <button class="btn-facebook login-icons btn-lg btn-block"> <i class="fa fa-facebook"></i> Se connecter
+                                avec Facebook</button>
+                            <button class="btn-google login-icons btn-lg btn-block"> <i class="fa fa-google"></i> Se connecter avec Google
+                            </button>
+                            -->
+                        </div>
+
+                    </div>
+                    <p class="text-center margin-bottom-none">Pas de compte? <a href="{% url 'signup' %}"><strong>S'inscrire</strong></a>
+                    </p>
                 </div>
-                <p class="text-center margin-bottom-none">Pas de compte? <a href="{% url 'signup' %}"><strong>S'inscrire</strong></a></p>
             </div>
         </div>
-    </div>
-</section>
-<!-- End Login -->
+    </section>
+    <!-- End Login -->
 {% endblock authentication_content %}

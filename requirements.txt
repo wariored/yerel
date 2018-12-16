@@ -1,6 +1,6 @@
 certifi==2018.8.24
 chardet==3.0.4
-Django==2.1.1
+Django==2.1.4
 django-filter==2.0.0
 djangorestframework==3.8.2
 httpie==0.9.9

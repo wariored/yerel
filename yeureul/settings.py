@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'yeureul',
     'ads.apps.AdsConfig',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
