@@ -30,7 +30,7 @@ class Category(models.Model):
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
                                      on_delete=models.PROTECT)
 
-    # owner = models.ForeignKey('auth.User', related_name='categories', on_delete=models.PROTECT)
+    # owner = models.ForeignKey('registration.User', related_name='categories', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name + ' _' + self.category_type
