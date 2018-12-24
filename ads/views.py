@@ -8,6 +8,7 @@ from django.utils import timezone
 from PIL import Image
 from django.http import Http404
 from django.urls import reverse
+import uuid
 
 
 def categories(request):
@@ -152,7 +153,7 @@ def create_post_verification(request):
             # end transaction, save into DB
             transaction.savepoint_commit(sid)
             # return the ad view
-            return redirect(reverse('ads:single_item', args=(ad.random_url,)))
+            return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
         # end transaction, save into DB
         transaction.savepoint_commit(sid)
         # return redirect('ads:single_item', args='')
@@ -161,7 +162,9 @@ def create_post_verification(request):
 
 
 def single_item(request, random_url):
+    print(random_url)
     try:
+        random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
     except ValidationError:
         raise Http404
