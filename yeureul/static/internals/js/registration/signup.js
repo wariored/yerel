@@ -3,6 +3,7 @@ $(function(){
     $("#email_error_msg").hide() ; 
     $("#password_error_msg").hide() ; 
     $("#password_confirm_error_msg").hide() ; 
+    $("#submit_error").hide() ; 
 
     //declaration of boolean variables to check if there are error or no in each field of the form before sending it 
     var error_username = false ; 
@@ -116,7 +117,7 @@ $(function(){
         }
         else
         {
-            alert("Veuillez remplir correctement tous les champs avant d'envoyer SVP");
+            $("#submit_error").show() ; 
             return false ; 
         }     
     }) ; 
