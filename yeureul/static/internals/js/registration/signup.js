@@ -1,9 +1,10 @@
 $(function(){
     $("#username_error_msg").hide() ; 
-    $("email_error_msg").hide() ; 
-    $("password_error_msg").hide() ; 
-    $("password_confirm_error_msg").hide() ; 
+    $("#email_error_msg").hide() ; 
+    $("#password_error_msg").hide() ; 
+    $("#password_confirm_error_msg").hide() ; 
 
+    //declaration of boolean variables to check if there are error or no in each field of the form before sending it 
     var error_username = false ; 
     var error_email = false; 
     var error_password = false ; 
@@ -22,9 +23,8 @@ $(function(){
         check_password_confirm() ; 
     }) ;
 
-    
-}) ; 
-function check_username()
+    //declaration of functions which check if each field respect the contrains 
+    function check_username()
     {
         var pattern = /^[a-zA-Z0-9]{5,}$/;
         var username = $("#form_username").val() ;
@@ -41,78 +41,84 @@ function check_username()
             error_username = true ; 
         }
     }
-function check_email()
-{
-    var pattern = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/ ;
-    var email = $("#form_email").val() ; 
-    if (pattern.test(email) && email !== '')
+
+    function check_email()
     {
-        $("#email_error_msg").hide() ; 
-        $("#form_email").css("border-bottom" , "2px solid #34F458") ;
-    }
-    else
-    {
-        $("#email_error_msg").html("L'adresse email n'est pas valide");
-        $("#email_error_msg").show() ;
-        $("#form_email").css("border-bottom" , "2px solid #F90A0A") ;
-        error_email = true ; 
+        var pattern = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/ ;
+        var email = $("#form_email").val() ; 
+        if (pattern.test(email) && email !== '')
+        {
+            $("#email_error_msg").hide() ; 
+            $("#form_email").css("border-bottom" , "2px solid #34F458") ;
+        }
+        else
+        {
+            $("#email_error_msg").html("L'adresse email n'est pas valide");
+            $("#email_error_msg").show() ;
+            $("#form_email").css("border-bottom" , "2px solid #F90A0A") ;
+            error_email = true ; 
+        }
+
     }
 
-}
-
-function check_password()
-{
-    var password_length = $("#form_password").val().length;
-    console.log(password_length) ; 
-    if(password_length<5)
+    function check_password()
     {
-        $("#password_error_msg").html("Le mot de passe doit avoir au minimum 5 caracteres") ;
-        $("#password_error_msg").show() ; 
-        $("#form_password").css("border-bottom","2px solid #F90A0A") ;
-        error_password = true ;
-    } 
-    else
-    {
-        $("#password_error_msg").hide() ;
-        $("#form_password").css("border-bottom" , "2px solid #34F458") ;
+        var password_length = $("#form_password").val().length;
+        if(password_length<5)
+        {
+            $("#password_error_msg").html("Le mot de passe doit avoir au minimum 5 caracteres") ;
+            $("#password_error_msg").show() ; 
+            $("#form_password").css("border-bottom","2px solid #F90A0A") ;
+            error_password = true ;
+        } 
+        else
+        {
+            $("#password_error_msg").hide() ;
+            $("#form_password").css("border-bottom" , "2px solid #34F458") ;
+        }
     }
-}
-function check_password_confirm()
-{
-    var password = $("#form_password").val() ; 
-    var password_confirm = $("#form_password_confirm").val() ;
-    if (password !=='' && password == password_confirm)
+
+    function check_password_confirm()
     {
-        $("#password_confirm_error_msg").hide() ;
-        $("#form_password_confirm").css("border-bottom" , "2px solid #34F458");
-       
+        var password = $("#form_password").val() ; 
+        var password_confirm = $("#form_password_confirm").val() ;
+        if (password !=='' && password === password_confirm)
+        {
+            $("#password_confirm_error_msg").hide() ;
+            $("#form_password_confirm").css("border-bottom" , "2px solid #34F458");
+        
+        }
+        else
+        {
+            $("#password_confirm_error_msg").html("Les deux mot de passe ne sont pas identiques")
+            $("#password_confirm_error_msg").show() ; 
+            $("#form_password_confirm").css("border-bottom" , "2px solid #f90A0A");
+            error_password_confirm = true ; 
+        }
     }
-    else
-    {
-        $("#password_confirm_error_msg").html("Les deux mot de passe ne sont pas identiques")
-        $("#password_confirm_error_msg").show() ; 
-        $("#form_password_confirm").css("border-bottom" , "2px solid #f90A0A");
-        error_password_confirm = true ; 
-    }
-}
+    
+    //The function which check if there are error or no when the user want to submit the form to send or no the request
+    $("#registration_form").submit(function(){
+        error_email = false ; 
+        error_password = false ; 
+        error_username = false  ; 
+        error_password_confirm = false ; 
 
-$("#registration_form").submit(function(){
-    error_email = false ; 
-    error_password = false ; 
-    error_username = false  ; 
-    error_password_confirm = false ; 
+        check_email() ; 
+        check_password() ; 
+        check_username() ; 
+        check_password_confirm() ; 
 
-    check_email() ; 
-    check_password() ; 
-    check_username() ; 
-    check_password_confirm() ; 
-
-    if (error_email === false && error_password === false && error_password_confirm === false
-         && error_username === false){ 
+        if (error_email === false && error_password === false && error_password_confirm === false
+            && error_username === false)
+        { 
             return true ;   
-         }
-    else{
-        // alert("Veuillez remplir correctement tous les champs avant d'envoyer SVP");
-        return false ; 
-    }     
+        }
+        else
+        {
+            alert("Veuillez remplir correctement tous les champs avant d'envoyer SVP");
+            return false ; 
+        }     
+    }) ; 
+    
 }) ; 
