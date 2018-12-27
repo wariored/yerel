@@ -1,4 +1,4 @@
-$(function(){
+ $(function(){
     $("#username_error_msg").hide() ; 
     $("#email_error_msg").hide() ; 
     $("#password_error_msg").hide() ; 
@@ -83,11 +83,9 @@ $(function(){
     {
         var password = $("#form_password").val() ; 
         var password_confirm = $("#form_password_confirm").val() ;
-        if (password !=='' && password === password_confirm)
-        {
+        if (password !=='' && password === password_confirm){
             $("#password_confirm_error_msg").hide() ;
-            $("#form_password_confirm").css("border-bottom" , "2px solid #34F458");
-        
+            $("#form_password_confirm").css("border-bottom" , "2px solid #34F458"); 
         }
         else
         {
@@ -111,12 +109,10 @@ $(function(){
         check_password_confirm() ; 
 
         if (error_email === false && error_password === false && error_password_confirm === false
-            && error_username === false)
-        { 
+            && error_username === false){ 
             return true ;   
         }
-        else
-        {
+        else{
             $("#submit_error").show() ; 
             return false ; 
         }     
