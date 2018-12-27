@@ -10,7 +10,7 @@ $(function(){
             mouseleave: function(){ 
                         var email = $('#id_email_username').val();
                         if (email.indexOf("@") == -1){
-                            $('form span')[0].textContent = ": L'adresse mail ne semble pas etre correct.";
+                            $('form span')[0].textContent = ": L'adresse mail ne semble pas etre correcte.";
                             valideName= false;
                         }else{
                             $('form span')[0].textContent = "*";
@@ -25,7 +25,7 @@ $(function(){
             mouseleave: function(){ 
                         var password = $('#id_password').val();
                         if (password.length < 5){
-                            $('form span')[1].textContent = ": Pou plus de securite, le mot de passe doit contenir au minimum 5 caracteres";
+                            $('form span')[1].textContent = ": Pour plus de securite, le mot de passe doit contenir au minimum 5 caracteres";
                             validePasswd= false;
                         }else{
                             $('form span')[1].textContent = "*";
