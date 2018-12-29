@@ -20,14 +20,29 @@ $(function () {
     let border_bottom_error = "2px solid #F90A0A";
     let border_bottom_success = "2px solid #34F458";
 
+    form_username.focus(function () {
+        form_username.css("border-bottom", '');
+    });
     form_username.focusout(function () {
         check_username();
+    });
+
+    form_email.focus(function () {
+        form_email.css("border-bottom", '');
     });
     form_email.focusout(function () {
         check_email();
     });
+
+    form_password.focus(function () {
+        form_password.css("border-bottom", '');
+    });
     form_password.focusout(function () {
         check_password();
+    });
+
+    form_password_confirm.focus(function () {
+        form_password_confirm.css("border-bottom", '');
     });
     form_password_confirm.focusout(function () {
         check_password_confirm();
