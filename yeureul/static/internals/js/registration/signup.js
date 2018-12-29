@@ -54,7 +54,7 @@ $(function () {
 
     function check_email() {
         var pattern = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
-        var email = $("#form_email").val();
+        var email = form_email.val();
         if (pattern.test(email) && email !== '') {
             email_error_msg.hide();
             form_email.css("border-bottom", border_bottom_success);
@@ -70,7 +70,7 @@ $(function () {
 
 
     function check_password() {
-        var password_length = $("#form_password").val().length;
+        var password_length = form_password.val().length;
         if (password_length < 5) {
             password_error_msg.html("Le mot de passe doit avoir au minimum 5 caracteres")
                 .show();
