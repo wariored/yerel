@@ -97,7 +97,7 @@
     }
     
     //The function which check if there are error or no when the user want to submit the form to send or no the request
-    $("#registration_form").submit(function(){
+    $("#registration_form").submit(function(e){
         error_email = false ; 
         error_password = false ; 
         error_username = false  ; 
@@ -114,7 +114,7 @@
         }
         else{
             $("#submit_error").show() ; 
-            return false ; 
+            e.preventDefault() ; 
         }     
     }) ; 
     
