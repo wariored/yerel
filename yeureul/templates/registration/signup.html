@@ -1,5 +1,5 @@
 {% extends "registration/base_authentication.html" %}
-
+{% load staticfiles %}
 {% block authentication_title %}
     S'inscrire
 {% endblock authentication_title %}
@@ -29,6 +29,9 @@
             L'adresse email ou le nom d'utilisateur est déja utilisé
         </div>
     {% endif %}
+    <p id="submit_error" class="alert alert-danger text-center">
+        Veuillez remplir correctement tous les champs SVP
+    </p>
 
     <!-- Login -->
     <section class="login">
@@ -37,28 +40,32 @@
                 <div class="col-sm-4 col-sm-offset-4">
                     <div class="login-panel widget">
                         <div class="login-body">
-                            <form method="POST" action="{% url 'signup_verification' %}">
+                            <form method="POST" action="{% url 'signup_verification' %}" id="registration_form">
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label class="control-label">Nom d'utilisateur <span
-                                            class="required">*</span></label>
-                                    <input name="username" type="text" placeholder="Nom d'utilisateur"
+                                            class="required">*</span></label> 
+                                    <br><span class="text-danger" id="username_error_msg" ></span>
+                                    <input name="username" type="text" id="form_username" placeholder="Nom d'utilisateur"
                                            class="form-control" value="{{ dict_signup_values.username }}">
                                 </div>
 
                                 <div class="form-group">
                                     <label class="control-label">Email <span class="required">*</span></label>
-                                    <input name='email' type="text" placeholder="Email Address" class="form-control"
+                                    <br><span class="text-danger" id="email_error_msg" ></span>
+                                    <input name='email' type="text" id="form_email" placeholder="Adresse email" class="form-control"
                                            value="{{ dict_signup_values.email }}">
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Mot de passe <span class="required">*</span></label>
-                                    <input name="password_1" type="password" placeholder="Password"
+                                    <br><span class="text-danger" id="password_error_msg" ></span>
+                                    <input name="password_1" type="password" id="form_password" placeholder="Mot de passe"
                                            class="form-control">
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Confirmer mot de passe <span class="required">*</span></label>
-                                    <input name="password_2" type="password" placeholder="Confirm Password"
+                                    <br><span class="text-danger" id="password_confirm_error_msg" ></span>
+                                    <input name="password_2" type="password" id="form_password_confirm" placeholder="Confirmer mot de passe"
                                            class="form-control">
                                 </div>
 
@@ -70,7 +77,7 @@
                                         </label>
                                     </div>
                                     <div class="form-group">
-                                        <button class="btn btn-block btn-lg btn-primary">S'inscrire</button>
+                                        <input type="submit" class="btn btn-block btn-lg btn-primary" value="S'inscrire">
                                     </div>
                                 </div>
                             </form>
@@ -86,5 +93,5 @@
     <!-- End Login -->
 {% endblock authentication_content %}
 {% block javascripts %}
-
+    <script src="{% static 'internals/js/registration/signup.js' %}"></script>
 {% endblock %}
