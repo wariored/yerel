@@ -26,6 +26,7 @@ $(function () {
         check_password();
     });
 
+
     function check_username_email() {
         var username_email_val = username_email.val();
         if (username_email_val === '') {
@@ -33,6 +34,7 @@ $(function () {
             username_email_error_msg.html("Veuillez entrer un nom d'utilisateur ou adresse mail");
         }
     }
+
 
     function check_password() {
         var password_val = password.val();
