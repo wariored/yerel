@@ -1,6 +1,6 @@
 {% extends "registration/base_authentication.html" %}
 
-{% load widget_tweaks %}
+{% load widget_tweaks staticfiles %}
 {% block authentication_title %}
     Se connecter
 {% endblock authentication_title %}
@@ -44,7 +44,7 @@
                 <div class="col-sm-4 col-sm-offset-4">
                     <div class="login-panel widget">
                         <div class="login-body">
-                            <form method="POST" action="/login/?next={{ redirect_to }}">
+                            <form method="POST" action="/login/?next={{ redirect_to }}" id="login_form">
                                 {% csrf_token %}
 
                                 <div class="form-group">
@@ -54,6 +54,7 @@
                                     {% for error in form.email_username.errors %}
                                         <div class="text-danger">{{ error }}</div>
                                     {% endfor %}
+                                    <span class="text-danger" id="username_email_error_msg"></span>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">{{ form.password.label }} <span
@@ -62,6 +63,7 @@
                                     {% for error in form.password.errors %}
                                         <div class="text-danger">{{ error }}</div>
                                     {% endfor %}
+                                    <span class="text-danger" id="password_error_msg"></span>
                                 </div>
 
                                 <div class="form-group">
@@ -101,6 +103,5 @@
     <!-- End Login -->
 {% endblock authentication_content %}
 {% block javascripts %}
-<script src="/static/externals/js/jquery.js"></script>
-<script src="/static/internals/js/registration/signin.js"></script>
+    <script src="{% static 'internals/js/registration/signin.js' %}"></script>
 {% endblock %}
