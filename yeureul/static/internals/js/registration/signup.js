@@ -9,8 +9,7 @@ $(function () {
     let form_password = $("#form_password");
     let form_password_confirm = $("#form_password_confirm");
 
-    submit_error.hide();
-
+    submit_error.hide(); 
     //declaration of boolean variables to check if there are error or no in each field of the form before sending it 
     let error_username = false;
     let error_email = false;
@@ -66,7 +65,7 @@ $(function () {
         }
     }
 
-
+    
     function check_email() {
         var pattern = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
         var email = form_email.val();
