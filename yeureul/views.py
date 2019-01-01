@@ -1,32 +1,24 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login, logout, authenticate
-from django.http import HttpResponseRedirect, HttpResponse
-from django.conf import settings as conf_settings
-from django.db import transaction
-from django.utils.encoding import force_bytes, force_text
-from django.contrib.auth.decorators import login_required, permission_required
-
-from django.contrib.auth.forms import PasswordResetForm
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-from django.utils import timezone
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 import os
 
-from .models import UserInfo, UserKey, ContactMessage
-from ads.models import Category, AdUser, Ad, AdFile, Location
-
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-
+from django.conf import settings as conf_settings
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import EmailMessage
+from django.core.validators import validate_email
+from django.db import transaction
+from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
+from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.encoding import force_text
+from django.utils.html import strip_tags
+from django.utils.http import urlsafe_base64_encode
+
+from ads.models import Category
 from . import forms
+from .models import UserInfo, UserKey, ContactMessage
 
 
 def handler404(request, exception):
