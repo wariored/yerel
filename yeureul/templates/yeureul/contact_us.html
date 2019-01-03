@@ -13,7 +13,8 @@ Nous Contacter
 {% if contact == 'message_error' %}
 <div class="alert alert-warning text-center">Le contenu du message ne doit pas etre vide.</div>
 {% elif contact == 'success' %}
-<div class="alert alert-success text-center">Merci de nous avoir contacter. L'équipe va vite analyser votre message.</div>
+<div class="alert alert-success text-center">Merci de nous avoir contacter. L'équipe va vite analyser votre message.
+    <p>On vous reviendra si nécessaire.</p></div>
 {% elif contact == 'name_message_error' %}
 <div class="alert alert-warning text-center">Le nom et le message sont obligatoires.</div>
 {% elif contact == 'email_error' %}

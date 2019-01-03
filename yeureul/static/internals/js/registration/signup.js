@@ -9,7 +9,7 @@ $(function () {
     let form_password = $("#form_password");
     let form_password_confirm = $("#form_password_confirm");
 
-    submit_error.hide(); 
+    submit_error.hide();
     //declaration of boolean variables to check if there are error or no in each field of the form before sending it 
     let error_username = false;
     let error_email = false;
@@ -66,9 +66,9 @@ $(function () {
     }
 
     function check_email() {
-        var pattern = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+
         var email = form_email.val();
-        if (pattern.test(email) && email !== '') {
+        if (isValidEmailAddress(email)) {
             email_error_msg.hide();
             form_email.css("border-bottom", border_bottom_success);
         }
@@ -130,5 +130,10 @@ $(function () {
             e.preventDefault();
         }
     });
+
+    function isValidEmailAddress(emailAddress) {
+        var pattern = /^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i;
+        return pattern.test(emailAddress);
+    }
 
 });
