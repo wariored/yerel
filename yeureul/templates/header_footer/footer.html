@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load ads_categories_number %}
 <!-- Footer -->
 <footer>
     <section class="footer-Content">
@@ -8,9 +9,10 @@
                     <div class="footer-widget">
                         <h3 class="block-title">About</h3>
                         <div class="textwidget">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque lobortis tincidunt est,
-                                et euismod purus suscipit quis. Etiam euismod ornare elementum. Sed ex est, Sed ex est,
-                                consectetur eget consectetur, Lorem ipsum dolor sit amet...</p>
+                            <p>L'objectif de <strong>Yërël</strong> est de vous faciliter la vie en mettant en place une application avec
+                                un système de navigation simple et moderne vous permettant de ventre et d'achater des produits facilement partout au Sénégal.<br>
+                                
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -18,7 +20,10 @@
                     <div class="footer-widget">
                         <h3 class="block-title">Categories</h3>
                         <ul class="menu">
-                            <li><a href="#"><span>562</span> Restaurant</a></li>
+                                {% for value in count_ads_by_categories %}
+                                <li><a href="#"><span>{{ count_ads_by_categories }}</span> </a></li>
+                                {% endfor %}
+                            <!-- <li><a href="{% url 'ads:categories' %}"><span>562</span> Restaurant</a></li>
                             <li><a href="#"><span>451</span> Real Estate</a></li>
                             <li><a href="#"><span>352</span> Cars</a></li>
                             <li><a href="#"><span>312</span> Shopping</a></li>
@@ -29,7 +34,7 @@
                             <li><a href="#"><span>95</span> Cars</a></li>
                             <li><a href="#"><span>85</span> Shopping</a></li>
                             <li><a href="#"><span>50</span> Job</a></li>
-                            <li><a href="#"><span>25</span> Hotels</a></li>
+                            <li><a href="#"><span>25</span> Hotels</a></li> -->
                         </ul>
                     </div>
                 </div>
@@ -59,18 +64,18 @@
                     <div class="footer-widget">
                         <h3 class="block-title">Quick Links</h3>
                         <ul class="menu">
-                            <li><a href="#">Home</a></li>
-                            <li><a href="#">About</a></li>
+                            <li><a href="{% url 'index' %}">Accueil</a></li>
+                            <li><a href="#">A propos de nous</a></li>
                             <li><a href="#">FAQ</a></li>
-                            <li><a href="#">Careers</a></li>
-                            <li><a href="#">Pricing Plans</a></li>
-                            <li><a href="#">Categories</a></li>
+                            <li><a href="#">Carriere</a></li>
+                            <li><a href="#">Nos Prix</a></li>
+                            <li><a href="{% url 'ads:categories' %}">Categories</a></li>
                             <li><a href="#">Services</a></li>
-                            <li><a href="#">Team</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <!-- <li><a href="#">Equipe </a></li> -->
+                            <li><a href="{% url 'contact' %}">Contact</a></li>
                             <li><a href="#">Blog</a></li>
-                            <li><a href="#">Help</a></li>
-                            <li><a href="#">Advertise With Us</a></li>
+                            <li><a href="#">Aide</a></li>
+                            <li><a href="#">Travail avec nous</a></li>
                         </ul>
                     </div>
                 </div>
