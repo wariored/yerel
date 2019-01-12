@@ -45,13 +45,16 @@ def home_files(request, filename):
 
 def login_view(request):
     """Login a user"""
-
     # no need to login if user is already authenticated
     if request.user.is_authenticated:
         return redirect('index')
 
     # redirection link
     redirect_to = request.GET.get('next', '/')
+    reset_password = None
+    if 'reset_password' in request.session:
+        reset_password = request.session['reset_password']
+        del request.session['reset_password']
 
     if request.method == 'POST':
         form = forms.LoginForm(data=request.POST)
@@ -69,10 +72,12 @@ def login_view(request):
                     return redirect(redirect_to)
             else:
                 return render(request, 'registration/login.html', {'form': form, 'login_error': True,
-                                                                   'redirect_to': redirect_to})
+                                                                   'redirect_to': redirect_to,
+                                                                   'reset_password': reset_password})
     else:
         form = forms.LoginForm()
-    return render(request, 'registration/login.html', {'form': form, 'redirect_to': redirect_to})
+    return render(request, 'registration/login.html', {'form': form, 'redirect_to': redirect_to,
+                                                       'reset_password': reset_password})
 
 
 def signup_view(request):
@@ -151,7 +156,12 @@ def signup_verification(request):
 
 
 def account_validation(request, uidb64=None, token=None):
-    if uid_token_decoder(uidb64, token, request.user, key_type="A"):
+    if request.user.is_authenticated:
+        check_token = uid_token_decoder(uidb64, token, key_type="A", auth_user=request.user)
+    else:
+        check_token = uid_token_decoder(uidb64, token, key_type="A")
+
+    if check_token and request.user.is_authenticated:
         user_info = UserInfo.objects.get(user=request.user)
         if not user_info.activated_account:
             user_info.activated_account = True
@@ -199,7 +209,8 @@ def before_password_reset(request):
 def account_reset_password(request, uidb64=None, token=None):
     user_key = get_object_or_404(UserKey, key_type="P", token=token)
     user = User.objects.get(pk=user_key.user.id)
-    if uid_token_decoder(uidb64=uidb64, token=token, user=user, key_type="P"):
+    check_token = uid_token_decoder(uidb64=uidb64, token=token, key_type="P")
+    if check_token:
         request.session['token'] = True
         request.session['user_id'] = user.id
         return redirect('password_reset')
@@ -208,7 +219,7 @@ def account_reset_password(request, uidb64=None, token=None):
 
 
 def password_reset(request):
-    if request.session.get('token') == True or request.session.get('reset_password'):
+    if request.session.get('token') or request.session.get('reset_password'):
         if request.session.get('reset_password'):
             user_id = request.session['reset_password']
             error = True
@@ -399,7 +410,7 @@ def uid_token_generator(user, key_type):
     return uid, token
 
 
-def uid_token_decoder(uidb64, token, user, key_type):
+def uid_token_decoder(uidb64, token, key_type, auth_user=None):
     if uidb64 is not None and token is not None:
         from django.utils.http import urlsafe_base64_decode
         uid = force_text(urlsafe_base64_decode(uidb64).decode())
@@ -409,6 +420,8 @@ def uid_token_decoder(uidb64, token, user, key_type):
             user_model = get_user_model()
             user = user_model.objects.get(pk=uid)
             user_key = UserKey.objects.get(user=user, key_type=key_type, token=token)
+            if auth_user is not None and auth_user != user:
+                return False
             if user_key.key_expires < timezone.now():
                 return False
             else:
