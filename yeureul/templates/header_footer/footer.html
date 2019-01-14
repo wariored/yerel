@@ -9,9 +9,11 @@
                     <div class="footer-widget">
                         <h3 class="block-title">About</h3>
                         <div class="textwidget">
-                            <p>L'objectif de <strong>Yërël</strong> est de vous faciliter la vie en mettant en place une application avec
-                                un système de navigation simple et moderne vous permettant de ventre et d'achater des produits facilement partout au Sénégal.<br>
-                                
+                            <p>L'objectif de <strong>Yërël</strong> est de vous faciliter la vie en mettant en place une
+                                application avec
+                                un système de navigation simple et moderne vous permettant de vendre et d'acheter des
+                                produits facilement partout au Sénégal...<br>
+
                             </p>
                         </div>
                     </div>
@@ -20,13 +22,13 @@
                     <div class="footer-widget">
                         <h3 class="block-title">Categories</h3>
                         <ul class="menu">
-                           {% count_ads_by_categories %}  
+                            {% count_ads_by_categories %}
                         </ul>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-12">
                     <div class="footer-widget">
-                        <h3 class="block-title">Latest Post</h3>
+                        <h3 class="block-title">Dernières annonces</h3>
                         <ul class="blog-footer">
                             <li>
                                 <a href="#">Lorem ipsum dolor sit amet, quem...</a>
@@ -48,13 +50,13 @@
                 </div>
                 <div class="col-md-3 col-sm-6 col-xs-12">
                     <div class="footer-widget">
-                        <h3 class="block-title">Quick Links</h3>
+                        <h3 class="block-title">Liens rapides</h3>
                         <ul class="menu">
                             <li><a href="{% url 'index' %}">Accueil</a></li>
                             <li><a href="#">A propos de nous</a></li>
                             <li><a href="#">FAQ</a></li>
-                            <li><a href="#">Carriere</a></li>
-                            <li><a href="#">Nos Prix</a></li>
+                            <li><a href="#">Carrière</a></li>
+                            <li><a href="{% url 'pricing:pricing' %}">Nos Prix</a></li>
                             <li><a href="{% url 'ads:categories' %}">Categories</a></li>
                             <li><a href="#">Services</a></li>
                             <!-- <li><a href="#">Equipe </a></li> -->
@@ -91,9 +93,11 @@
 </footer>
 <!-- End Footer -->
 <!-- Post Ad -->
-<a href="{% url 'ads:create_post' %}" data-toggle="tooltip" data-placement="left" title="Publier votre annonce" class="btn btn-danger btn-lg post-free-add-btn"><i class="fa fa-pencil"></i></a>
+<a href="{% url 'ads:create_post' %}" data-toggle="tooltip" data-placement="left" title="Publier votre annonce"
+   class="btn btn-danger btn-lg post-free-add-btn"><i class="fa fa-pencil"></i></a>
 <!-- End Post Ad -->
 
 <!-- Back To Top -->
-<a href="#" id="back-to-top" data-toggle="tooltip" data-placement="left" title="Back To Top" class="btn btn-default btn-md"><i class="fa fa-chevron-up"></i></a>
+<a href="#" id="back-to-top" data-toggle="tooltip" data-placement="left" title="Back To Top"
+   class="btn btn-default btn-md"><i class="fa fa-chevron-up"></i></a>
 <!-- End Back To Top -->

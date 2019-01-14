@@ -1,3 +1,11 @@
 from django.db import models
 
-# Create your models here.
+
+PRICING_TYPE = (
+    ('N', 'NORMAL'),
+    ('A', 'ADVANCED'),
+    ('P', 'PROFESSIONAL')
+)
+
+class Pricing(models.Model):
+    pass

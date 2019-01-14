@@ -3,13 +3,15 @@
 <nav class="navbar top-navbar" role="navigation">
     <div class="container">
         <div class="navbar-header col-sm-2">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}"><img alt="logo" src="{% static 'externals/images/logo.png' %}"></a>
+            <a class="navbar-brand" href="{% url 'index' %}"><img alt="logo"
+                                                                  src="{% static 'externals/images/logo.png' %}"></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -22,18 +24,20 @@
                             <a href="{% url 'ads:categories' %}"><i class="fa fa-fw fa-angle-right"></i> Categories</a>
                         </li>
                         <li>
-                            <a href="category-grid.html"><i class="fa fa-fw fa-angle-right"></i> Grille des Categories</a>
+                            <a href="category-grid.html"><i class="fa fa-fw fa-angle-right"></i> Grille des
+                                Categories</a>
                         </li>
                         <li>
                             <a href="single.html"><i class="fa fa-fw fa-angle-right"></i> Single Item</a>
                         </li>
                     </ul>
                 </li>
-                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="{% url 'pricing:pricing' %}">Tarifs</a></li>
                 <li><a href="faq.html">FAQ</a></li>
                 <li><a href="{% url 'contact' %}">Contact</a></li>
                 <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">Blog <b class="caret"></b></a>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">Blog <b
+                            class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="blog.html"><i class="fa fa-fw fa-angle-right"></i> Blog</a>
@@ -57,11 +61,11 @@
                             <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler chez Nous</a>
                         </li>
                         <li>
-                                <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>
-                            </li>
+                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>
+                        </li>
                         <li>
-                                <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Nos partenaires</a>
-                            </li>
+                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Nos partenaires</a>
+                        </li>
                         <li>
                             <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> 404</a>
                         </li>
@@ -70,47 +74,50 @@
             </ul>
 
             {% if not user.is_authenticated %}
-            <div class="user-login pull-right">
-                <a href="{% url 'signup' %}">S'inscrire</a>
-                <span>ou</span>
-                <a class="btn btn-md btn-primary" href="{% url 'login' %}">Connexion</a>
-            </div>
+                <div class="user-login pull-right">
+                    <a href="{% url 'signup' %}">S'inscrire</a>
+                    <span>ou</span>
+                    <a class="btn btn-md btn-primary" href="{% url 'login' %}">Connexion</a>
+                </div>
             {% else %}
-            <div class="user-dropdown pull-right">
-                <ul class="nav navbar-right top-nav">
-                    <li class="dropdown">
-                        <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <div class="user-dropdown pull-right">
+                    <ul class="nav navbar-right top-nav">
+                        <li class="dropdown">
+                            <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown">
 
-                            {% if user.info.avatar is not None and user.info.avatar.url %}
-                            <img src="{{user.info.avatar.url}}" alt="User Image" class="user-dp">{{user.username}}
-                            {% else %}
-                            <img src="{% static 'externals/images/user.jpg' %}" alt="User Image" class="user-dp">{{user.username}}
-                            {% endif %}
+                                {% if user.info.avatar is not None and user.info.avatar.url %}
+                                    <img src="{{ user.info.avatar.url }}" alt="User Image" class="user-dp">
+                                    {{ user.username }}
+                                {% else %}
+                                    <img src="{% static 'externals/images/user.jpg' %}" alt="User Image"
+                                         class="user-dp">{{ user.username }}
+                                {% endif %}
 
 
-                            <b class="caret"></b>
+                                <b class="caret"></b>
 
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a href="my-ads.html"><i class="fa fa-fw fa-pencil"></i> Mes annonces</a>
-                            </li>
-                            <li>
-                                <a href="favourite.html"><i class="fa fa-fw fa-heart"></i> Annonces favories</a>
-                            </li>
-                            <li>
-                                <a href="ad-alerts.html"><i class="fa fa-fw fa-clock-o"></i> Alertes</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'settings' %}"><i class="fa fa-fw fa-gear"></i> Paramètres</a>
-                            </li>
-                            <li>
-                                <a href="{% url 'logout' %}"><i class="fa fa-fw fa-power-off"></i> Se déconnecter</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="my-ads.html"><i class="fa fa-fw fa-pencil"></i> Mes annonces</a>
+                                </li>
+                                <li>
+                                    <a href="favourite.html"><i class="fa fa-fw fa-heart"></i> Annonces favories</a>
+                                </li>
+                                <li>
+                                    <a href="ad-alerts.html"><i class="fa fa-fw fa-clock-o"></i> Alertes</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'settings' %}"><i class="fa fa-fw fa-gear"></i> Paramètres</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'logout' %}"><i class="fa fa-fw fa-power-off"></i> Se
+                                        déconnecter</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
             {% endif %}
         </div>
     </div>
