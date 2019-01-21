@@ -435,3 +435,6 @@ def uid_token_decoder(uidb64, token, key_type, auth_user=None):
 def _delete_file(path):
     """ Deletes file from filesystem. """
     os.remove(path)
+
+def cookies(request):
+    return render(request, "yeureul/cookies.html")
