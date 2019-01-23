@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
+from simple_history.models import HistoricalRecords
 import uuid
 import os
 
@@ -29,7 +30,7 @@ class Category(models.Model):
     category_type = models.CharField(max_length=10, null=True, blank=True, default='T', choices=CATEGORY_TYPE)
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
                                      on_delete=models.PROTECT)
-
+    history = HistoricalRecords()
     # owner = models.ForeignKey('registration.User', related_name='categories', on_delete=models.PROTECT)
 
     def __str__(self):
@@ -45,6 +46,7 @@ class AdUser(models.Model):
     email = models.EmailField(blank=True)
     user = models.ForeignKey(User, related_name='ads', null=True, blank=True, on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return '%s %s' % (self.phone_number, self.given_name)
@@ -52,7 +54,7 @@ class AdUser(models.Model):
 
 class Location(models.Model):
     name = models.CharField(max_length=30)
-
+    history = HistoricalRecords()
     def __str__(self):
         return '%s' % self.name
 
@@ -78,6 +80,7 @@ class Ad(models.Model):
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created')
     update_date = models.DateTimeField('date updated', auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.title
@@ -87,6 +90,7 @@ class AdFile(models.Model):
     """Images related to an Ad"""
     ad = models.ForeignKey(Ad, related_name='images', on_delete=models.CASCADE)
     media = models.ImageField(upload_to=get_file_path)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.ad.title + '_' + str(self.id)
