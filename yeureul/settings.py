@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'pricing.apps.PricingConfig',
     'widget_tweaks',
     'simple_history',
+    'reversion'
 ]
 
 MIDDLEWARE = [
