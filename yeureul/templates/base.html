@@ -2,6 +2,33 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- Cookies consent -->
+<link rel="stylesheet" type="text/css"
+      href="{% static 'internals/css/cookiesconsent.min.css' %}"/>
+<script src="{% static 'internals/js/cookiesconsent.min.js' %}"></script>
+<script>
+    window.addEventListener("load", function () {
+        window.cookieconsent.initialise({
+            "palette": {
+                "popup": {
+                    "background": "#000"
+                },
+                "button": {
+                    "background": "#f1d600"
+                },
+            },
+            "content": {
+                "message": "Ce site utilise des cookies pour vous offrir le meilleur service. En poursuivant votre navigation, " +
+                    "vous acceptez l’utilisation des cookies.",
+                "dismiss": "J'accepte",
+                "link": "En savoir plus",
+            }
+        })
+    });
+</script>
+
+<!-- End cookies consent -->
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,42 +57,41 @@
 </head>
 
 <body>
-    <!-- Preloder -->
-    <div id="preloader"></div>
-    <!-- End Preloder -->
-    <noscript>
-        <div class="alert alert-danger text-center">Ce site a besoin de JavaScript pour bien fonctionner.
-            Vous prenez un risque en désactivant votre JavaScript
-        </div>
-    </noscript>
-    {% include "header_footer/header.html" %}
-    {% if user.info.activated_account == False  %}
+<!-- Preloder -->
+<div id="preloader"></div>
+<!-- End Preloder -->
+<noscript>
+    <div class="alert alert-danger text-center">Ce site a besoin de JavaScript pour bien fonctionner.
+        Vous prenez un risque en désactivant votre JavaScript.
+    </div>
+</noscript>
+{% include "header_footer/header.html" %}
+{% if user.info.activated_account == False %}
     <div class="alert alert-warning text-center">Votre compte n'est pas activé, veuillez cliquer sur le lien
         qui vous a été envoyé par mail ou renvoyer le <strong><a href="{% url 'regenerate_activation_link' %}">mail</a></strong>
     </div>
-    {% endif %}
-    {% block content %}{% endblock %}
-    {% include "header_footer/footer.html" %}
-    <!-- jQuery -->
-    <script src="{% static 'externals/js/jquery.js' %}"></script>
+{% endif %}
+{% block content %}{% endblock %}
+{% include "header_footer/footer.html" %}
+<!-- jQuery -->
+<script src="{% static 'externals/js/jquery.js' %}"></script>
 
-    <!-- Custom js -->
-    <script src="{% static 'externals/js/custom.js' %}"></script>
+<!-- Custom js -->
+<script src="{% static 'externals/js/custom.js' %}"></script>
 
-    <!-- Bootstrap JavaScript -->
-    <script src="{% static 'externals/js/bootstrap.min.js' %}"></script>
+<!-- Bootstrap JavaScript -->
+<script src="{% static 'externals/js/bootstrap.min.js' %}"></script>
 
-    <!-- Owl Carousel -->
-    <script src="{% static 'externals/plugins/owl-carousel/owl.carousel.js' %}"></script>
-    <!-- Filestyle -->
-    <script src="{% static 'externals/plugins/bootstrap-filestyle/bootstrap-filestyle.js' %}"></script>
-    {% block javascripts %}
-    <script src="{% static 'internals/js/registration/cookiechoices.js' %}"></script><script>document.addEventListener 
-        ('DOMContentLoaded', function(event) { cookieChoices.showCookieConsentBar 
-        ('Ce site utilise des cookies pour vous offrir le meilleur service. En poursuivant votre navigation, vous acceptez l\’utilisation des cookies.',
-        'J\’accepte', 'En savoir plus', "{% url 'cookies' %}"); });</script>
-    {% endblock javascripts %}
+<!-- Owl Carousel -->
+<script src="{% static 'externals/plugins/owl-carousel/owl.carousel.js' %}"></script>
+<!-- Filestyle -->
 
+<script src="{% static 'externals/plugins/bootstrap-filestyle/bootstrap-filestyle.js' %}"></script>
+
+
+
+{% block javascripts %}
+{% endblock javascripts %}
 
 </body>
 

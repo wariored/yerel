@@ -9,6 +9,8 @@
     <!-- pricing -->
     <section class="pricing-table">
         <div class="container">
+            <p class="text-center" style="margin-bottom: 10px">Par défaut, vous disposez d'un compte
+                <strong>Free</strong> où vous n'avez que <span class="text-danger">5 annonces</span> gratuites par mois.</p>
             <div class="row">
                 <div class="col-md-4">
                     <div class="panel panel-default text-center basic-plan margin-bottom-none">
@@ -25,7 +27,10 @@
                         <ul class="list-group">
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 20&nbsp; Annonces gratuites par mois
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 6&nbsp; Annonces en vedette possibles
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 6&nbsp; Annonces en vedette possibles<a
+                                    href="#" data-toggle="tooltip" data-placement="top"
+                                    title="Les annonces en vedette sont affichées en premier sur la page d'accueil et sont les plus visibles.">
+                                &nbsp;<i class="fa fa-info-circle"></i></a>
                             </li>
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 5 Images par annonce
                             </li>
@@ -51,13 +56,16 @@
                         <ul class="list-group">
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 50&nbsp; Annonces gratuites par mois
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 10&nbsp; Annonces en vedette avec possibilité d'extension
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 10&nbsp; Annonces en vedette avec possibilité d'extension <a
+                                    href="#" data-toggle="tooltip" data-placement="top"
+                                    title="Les annonces en vedette sont affichées en premier sur la page d'accueil et sont les plus visibles. Vous pouvez augmenter le nombre d'annonces en vedette">
+                                &nbsp;<i class="fa fa-info-circle"></i></a>
                             </li>
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 7 Images par annonce
                             </li>
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et maintenance ! <a
                                     href="#" data-toggle="tooltip" data-placement="top"
-                                    title="Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae,">
+                                    title="Vous aurez la possibilité de suivre votre annonce, améliorer sa visibilité, consulter le nombre de vue et plein d'autres choses.">
                                 &nbsp;<i class="fa fa-info-circle"></i></a></li>
                             <li class="list-group-item"><a href="#" class="btn btn-primary btn-lg">Activer !</a></li>
                             </li>
@@ -91,6 +99,7 @@
                 </div>
             </div>
         </div>
+
     </section>
     <!-- End pricing -->
 {% endblock %}

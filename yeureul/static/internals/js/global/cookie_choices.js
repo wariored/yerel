@@ -31,7 +31,7 @@
       var dismissLinkId = 'cookieChoiceDismiss';
   
       function _createHeaderElement(cookieText, dismissText, linkText, linkHref) {
-        var butterBarStyles = 'position:fixed;width:100%;background-color:#0FA500;color:#000000;' +
+        var butterBarStyles = 'position:fixed;width:100%;background-color:#1cbfff;color:#000000;' +
             'margin:0; left:0; bottom:0; padding:30px;z-index:1000;text-align:center;';
   
         var cookieConsentElement = document.createElement('div');

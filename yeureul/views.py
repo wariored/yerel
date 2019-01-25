@@ -436,5 +436,3 @@ def _delete_file(path):
     """ Deletes file from filesystem. """
     os.remove(path)
 
-def cookies(request):
-    return render(request, "yeureul/cookies.html")

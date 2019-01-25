@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from typing import Dict
+
 from django.core.exceptions import ImproperlyConfigured
 import dj_database_url
+import paydunya
 
 
 # get the environment variable
@@ -165,3 +168,19 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'yeureul01@gmail.com'
 EMAIL_HOST_PASSWORD = 'yeureul123'
+
+# PayDunya config #####
+PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
+    'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
+    'PAYDUNYA-PRIVATE-KEY': "test_private_Wys1xQyOzpyZLv3xfnewupdtNAg",
+    'PAYDUNYA-TOKEN': "XVD9DqykJBgGxp2XpgdD"
+}
+
+# Activer le mode 'test'. Le debug est à False par défaut
+if DEBUG:
+    paydunya.debug = True
+
+# Configurer les clés d'API
+paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS
+
+# end paydunya config  #####

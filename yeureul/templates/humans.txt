@@ -3,9 +3,10 @@
 
 # TEAM
 
-    Cheikh Tidjane Konteye -- Backend Developer and Data Scientist -- @wariored_kontey -- http://cheikhkonteye.com
+    Cheikh Tidjane Konteye -- Backend Developer and Machine Learning Enthusiast  -- cheikh@cheikhkonteye.com -- http://cheikhkonteye.com
     Papa Momar Nokho -- Full Stack Developer  --  papamomarnokho@gmail.com
-    Cheikh Sadibou Diouf -- Full Stack Developer  --  papamomarnokho@gmail.com
+    Cheikh Sadibou Diouf -- Full Stack Developer  --  dioufcs97@gmail.com
+    Mor Kaire -- Full Stack Developer  --  kairemor@gmail.com
 
 # THANKS
 
@@ -14,5 +15,5 @@
 # TECHNOLOGY COLOPHON
 
     HTML5, CSS3
-    Jquery, Bootstrap 4
+    JQuery, Bootstrap 3
     Django

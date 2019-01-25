@@ -31,6 +31,7 @@ class Category(models.Model):
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
                                      on_delete=models.PROTECT)
     history = HistoricalRecords()
+
     # owner = models.ForeignKey('registration.User', related_name='categories', on_delete=models.PROTECT)
 
     def __str__(self):
@@ -55,6 +56,7 @@ class AdUser(models.Model):
 class Location(models.Model):
     name = models.CharField(max_length=30)
     history = HistoricalRecords()
+
     def __str__(self):
         return '%s' % self.name
 
