@@ -17,3 +17,15 @@ def count_ads_by_categories():
             dict_adsnumber_categories[category.sup_category.name] += Ad.objects.filter(
                 subcategory=Category.objects.get(id=category.id)).count()
     return {'count_ads_categories': dict_adsnumber_categories}
+
+@register.inclusion_tag('header_footer/ads_categories.html')
+
+def last_ad(count=3):
+    last_ad = list()
+    try:
+        for ad in Ad.objects.order_by('-creation_date')[:count]:
+            if ad.is_active:
+                last_ad.append(ad)
+    except IndexError:
+        pass
+    return {'last_three_ads' : last_ad}
