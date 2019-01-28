@@ -23,8 +23,7 @@ def count_ads_by_categories():
 def last_ad(count=3):
     last_ad = list()
     try:
-        for ad in Ad.objects.order_by('-creation_date')[:count]:
-            if ad.is_active:
+        for ad in Ad.objects.filter(is_active=True).order_by('-creation_date')[:count]:
                 last_ad.append(ad)
     except IndexError:
         pass
