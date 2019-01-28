@@ -1,6 +1,6 @@
 {% load i18n %}
 {% for key , value in count_ads_categories.items %}
-    <li><a href="{% url 'ads:categories'%}#{{ key }}"><span>{{ value }}</span>{{ key }} </a></li>
+    <li><a href="{% url 'ads:categories' %}#{{ key }}"><span>{{ value }}</span>{{ key }} </a></li>
 {% endfor %}
 
 {% for ad in last_three_ads %}
