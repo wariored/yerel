@@ -5,7 +5,7 @@
 
 {% for ad in last_three_ads %}
     <li>
-        <a href="#">{{ ad.title }}</a>
+        <a href="{% url 'ads:single_item' ad.random_url.hex  %}">{{ ad.title }}</a>
         <span class="post-date"><i class="fa fa-calendar" aria-hidden="true"></i> {% language 'fr' %}
             {{ ad.creation_date }} {% endlanguage %}</span>
     </li>
