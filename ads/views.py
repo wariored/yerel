@@ -162,7 +162,6 @@ def create_post_verification(request):
 
 
 def single_item(request, random_url):
-    print(random_url)
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
@@ -186,4 +185,5 @@ def single_item_delete(request, random_url):
     except ValidationError:
         raise Http404
     return render(request, 'ads/single_item.html')
+
 

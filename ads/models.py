@@ -90,7 +90,7 @@ class Ad(models.Model):
 
 class AdFile(models.Model):
     """Images related to an Ad"""
-    ad = models.ForeignKey(Ad, related_name='images', on_delete=models.CASCADE)
+    ad = models.ForeignKey(Ad, related_name='img', on_delete=models.CASCADE)
     media = models.ImageField(upload_to=get_file_path)
     history = HistoricalRecords()
 

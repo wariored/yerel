@@ -1,3 +1,4 @@
+{% load i18n %}
 {% for key , value in count_ads_categories.items %}
     <li><a href="{% url 'ads:categories'%}#{{ key }}"><span>{{ value }}</span>{{ key }} </a></li>
 {% endfor %}
@@ -5,6 +6,7 @@
 {% for ad in last_three_ads %}
     <li>
         <a href="#">{{ ad.title }}</a>
-        <span class="post-date"><i class="fa fa-calendar" aria-hidden="true"></i> {{ad.creation_date}}</span>
+        <span class="post-date"><i class="fa fa-calendar" aria-hidden="true"></i> {% language 'fr' %}
+            {{ ad.creation_date }} {% endlanguage %}</span>
     </li>
 {% endfor %}

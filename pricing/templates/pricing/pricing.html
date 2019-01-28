@@ -3,7 +3,7 @@
     Nos tarifs
 {% endblock %}
 {% block pricing_pagination %}
-    <li><a href="{% url 'pricing:pricing' %}"> Tarifs</a></li>
+    <li> Tarifs</li>
 {% endblock %}
 {% block pricing_content %}
     <!-- pricing -->
@@ -36,7 +36,7 @@
                             </li>
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et maintenance !
                             </li>
-                            <li class="list-group-item"><a href="#" class="btn btn-primary"> Activer !</a></li>
+                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'NORMAL' %}" class="btn btn-primary"> Activer !</a></li>
                             </li>
                         </ul>
                     </div>
@@ -67,7 +67,7 @@
                                     href="#" data-toggle="tooltip" data-placement="top"
                                     title="Vous aurez la possibilité de suivre votre annonce, améliorer sa visibilité, consulter le nombre de vue et plein d'autres choses.">
                                 &nbsp;<i class="fa fa-info-circle"></i></a></li>
-                            <li class="list-group-item"><a href="#" class="btn btn-primary btn-lg">Activer !</a></li>
+                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'PROFESSIONAL' %}" class="btn btn-primary btn-lg">Activer !</a></li>
                             </li>
                         </ul>
                     </div>
@@ -93,7 +93,7 @@
                             </li>
                             <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et maintenance !
                             </li>
-                            <li class="list-group-item"><a href="#" class="btn btn-primary">Activer !</a></li>
+                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'ADVANCED' %}" class="btn btn-primary">Activer !</a></li>
                         </ul>
                     </div>
                 </div>
