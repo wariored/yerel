@@ -1,204 +1,228 @@
 {% extends 'registration/account/base_account.html' %}
-{% load staticfiles %}
+{% load staticfiles i18n %}
 
 {% block account_pagination %}
-<li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
-<li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-<li>Mon compte</li>
-<li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-<li>Paramètres</li>
+    <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Mon compte</li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Paramètres</li>
 {% endblock account_pagination %}
 
 {% block account_content %}
+    {% if request.user.account.is_active %}
+        <p class="text-center"> Vous disposez d'un
+            compte <span class="text-success"> {{ request.user.account.get_type_display }}</span> qui va expirer le <span class="text-danger">{% language 'fr' %}
+                {{ request.user.account.end_date }} {% endlanguage %}</span>.
+        </p>
+    {% endif %}
 
-
-<div class="col-sm-6">
-    {% if activation == True %}
-    <div class="alert alert-success text-center">Votre compte a été activé avec succès</div>
-    {% elif activation == 'key_expired' %}
-    <div class="alert alert-danger text-center">Ce lien d'activation a expiré. Il n'est plus valable</div>
-    {% elif activation == 'regenerate_activation_link' %}
-    <div class="alert alert-success text-center">Un nouveau lien d'activation vous a été envoyé par mail</div>
-    {% endif %}
-    {% if update_profile_success is not None %}
-    <div class="alert alert-success text-center">Votre compte a été mis à jour</div>
-    {% endif %}
-    {% if update_profile_error == 'old_password' %}
-    <div class="alert alert-warning text-center">Le mot de passe n'est pas correcte</div>
-    {% elif update_profile_error == 'password' %}
-    <div class="alert alert-warning text-center">Entrer deux mots de passe identiques pour changer votre mot de passe
-        (5 caractères minimum)</div>
-    {% elif update_profile_error == 'avatar' %}
-    <div class="alert alert-warning text-center">La taille de l'avatar ne doit pas dépasser 2.5MB</div>
-    {% elif update_profile_error == 'first_last_name' %}
-    <div class="alert alert-warning text-center">Le prénom et le nom sont requis</div>
-    {% elif update_profile_error == 'phone_number' %}
-    <div class="alert alert-warning text-center">Le numéro de téléphone est obligatoire et doit être composé de chiffres</div>
-    {% endif %}
-    <div class="widget my-profile margin-bottom-none">
-        <div class="widget-header">
-            <h1>Mom Compte</h1>
-        </div>
-        <div class="widget-body">
-            <form method="POST" action="{% url 'update_profile' %}" enctype='multipart/form-data'>
-                {% csrf_token %}
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Nom d'utilisateur <span class="required">*</span></label>
-                            <input class="form-control border-form" type="text" value="{{user.username}}"
-                                placeholder="John Doe" disabled="">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Adresse Email <span class="required">*</span></label>
-                            <input class="form-control border-form" type="email" value="{{user.email}}" disabled="">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Prénom <span class="required">*</span></label>
-                            <input name="first_name" class="form-control border-form" type="text" value="{{user.first_name}}">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Nom <span class="required">*</span></label>
-                            <input name="last_name" class="form-control border-form" type="text" value="{{user.last_name}}">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-addon">+221</span>
-                        <input name="phone_number" type="text" class="form-control border-form"
-                            value="{{user.info.phone_number}}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Adresse </label>
-                    <input name="address" class="form-control border-form" type="text" value="{{user.info.address}}">
-                </div>
-                <div class="form-group">
-                    <label for="avatar" class="control-label">Avatar</label>
-                    <input id="avatar" name="avatar" type="file" class="filestyle">
-                    <span class="help-block"></span>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Mot de passe</label>
-                            <input name='old_password' class="form-control border-form" type="password" placeholder="Entrer mot de passe">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Nouveau mot de passe</label>
-                            <input name='password_1' class="form-control border-form" type="password" placeholder="Entrer mot de passe">
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <label class="control-label">Confirmer nouveau mot de passe </label>
-                            <input name="password_2" class="form-control border-form" type="password" placeholder="Entrer mot de passe">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group margin-bottom-none">
-                    <div class="text-right">
-                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Mettre
-                            à jour</button>
-                        <a href="{% url 'settings' %}" class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Annuler</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<div class="col-sm-3">
-    <div class="widget listing-filter-block margin-bottom-none">
-        <div class="widget-header">
-            <h1>Trending Ads </h1>
-        </div>
-        <div class="widget-body">
-            <div class="similar-ads">
-                <a href="single.html">
-                    <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/restaurant/1.png' %} " alt="">
-                    </div>
-                    <div class="similar-ad-right">
-                        <h4>Duis autem vel eum iriure do hen...</h4>
-                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                    </div>
-                    <div class="clearfix"></div>
-                </a>
+    <div class="col-sm-6">
+        {% if activation == True %}
+            <div class="alert alert-success text-center">Votre compte a été activé avec succès</div>
+        {% elif activation == 'key_expired' %}
+            <div class="alert alert-danger text-center">Ce lien d'activation a expiré. Il n'est plus valable</div>
+        {% elif activation == 'regenerate_activation_link' %}
+            <div class="alert alert-success text-center">Un nouveau lien d'activation vous a été envoyé par mail</div>
+        {% endif %}
+        {% if update_profile_success is not None %}
+            <div class="alert alert-success text-center">Votre compte a été mis à jour</div>
+        {% endif %}
+        {% if update_profile_error == 'old_password' %}
+            <div class="alert alert-warning text-center">Le mot de passe n'est pas correcte</div>
+        {% elif update_profile_error == 'password' %}
+            <div class="alert alert-warning text-center">Entrer deux mots de passe identiques pour changer votre mot de
+                passe
+                (5 caractères minimum)
             </div>
-            <div class="similar-ads">
-                <a href="single.html">
-                    <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/pets/1.png' %}" alt="">
-                    </div>
-                    <div class="similar-ad-right">
-                        <h4>Duis autem vel eum iriure do hen...</h4>
-                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                    </div>
-                    <div class="clearfix"></div>
-                </a>
+        {% elif update_profile_error == 'avatar' %}
+            <div class="alert alert-warning text-center">La taille de l'avatar ne doit pas dépasser 2.5MB</div>
+        {% elif update_profile_error == 'first_last_name' %}
+            <div class="alert alert-warning text-center">Le prénom et le nom sont requis</div>
+        {% elif update_profile_error == 'phone_number' %}
+            <div class="alert alert-warning text-center">Le numéro de téléphone est obligatoire et doit être composé de
+                chiffres
             </div>
-            <div class="similar-ads">
-                <a href="single.html">
-                    <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
-                    </div>
-                    <div class="similar-ad-right">
-                        <h4>Duis autem vel eum iriure do hen...</h4>
-                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                    </div>
-                    <div class="clearfix"></div>
-                </a>
+        {% endif %}
+        <div class="widget my-profile margin-bottom-none">
+            <div class="widget-header">
+                <h1>Mom Compte</h1>
             </div>
-            <div class="similar-ads">
-                <a href="single.html">
-                    <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/cars/1.png' %}" alt="">
+            <div class="widget-body">
+                <form method="POST" action="{% url 'update_profile' %}" enctype='multipart/form-data'>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Nom d'utilisateur <span class="required">*</span></label>
+                                <input class="form-control border-form" type="text" value="{{ user.username }}"
+                                       placeholder="John Doe" disabled="">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Adresse Email <span class="required">*</span></label>
+                                <input class="form-control border-form" type="email" value="{{ user.email }}"
+                                       disabled="">
+                            </div>
+                        </div>
                     </div>
-                    <div class="similar-ad-right">
-                        <h4>Duis autem vel eum iriure do hen...</h4>
-                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Prénom <span class="required">*</span></label>
+                                <input name="first_name" class="form-control border-form" type="text"
+                                       value="{{ user.first_name }}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Nom <span class="required">*</span></label>
+                                <input name="last_name" class="form-control border-form" type="text"
+                                       value="{{ user.last_name }}">
+                            </div>
+                        </div>
                     </div>
-                    <div class="clearfix"></div>
-                </a>
-            </div>
-            <div class="similar-ads">
-                <a href="single.html">
-                    <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/job/1.png' %}" alt="">
+                    <div class="form-group">
+                        <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-addon">+221</span>
+                            <input name="phone_number" type="text" class="form-control border-form"
+                                   value="{{ user.info.phone_number }}">
+                        </div>
                     </div>
-                    <div class="similar-ad-right">
-                        <h4>Duis autem vel eum iriure do hen...</h4>
-                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                    <div class="form-group">
+                        <label class="control-label">Adresse </label>
+                        <input name="address" class="form-control border-form" type="text"
+                               value="{{ user.info.address }}">
                     </div>
-                    <div class="clearfix"></div>
-                </a>
-            </div>
-            <div class="similar-ads">
-                <a href="single.html">
-                    <div class="similar-ad-left">
-                        <img class="img-responsive img-center" src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
+                    <div class="form-group">
+                        <label for="avatar" class="control-label">Avatar</label>
+                        <input id="avatar" name="avatar" type="file" class="filestyle">
+                        <span class="help-block"></span>
                     </div>
-                    <div class="similar-ad-right">
-                        <h4>Duis autem vel eum iriure do hen...</h4>
-                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Mot de passe</label>
+                                <input name='old_password' class="form-control border-form" type="password"
+                                       placeholder="Entrer mot de passe">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Nouveau mot de passe</label>
+                                <input name='password_1' class="form-control border-form" type="password"
+                                       placeholder="Entrer mot de passe">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="control-label">Confirmer nouveau mot de passe </label>
+                                <input name="password_2" class="form-control border-form" type="password"
+                                       placeholder="Entrer mot de passe">
+                            </div>
+                        </div>
                     </div>
-                    <div class="clearfix"></div>
-                </a>
+                    <div class="form-group margin-bottom-none">
+                        <div class="text-right">
+                            <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Mettre
+                                à jour
+                            </button>
+                            <a href="{% url 'settings' %}" class="btn btn-danger" type="submit"><i
+                                    class="fa fa-close"></i> Annuler</a>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
+    <div class="col-sm-3">
+        <div class="widget listing-filter-block margin-bottom-none">
+            <div class="widget-header">
+                <h1>Trending Ads </h1>
+            </div>
+            <div class="widget-body">
+                <div class="similar-ads">
+                    <a href="single.html">
+                        <div class="similar-ad-left">
+                            <img class="img-responsive img-center"
+                                 src=" {% static 'externals/images/categories/restaurant/1.png' %} " alt="">
+                        </div>
+                        <div class="similar-ad-right">
+                            <h4>Duis autem vel eum iriure do hen...</h4>
+                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+                <div class="similar-ads">
+                    <a href="single.html">
+                        <div class="similar-ad-left">
+                            <img class="img-responsive img-center"
+                                 src=" {% static 'externals/images/categories/pets/1.png' %}" alt="">
+                        </div>
+                        <div class="similar-ad-right">
+                            <h4>Duis autem vel eum iriure do hen...</h4>
+                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+                <div class="similar-ads">
+                    <a href="single.html">
+                        <div class="similar-ad-left">
+                            <img class="img-responsive img-center"
+                                 src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
+                        </div>
+                        <div class="similar-ad-right">
+                            <h4>Duis autem vel eum iriure do hen...</h4>
+                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+                <div class="similar-ads">
+                    <a href="single.html">
+                        <div class="similar-ad-left">
+                            <img class="img-responsive img-center"
+                                 src=" {% static 'externals/images/categories/cars/1.png' %}" alt="">
+                        </div>
+                        <div class="similar-ad-right">
+                            <h4>Duis autem vel eum iriure do hen...</h4>
+                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+                <div class="similar-ads">
+                    <a href="single.html">
+                        <div class="similar-ad-left">
+                            <img class="img-responsive img-center"
+                                 src=" {% static 'externals/images/categories/job/1.png' %}" alt="">
+                        </div>
+                        <div class="similar-ad-right">
+                            <h4>Duis autem vel eum iriure do hen...</h4>
+                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+                <div class="similar-ads">
+                    <a href="single.html">
+                        <div class="similar-ad-left">
+                            <img class="img-responsive img-center"
+                                 src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
+                        </div>
+                        <div class="similar-ad-right">
+                            <h4>Duis autem vel eum iriure do hen...</h4>
+                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock account_content %}

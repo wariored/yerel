@@ -19,3 +19,4 @@ urllib3==1.23
 django-simple-history==2.7.0
 django-reversion==3.0.3
 paydunya==1.0.6
+django-widget-tweaks==1.4.3

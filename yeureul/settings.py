@@ -184,4 +184,6 @@ if DEBUG:
 # Configurer les clés d'API
 paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS
 
+OPR = dict()
+
 # end paydunya config  #####

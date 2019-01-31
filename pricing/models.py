@@ -18,7 +18,8 @@ class Account(models.Model):
     type = models.CharField(max_length=1, choices=PRICING_TYPE)
     active_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(default=one_month_hence)
-    user = models.OneToOneField(User, related_name='pricing', on_delete=models.PROTECT)
+    token = models.CharField(max_length=255)
+    user = models.OneToOneField(User, related_name='account', on_delete=models.PROTECT)
     history = HistoricalRecords()
 
     def clean(self):
@@ -26,11 +27,3 @@ class Account(models.Model):
 
     def is_active(self):
         return self.end_date > timezone.now()
-
-
-class AccountActivation(models.Model):
-    account = models.ForeignKey(Account, related_name='histories', on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now)
-    token = models.CharField(max_length=255)
-    amount = models.IntegerField()
-    history = HistoricalRecords()

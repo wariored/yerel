@@ -49,6 +49,10 @@ def create_post_verification(request):
         name = request.POST.get('name', None)
         email = request.POST.get('email', None)
         phone_number = request.POST.get('phone_number', None)
+        if request.user.is_authenticated:
+            if request.user.account:
+                if request.user.account.is_active():
+                    pass
         dict_values = dict(title=title, price=price,
                            description=description, name=name, email=email, phone_number=phone_number
                            )

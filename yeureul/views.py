@@ -61,9 +61,10 @@ def login_view(request):
         if form.is_valid():
             email_username = form.data['email_username']
             password = form.data['password']
-            user = authenticate(request, username=email_username, password=password)
-            if user is None:
-                user = authenticate(request, email=email_username, password=password)
+            try:
+                user = User.objects.get(email=email_username)
+            except User.DoesNotExist:
+                user = authenticate(request, username=email_username, password=password)
             if user is not None:
                 if user.is_active:
                     login(request, user)

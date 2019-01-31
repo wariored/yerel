@@ -9,13 +9,15 @@
     <li> Activation compte {{ account_type }}</li>
 {% endblock %}
 {% block pricing_content %}
-    <p class="text-center">Voici les types de paiement disponibles:</p>
-    <a data-toggle="modal" href="#myModalPayment" class="well-sm"><img class="payment-img"
-                                                                       src="{% static 'internals/img/logo_pay_with_paydunya3.png' %}"></a>
-    <p class="text-center">Pour le moment un seul mode de paiement est disponible: Paydunya. <br>
-        Donc vous devez avoir un compte Paydunya avec de l'argent disponible. <br>
-        La transaction peut se faire, sur votre compte Paydunya, via Carte Bancaire, Orange Money, Joni Joni, etc.
-    </p>
+    <div class="row">
+        <p id="dd" class="text-center">Voici les types de paiement disponibles:</p>
+        <a id="modalPayment" data-toggle="modal" href="#myModalPayment" class="well-sm"><img class="payment-img"
+                                                                                             src="{% static 'internals/img/logo_pay_with_paydunya3.png' %}"></a>
+        <p class="text-center">Pour le moment un seul mode de paiement est disponible: Paydunya. <br>
+            Donc vous devez avoir un compte Paydunya avec de l'argent disponible. <br>
+            La transaction peut se faire, sur votre compte Paydunya, via Carte Bancaire, Orange Money, Joni Joni, etc.
+        </p>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="myModalPayment" role="dialog">
@@ -28,34 +30,80 @@
                     <h4 class="modal-title text-center"> PAIEMENT </h4>
                 </div>
                 <div class="modal-body">
-                    <p class="text-info text-center">Vous êtes sur le point d'activer un compte {{ account_type }}</p>
-                    <!-- Form -->
-                    <form>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-md-offset-3 col-md-6">
-                                    <input id="email_number_paydunya" type="text" class="form-control"
-                                           placeholder="Entrer email ou numéro Paydunya">
+                    {% if payment_success == True %}
+                        <p class="text-success text-center">Vous venez d'activez un compte {{ account_type }}.
+                            <br> Merci de votre confiance! Vous aurez une assistance totale.
+                        </p>
+                    {% else %}
+                        <p class="text-info text-center">Vous êtes sur le point d'activer un
+                            compte {{ account_type }}</p>
+                        <!-- Form -->
+                        <form id="send_code"
+                                {% if token != 'None' %}
+                              action="{% url 'pricing:activation_verification_2' account_type token %}"
+                                {% else %}
+                              action="{% url 'pricing:activation_verification_1' account_type %}"
+                                {% endif %}
+                              method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-sm-offset-3 col-sm-6">
+                                        {% if token != 'None' %}
+                                            <span class="text-center text-primary">Vous avez reçu un code provenant de Paydunya</span>
+                                            <input name="confirmation_code" id="email_number_paydunya" type="number"
+                                                   class="form-control"
+                                                   placeholder="Entrer le code de confirmation">
+                                            <span id="payment_error_2"></span>
+                                        {% else %}
+                                            <input name="email_number" id="email_number_paydunya" type="text"
+                                                   class="form-control"
+                                                   placeholder="Entrer email ou numéro Paydunya">
+                                            <input type="hidden" id="token">
+                                            <span id="payment_error_1"></span>
+                                        {% endif %}
+
+                                    </div>
+
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-offset-5">
-                                <button id="submit" type="submit" class="btn btn-default">Envoyer</button>
+                            <div class="row">
+                                <div class="col-sm-offset-5">
+                                    <button type="submit" class="btn btn-default">Envoyer</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                    <!-- Form end -->
+                        </form>
+                        <!-- Form end -->
+                    {% endif %}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    <div id="loader"></div>
+                    <button type="submit" class="btn btn-default" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
 
         </div>
     </div>
+
+
     <!-- Modal end -->
 {% endblock %}
 {% block javascripts %}
-
+    <script src="{% static 'internals/js/pricing/activate_account.js' %}"></script>
+    <script>
+        $(function () {
+            var paymentModal = $("#myModalPayment");
+            {% if token != 'None'  %}
+                paymentModal.modal('show');
+                {% if payment_error == True %}
+                    $("#payment_error_2").addClass('text-danger').text('Une erreur est survenue. Veuillez réessayez !' +
+                        " Si c'est le code entré qui n'est pas valide, recommencez à zéro.");
+                {% endif %}
+            {% endif %}
+            {% if payment_error == True %}
+                paymentModal.modal('show');
+                $("#payment_error_1").addClass('text-danger').text('Une erreur est survenue. Veuillez rechargez votre compte Paydunya ou en créer un');
+            {% endif %}
+        });
+    </script>
 {% endblock %}

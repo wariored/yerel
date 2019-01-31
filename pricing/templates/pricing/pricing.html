@@ -1,4 +1,5 @@
 {% extends "base_pricing.html" %}
+{% load i18n %}
 {% block pricing_title %}
     Nos tarifs
 {% endblock %}
@@ -9,8 +10,18 @@
     <!-- pricing -->
     <section class="pricing-table">
         <div class="container">
-            <p class="text-center" style="margin-bottom: 10px">Par défaut, vous disposez d'un compte
-                <strong>Free</strong> où vous n'avez que <span class="text-danger">5 annonces</span> gratuites par mois.</p>
+            {% if request.user.account.is_active %}
+                <p class="text-center"> Vous avez déja un
+                    compte <span class="text-success"> {{ request.user.account.get_type_display }} </span> actif qui va expirer le <span class="text-danger"> {% language 'fr' %}
+                        {{ request.user.account.end_date }} {% endlanguage %}</span>.
+                    Vous pouvez le renouveller ou changer de compte.</p>
+            {% else %}
+                <p class="text-center" style="margin-bottom: 10px">Par défaut, vous disposez d'un compte
+                    <strong>Free</strong> où vous n'avez que <span class="text-danger">5 annonces</span> gratuites par
+                    mois.
+                </p>
+            {% endif %}
+
             <div class="row">
                 <div class="col-md-4">
                     <div class="panel panel-default text-center basic-plan margin-bottom-none">
@@ -25,18 +36,26 @@
                             </div>
                         </div>
                         <ul class="list-group">
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 20&nbsp; Annonces gratuites par mois
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 20&nbsp;
+                                Annonces gratuites par mois
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 6&nbsp; Annonces en vedette possibles<a
-                                    href="#" data-toggle="tooltip" data-placement="top"
-                                    title="Les annonces en vedette sont affichées en premier sur la page d'accueil et sont les plus visibles.">
-                                &nbsp;<i class="fa fa-info-circle"></i></a>
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 6&nbsp; Annonces
+                                en vedette possibles<a
+                                        href="#" data-toggle="tooltip" data-placement="top"
+                                        title="Les annonces en vedette sont affichées en premier sur la page d'accueil et sont les plus visibles.">
+                                    &nbsp;<i class="fa fa-info-circle"></i></a>
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 5 Images par annonce
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 5 Images par
+                                annonce
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et maintenance !
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et
+                                maintenance !
                             </li>
-                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'NORMAL' %}" class="btn btn-primary"> Activer !</a></li>
+                            {% if request.user.account == 'N' %}
+                            {% else %}
+                            {% endif %}
+                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'NORMAL' %}"
+                                                           class="btn btn-primary"> Activer !</a></li>
                             </li>
                         </ul>
                     </div>
@@ -54,20 +73,25 @@
                             </div>
                         </div>
                         <ul class="list-group">
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 50&nbsp; Annonces gratuites par mois
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 50&nbsp;
+                                Annonces gratuites par mois
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 10&nbsp; Annonces en vedette avec possibilité d'extension <a
-                                    href="#" data-toggle="tooltip" data-placement="top"
-                                    title="Les annonces en vedette sont affichées en premier sur la page d'accueil et sont les plus visibles. Vous pouvez augmenter le nombre d'annonces en vedette">
-                                &nbsp;<i class="fa fa-info-circle"></i></a>
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 10&nbsp;
+                                Annonces en vedette avec possibilité d'extension <a
+                                        href="#" data-toggle="tooltip" data-placement="top"
+                                        title="Les annonces en vedette sont affichées en premier sur la page d'accueil et sont les plus visibles. Vous pouvez augmenter le nombre d'annonces en vedette">
+                                    &nbsp;<i class="fa fa-info-circle"></i></a>
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 7 Images par annonce
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 5 Images par
+                                annonce
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et maintenance ! <a
-                                    href="#" data-toggle="tooltip" data-placement="top"
-                                    title="Vous aurez la possibilité de suivre votre annonce, améliorer sa visibilité, consulter le nombre de vue et plein d'autres choses.">
-                                &nbsp;<i class="fa fa-info-circle"></i></a></li>
-                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'PROFESSIONAL' %}" class="btn btn-primary btn-lg">Activer !</a></li>
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et
+                                maintenance ! <a
+                                        href="#" data-toggle="tooltip" data-placement="top"
+                                        title="Vous aurez la possibilité de suivre votre annonce, améliorer sa visibilité, consulter le nombre de vue et plein d'autres choses.">
+                                    &nbsp;<i class="fa fa-info-circle"></i></a></li>
+                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'PROFESSIONAL' %}"
+                                                           class="btn btn-primary btn-lg">Activer !</a></li>
                             </li>
                         </ul>
                     </div>
@@ -85,15 +109,20 @@
                             </div>
                         </div>
                         <ul class="list-group">
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> &nbsp; Annonces illimitées
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> &nbsp; Annonces
+                                illimitées
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 20&nbsp;Annonces en vedette avec possibilité d'extension
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 20&nbsp;Annonces
+                                en vedette avec possibilité d'extension
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 7 Images par annonce
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 5 Images par
+                                annonce
                             </li>
-                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et maintenance !
+                            <li class="list-group-item"><i class="fa fa-check-square text-primary"></i> 100% Suivi et
+                                maintenance !
                             </li>
-                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'ADVANCED' %}" class="btn btn-primary">Activer !</a></li>
+                            <li class="list-group-item"><a href="{% url 'pricing:activation' 'ADVANCED' %}"
+                                                           class="btn btn-primary">Activer !</a></li>
                         </ul>
                     </div>
                 </div>
