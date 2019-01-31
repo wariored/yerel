@@ -19,11 +19,7 @@
                                 <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
                                 <li><a href="{% url 'ads:categories' %}">Categories</a></li>
                                 <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li><a href="#"> {{ ad.subcategory.sup_category.name }} </a></li>
-                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li>{{ ad.subcategory.name }}</li>
-                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li>{{ ad.title|truncatechars:20 }}</li>
+                                <li>Grille des Catégories</li>
                             </ul>
                         </div>
                     </div>
@@ -252,7 +248,7 @@
                                     <a href="single.html">
                                         <div class="similar-ad-left">
                                             <img class="img-responsive img-center"
-                                                 src="images/categories/restaurant/1.png" alt="">
+                                                 src="{% static 'externals/images/categories/restaurant/1.png' %}" alt="">
                                         </div>
                                         <div class="similar-ad-right">
                                             <h4>Duis autem vel eum iriure do hen...</h4>
@@ -265,7 +261,7 @@
                                 <div class="similar-ads">
                                     <a href="single.html">
                                         <div class="similar-ad-left">
-                                            <img class="img-responsive img-center" src="images/categories/pets/1.png"
+                                            <img class="img-responsive img-center" src="{% static 'externals/images/categories/pets/1.png' %}"
                                                  alt="">
                                         </div>
                                         <div class="similar-ad-right">
@@ -280,7 +276,7 @@
                                     <a href="single.html">
                                         <div class="similar-ad-left">
                                             <img class="img-responsive img-center"
-                                                 src="images/categories/real_estate/2.png" alt="">
+                                                 src="{% static 'externals/images/categories/real_estate/2.png' %}" alt="">
                                         </div>
                                         <div class="similar-ad-right">
                                             <h4>Duis autem vel eum iriure do hen...</h4>
@@ -303,7 +299,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/hotels/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/hotels/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -331,7 +327,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/restaurant/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/restaurant/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -358,7 +354,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/real_estate/2.png"
+                                        <img alt="" src="{% static 'externals/images/categories/real_estate/2.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -385,7 +381,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/cars/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/cars/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -414,7 +410,7 @@
                                         <a href="#">Premium Ad</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/shopping/4.png"
+                                        <img alt="" src="{% static 'externals/images/categories/shopping/4.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -442,7 +438,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/job/1.png" class="img-responsive img-center">
+                                        <img alt="" src="{% static 'externals/images/categories/job/1.png' %}" class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
                                                 <h4>Lorem Ipsum is simply</h4>
@@ -469,7 +465,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/hotels/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/hotels/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -497,7 +493,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/pets/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/pets/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -526,7 +522,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/hotels/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/hotels/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -554,7 +550,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/services/2.png"
+                                        <img alt="" src="{% static 'externals/images/categories/services/2.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -581,7 +577,7 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/pets/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/pets/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
@@ -605,7 +601,7 @@
                             <div class="item">
                                 <div class="item-ads-grid icon-blue">
                                     <div class="item-img-grid">
-                                        <img alt="" src="images/categories/restaurant/1.png"
+                                        <img alt="" src="{% static 'externals/images/categories/restaurant/1.png' %}"
                                              class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">

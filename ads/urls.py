@@ -10,4 +10,6 @@ urlpatterns = [
     path('single_item/<str:random_url>', views.single_item, name='single_item'),
     path('single_item_update/<random_url>', views.single_item_update, name='single_item_update'),
     path('single_item_delete/<str:random_url>', views.single_item_delete, name='single_item_delete'),
+    path('categories/categories_grid/', views.categories_grid, name='categories_grid'),
+
 ]

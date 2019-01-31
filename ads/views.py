@@ -191,3 +191,5 @@ def single_item_delete(request, random_url):
     return render(request, 'ads/single_item.html')
 
 
+def categories_grid(request):
+    return render(request, 'ads/categories_pages/categories_grid.html')
