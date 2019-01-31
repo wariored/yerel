@@ -69,8 +69,8 @@
                                                     class="fa fa-heart"></i></a>
                                         </div>
                                         <div id="sync1" class="owl-carousel">
-                                            {% if ad.images %}
-                                                {% for img in ad.images.all %}
+                                            {% if ad.img %}
+                                                {% for img in ad.img.all %}
                                                     <div class="item"><img alt=""
                                                                            src="{{ img.media.url }}"
                                                                            class="img-responsive img-center"></div>
