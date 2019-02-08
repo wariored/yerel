@@ -1,0 +1,7 @@
+{% if user.is_authenticated  %}
+    <div class="favourite-icon">
+        <a class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip"
+        href="{% url 'like_post' %}" id="like" value="{{ ad.id }}" name="post_id" data-original-title="Save Ad">{{ like_count }} <i
+                class="fa fa-heart"></i></a>
+    </div>
+{% endif %}

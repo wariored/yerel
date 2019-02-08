@@ -6,9 +6,10 @@ from django.db import transaction
 from django.conf import settings as conf_settings
 from django.utils import timezone
 from PIL import Image
-from django.http import Http404
+from django.http import Http404 , JsonResponse
 from django.urls import reverse
 import uuid
+from django.template.loader import render_to_string
 
 
 def categories(request):
@@ -169,9 +170,14 @@ def single_item(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
+        if not request.session.get('viewed_post_%s' % id , False):
+            ad.views_number += 1
+            ad.save()
+            request.session['viewed_post_%s' % id] = True
+        count = ad.likes.count()
     except ValidationError:
         raise Http404
-    return render(request, 'ads/single_item.html', {'ad': ad})
+    return render(request, 'ads/single_item.html', {'ad': ad , 'like_count':count })
     #if request.user.is_authenticated:
 
 
@@ -193,3 +199,19 @@ def single_item_delete(request, random_url):
 
 def categories_grid(request):
     return render(request, 'ads/categories_pages/categories_grid.html')
+
+def like_post(request):
+    ad = get_object_or_404(Ad , id=request.POST.get('id'))
+    if request.user in ad.likes.all():
+        ad.likes.remove(request.user)
+    else:
+        ad.likes.add(request.user)
+
+    count = ad.likes.count()
+    context = {
+        'like_count':count , 
+        'ad': ad,
+    }
+    if  request.is_ajax(): 
+        html = render_to_string('ads/like_section.html' , context , request=request)
+        return JsonResponse({'form':html})

@@ -80,8 +80,10 @@ class Ad(models.Model):
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
-    creation_date = models.DateTimeField('date created')
+    creation_date = models.DateTimeField('da    te created')
     update_date = models.DateTimeField('date updated', auto_now_add=True)
+    views_number    = models.IntegerField(default=0)
+    likes = models.ManyToManyField(User,blank=True, related_name='post_likes')
     history = HistoricalRecords()
 
     def __str__(self):
