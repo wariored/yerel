@@ -1,18 +1,21 @@
 $(document).ready(function(e){
     $(document).on('click', "#like" , function(e){
+        alert("Valeur de pk : " + pk) ; 
         e.preventDefault()  ;
         var pk = $(this).attr('value');  
         $.ajax({
             type : 'POST', 
             url : '{% url "like_post"  %}' ,
             data : {'id':pk ,'csrfmiddlewaretoken' : '{{ csrf_token }}' } ,
-            dataType :'json',
+            dataType :'json', 
             success : function(response){
+                alert("reussit") ; 
                 $('#like_section').html(response['form']) 
                 console.log($('#like_section').html(response['form'])); 
             }  ,
             error : function(rs,e){
-               console.log(rs.responseText)     
+                alert("erreur , ca ne marche pas du tout") ;     
+                console.log(rs.responseText)     
             }
         }) ; 
     }) ; 

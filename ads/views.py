@@ -200,8 +200,9 @@ def single_item_delete(request, random_url):
 def categories_grid(request):
     return render(request, 'ads/categories_pages/categories_grid.html')
 
-def like_post(request):
+def like_ad(request):
     ad = get_object_or_404(Ad , id=request.POST.get('id'))
+    print("l'annonce : " , ad)
     if request.user in ad.likes.all():
         ad.likes.remove(request.user)
     else:
@@ -211,7 +212,7 @@ def like_post(request):
     context = {
         'like_count':count , 
         'ad': ad,
-    }
+        }
     if  request.is_ajax(): 
         html = render_to_string('ads/like_section.html' , context , request=request)
         return JsonResponse({'form':html})
