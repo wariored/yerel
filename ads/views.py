@@ -170,10 +170,10 @@ def single_item(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
-        if not request.session.get('viewed_post_%s' % id , False):
+        if (not request.session.get('viewed_post_%s' % random_url , False) and ad.ad_user.user != request.user ):
             ad.views_number += 1
             ad.save()
-            request.session['viewed_post_%s' % id] = True
+            request.session['viewed_post_%s' % random_url] = True
         count = ad.likes.count()
     except ValidationError:
         raise Http404
@@ -201,8 +201,8 @@ def categories_grid(request):
     return render(request, 'ads/categories_pages/categories_grid.html')
 
 def like_ad(request):
-    ad = get_object_or_404(Ad , id=request.POST.get('id'))
-    print("l'annonce : " , ad)
+    ad = get_object_or_404(Ad , id=request.POST.get('id')) , 
+    print("l'annonce : " , ad) 
     if request.user in ad.likes.all():
         ad.likes.remove(request.user)
     else:

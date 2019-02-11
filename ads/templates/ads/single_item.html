@@ -63,7 +63,9 @@
                                         </div>
                                     </div>
                                     <div class="item-img-grid">
-                                        {% include 'ads/like_section.html' %}
+                                        <div id="like_section">
+                                            {% include 'ads/like_section.html' %}
+                                        </div>
                                         <div id="sync1" class="owl-carousel">
                                             {% if ad.img %}
                                                 {% for img in ad.img.all %}

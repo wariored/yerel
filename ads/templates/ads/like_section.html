@@ -1,14 +1,15 @@
 {% if user.is_authenticated  %}
-    <form method="POST">
+    <form action="{% url 'ads:like_post' %}" method="POST">
+        {% csrf_token %}
         <!-- <div class="favourite-icon">
             <a class="fav-btn" title="Fav" data-placement="bottom" data-toggle="tooltip"
             href="{% url 'ads:like_post' %}" id="like" randomUrl="{{ ad.random_url }}" value="{{ ad.id }}" name="post_id" data-original-title="Save Ad">{{ like_count }} <i
             class="fa fa-heart" ></i></a>
         </div> -->
         <div class="favourite-icon">
-            <button class="fav-btn" title="Fav" data-placement="bottom" data-toggle="tooltip"
-            href="{% url 'ads:like_post' %}" id="like" randomUrl="{{ ad.random_url }}" value="{{ ad.id }}" name="post_id" data-original-title="Save Ad">{{ like_count }} <i
-            class="fa fa-heart" type="submit" ></i></button>
+            <button type="submit" id="like" class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip"
+            randomUrl="{{ ad.random_url }}" value="{{ ad.id }}" name="post_id" data-original-title="Save Ad">{{ like_count }} <i
+            class="fa fa-heart"></i></button>
         </div>
     </form>
 {% endif %}
