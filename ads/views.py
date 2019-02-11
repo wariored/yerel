@@ -201,13 +201,13 @@ def categories_grid(request):
     return render(request, 'ads/categories_pages/categories_grid.html')
 
 def like_ad(request):
-    ad = get_object_or_404(Ad , id=request.POST.get('id')) , 
+    ad = get_object_or_404(Ad , id=request.POST.get('id')) 
     print("l'annonce : " , ad) 
     if request.user in ad.likes.all():
         ad.likes.remove(request.user)
     else:
         ad.likes.add(request.user)
-
+        
     count = ad.likes.count()
     context = {
         'like_count':count , 
