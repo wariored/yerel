@@ -336,5 +336,27 @@
     <!-- End Category List -->
 {% endblock %}
 {% block javascripts %}
-    <script src="{% static 'internals/js/ads/like_section.js' %}"></script>
+   <script>
+    $(document).ready(function(e){
+        $(document).on('click', "#like" , function(e){
+            e.preventDefault()  ;
+            var pk = $(this).attr('value'); 
+            $.ajax({
+                type : 'POST', 
+                url : '{% url "ads:like_post" %}' ,
+                header : {'X-CSRFToken' : '{{ csrf_token }}' } , 
+                data : {'id':pk  } ,
+                dataType :'json', 
+                success : function(response){
+                    $('#like_section').html(response['form']) 
+                    console.log($('#like_section').html(response['form'])); 
+                }  ,
+                error : function(rs,e){
+                    alert("erreur ") ;     
+                    console.log(rs.responseText)     
+                }
+            }) ; 
+        }) ; 
+    }) ; 
+   </script>
 {% endblock %}
