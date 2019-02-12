@@ -12,12 +12,17 @@
 {% block account_content %}
     {% if request.user.account.is_active %}
         <p class="text-center"> Vous disposez d'un
-            compte <span class="text-success"> {{ request.user.account.get_type_display }}</span> qui va expirer le <span class="text-danger">{% language 'fr' %}
+            compte <span class="text-success"> {{ request.user.account.get_type_display }}</span> qui va expirer le
+            <span class="text-danger">{% language 'fr' %}
                 {{ request.user.account.end_date }} {% endlanguage %}</span>.
         </p>
     {% endif %}
 
+
     <div class="col-sm-6">
+        {% if has_reached_ads_limit == 'ok' %}
+            <div class="alert alert-info text-center">Vous avez atteint le nombre d'annonces offert. Veuillez renouveler votre compte.</div>
+        {% endif %}
         {% if activation == True %}
             <div class="alert alert-success text-center">Votre compte a été activé avec succès</div>
         {% elif activation == 'key_expired' %}

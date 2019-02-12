@@ -160,6 +160,8 @@ LOGIN_URL = 'login'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 MAX_UPLOAD_SIZE = "2621440"
+MAX_PHOTOS_NUMBER_DEFAULT = 5
+
 
 BASE_URL = 'http://localhost:8000/'
 

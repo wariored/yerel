@@ -107,3 +107,14 @@ def account_corresponding_payment(account_type):
     else:
         amount = 15000
     return amount
+
+
+ACCOUNT_TYPE_WITH_LIMITS = (('NORMAL', 20), ('PROFESSIONAL', 50), ('ADVANCED', None))
+
+
+def has_exceed_ads_limit(account_type, nb_ads):
+    for a_type, limit in ACCOUNT_TYPE_WITH_LIMITS:
+        if a_type == account_type and limit == nb_ads:
+            return True
+
+    return False

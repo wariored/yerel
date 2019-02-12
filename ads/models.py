@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from simple_history.models import HistoricalRecords
 import uuid
 import os
+from pricing.models import Account
+from django.conf import settings as conf_settings
 
 
 def get_file_path(instance, filename):
@@ -50,7 +53,36 @@ class AdUser(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return '%s %s' % (self.phone_number, self.given_name)
+        return self.email
+
+    def has_reached_ads_limit(self, request):
+        today = timezone.datetime.today()
+        ads_number = Ad.objects.filter(ad_user__email=self.email, creation_date__month=today.month,
+                                       creation_date__year=today.year).count()
+        print(ads_number)
+
+        if request.user.is_authenticated:
+            user = request.user
+            try:
+                ads_in_the_month = Ad.objects.filter(ad_user__email=self.email, is_active=True,
+                                                     creation_date__range=(user.account.active_date,
+                                                                           user.account.end_date))
+            except Account.DoesNotExist:
+                if ads_number == 5:
+                    return True
+            else:
+                ads_in_the_month_number = ads_in_the_month.count()
+                if user.account.is_active():
+                    if (user.account.type == 'N' and ads_in_the_month_number == 20) or (
+                            user.account.type == 'A' and ads_in_the_month_number == 50):
+                        return True
+                else:
+                    return True
+        else:
+            if ads_number == 2:
+                return True
+
+        return False
 
 
 class Location(models.Model):
@@ -77,6 +109,7 @@ class Ad(models.Model):
     description = models.TextField(max_length=2000)
     random_url = models.UUIDField(default=uuid.uuid4)
     is_active = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)

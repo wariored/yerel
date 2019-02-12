@@ -1,6 +1,6 @@
 {% extends 'registration/base_authentication.html' %}
 {% block authentication_title %}
-Publier votre annonce
+    Publier votre annonce
 {% endblock authentication_title %}
 {% block authentication_pagination %}
     <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
@@ -21,121 +21,146 @@ Publier votre annonce
         {% endif %}
     {% else %}
         {% if create_post_error == 'title' %}
-            <div class="alert alert-danger text-center">Le titre est obligatoire et doit être moins de 50 caractères</div>
+            <div class="alert alert-danger text-center">Le titre est obligatoire et doit être moins de 50 caractères
+            </div>
         {% elif create_post_error == 'category' %}
             <div class="alert alert-danger text-center">La catégorie n'existe pas</div>
         {% elif create_post_error == 'condition' %}
             <div class="alert alert-danger text-center">La condition n'est pas bonne</div>
         {% elif create_post_error == 'price' %}
-            <div class="alert alert-danger text-center">Le prix doit être un nombre et ne doit pas être supérieur à 30 chiffres</div>
+            <div class="alert alert-danger text-center">Le prix doit être un nombre et ne doit pas être supérieur à 30
+                chiffres
+            </div>
         {% elif create_post_error == 'photos' %}
-            <div class="alert alert-danger text-center">Vous avez droit à 5 photos et la taille de chacune ne doit pas dépasser 2.5Mo</div>
+            <div class="alert alert-danger text-center">Vous avez droit à 5 photos et la taille de chacune ne doit pas
+                dépasser 2.5Mo
+            </div>
         {% elif create_post_error == 'location' %}
             <div class="alert alert-danger text-center">Le lieu n'existe pas</div>
         {% elif create_post_error == 'description' %}
-            <div class="alert alert-danger text-center">La description est obligatoire et ne pas dépasser 2000 caractères</div>
+            <div class="alert alert-danger text-center">La description est obligatoire et ne pas dépasser 2000
+                caractères
+            </div>
         {% elif create_post_error == 'name' %}
-            <div class="alert alert-danger text-center">Le nom est obligatoire et ne doit pas dépasser 50 caractères</div>
+            <div class="alert alert-danger text-center">Le nom est obligatoire et ne doit pas dépasser 50 caractères
+            </div>
         {% elif create_post_error == 'email' %}
             <div class="alert alert-danger text-center">L'email ne semble pas bon</div>
         {% elif create_post_error == 'phone_number' %}
             <div class="alert alert-danger text-center">Le numéro doit être un nombre</div>
         {% elif create_post_error == 'photo_format' %}
             <div class="alert alert-danger text-center">Vous ne devez selectionner que des photos</div>
+        {% elif create_post_error == 'has_reached_limit' %}
+            <div class="alert alert-danger text-center">Vous avez atteint épuisé le nombre d'annonces offert</div>
         {% endif %}
 
     {% endif %}
 
     <!-- Create Post -->
-      <section class="create-post">
-         <div class="container">
+    <section class="create-post">
+        <div class="container">
             <div class="row">
-               <div class="col-sm-6 col-sm-offset-3">
-                  <div class="login-panel widget margin-bottom-none">
-                     <div class="login-body">
-                        <form method="POST" action="{% url 'ads:create_post_verification' %}" enctype="multipart/form-data">
-                           <div class="form-group">
-                               {% csrf_token %}
-                              <label class="control-label">Titre de l'annonce <span class="required">*</span></label>
-                              <input value="{{ dict_values.title }}" name="title" type="text" placeholder="exemple: Apple iPhone SE 2017" class="form-control border-form">
-                           </div>
-                           <div class="form-group">
-                              <label class="control-label">Categorie <span class="required">*</span></label>
-                              <select name="category" class="form-control border-form">
-                                  {% for category in categories_t %}
-                                      <optgroup label="{{ category.name }}">
-                                      {% for subcategory in category.subcategories.all %}
-                                          <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
-                                      {% endfor %}
-                                      </optgroup>
-                                  {% endfor %}
-                              </select>
-                           </div>
-                           <div class="form-group">
-                              <div class="row">
-                                 <label class="col-sm-3 control-label">Condition <span class="required">*</span></label>
-                                 <div class="col-sm-9">
-                                    <div class="radio radio-info radio-inline">
-                                       <input type="radio" id="inlineRadio1" value="N" name="condition" checked="">
-                                       <label for="inlineRadio1"> Nouvelle </label>
-                                    </div>
-                                    <div class="radio radio-info radio-inline">
-                                       <input type="radio" id="inlineRadio2" value="U" name="condition">
-                                       <label for="inlineRadio2"> Utilisée </label>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="form-group">
-                              <label class="control-label">Prix <span class="required">*</span></label>
-                              <div class="input-group">
-                                 <span class="input-group-addon">FCFA</span>
-                                 <input value="{{ dict_values.price }}" name="price" type="text" placeholder="exemple: 9999" class="form-control border-form">
-                              </div>
-                           </div>
-                           <div class="form-group">
-                              <label for="photos" class="control-label">Ajouter des Photos (max 5)</label>
-                              <input id="photos" type="file" name="photos" class="filestyle" multiple>
-                           </div>
-                           <div class="form-group">
-                              <label class="control-label">Lieu <span class="required">*</span></label>
-                              <select name="location" class="form-control border-form">
-                                  {% for location in locations %}
-                                      <option value="{{ location.id }}">{{ location.name }}</option>
-                                  {% endfor %}
-                              </select>
-                           </div>
-                           <div class="form-group">
-                              <label class="control-label">Description <span class="required">*</span></label>
-                              <textarea  name="description" placeholder="Inclure la marque, le modèle, l'âge et tous les accessoires inclus." class="form-control border-form">{{ dict_values.description }}</textarea>
-                           </div>
-                            {% if not user.is_authenticated %}
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="login-panel widget margin-bottom-none">
+                        <div class="login-body">
+                            <form method="POST" action="{% url 'ads:create_post_verification' %}"
+                                  enctype="multipart/form-data">
                                 <div class="form-group">
-                                    <label class="control-label">Votre Nom <span class="required">*</span></label>
-                                    <input value="{{ dict_values.name }}" name="name" type="text" placeholder="exemple: Adama Faye" class="form-control border-form">
+                                    {% csrf_token %}
+                                    <label class="control-label">Titre de l'annonce <span
+                                            class="required">*</span></label>
+                                    <input value="{{ dict_values.title }}" name="title" type="text"
+                                           placeholder="exemple: Apple iPhone SE 2017" class="form-control border-form">
                                 </div>
-                               <div class="form-group">
-                                  <label class="control-label">Votre adresse mail <span class="required">*</span></label>
-                                  <input value="{{ dict_values.email }}" name="email" type="text" placeholder="exemple: adama@gmail.com" class="form-control border-form">
-                               </div>
-                               <div class="form-group">
-                                  <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
-                                  <div class="input-group">
-                                     <span class="input-group-addon">+221</span>
-                                     <input value="{{ dict_values.phone_number }}" name="phone_number" type="text" placeholder="exemple: 123456789" class="form-control border-form">
-                                  </div>
-                               </div>
-                            {% endif %}
-                            <div class="form-group text-right margin-bottom-none">
-                                <button type="subuttonbmit" class="btn btn-success"><i class="fa fa-save"></i> Creer annonce</button>
-                                <a href="{% url 'index' %}" type="submit" class="btn btn-danger"><i class="fa fa-close"></i> Annuler</a>
-                            </button>
-                        </form>
-                     </div>
-                  </div>
-               </div>
+                                <div class="form-group">
+                                    <label class="control-label">Categorie <span class="required">*</span></label>
+                                    <select name="category" class="form-control border-form">
+                                        {% for category in categories_t %}
+                                            <optgroup label="{{ category.name }}">
+                                                {% for subcategory in category.subcategories.all %}
+                                                    <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-3 control-label">Condition <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" id="inlineRadio1" value="N" name="condition"
+                                                       checked="">
+                                                <label for="inlineRadio1"> Nouvelle </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" id="inlineRadio2" value="U" name="condition">
+                                                <label for="inlineRadio2"> Utilisée </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Prix <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">FCFA</span>
+                                        <input value="{{ dict_values.price }}" name="price" type="text"
+                                               placeholder="exemple: 9999" class="form-control border-form">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photos" class="control-label">Ajouter des Photos (max 5)</label>
+                                    <input id="photos" type="file" name="photos" class="filestyle" multiple>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Lieu <span class="required">*</span></label>
+                                    <select name="location" class="form-control border-form">
+                                        {% for location in locations %}
+                                            <option value="{{ location.id }}">{{ location.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Description <span class="required">*</span></label>
+                                    <textarea name="description"
+                                              placeholder="Inclure la marque, le modèle, l'âge et tous les accessoires inclus."
+                                              class="form-control border-form">{{ dict_values.description }}</textarea>
+                                </div>
+                                {% if not user.is_authenticated %}
+                                    <div class="form-group">
+                                        <label class="control-label">Votre Nom <span class="required">*</span></label>
+                                        <input value="{{ dict_values.name }}" name="name" type="text"
+                                               placeholder="exemple: Adama Faye" class="form-control border-form">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Votre adresse mail <span class="required">*</span></label>
+                                        <input value="{{ dict_values.email }}" name="email" type="text"
+                                               placeholder="exemple: adama@gmail.com" class="form-control border-form">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">+221</span>
+                                            <input value="{{ dict_values.phone_number }}" name="phone_number"
+                                                   type="text" placeholder="exemple: 123456789"
+                                                   class="form-control border-form">
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="form-group text-right margin-bottom-none">
+                                    <button type="subuttonbmit" class="btn btn-success"><i class="fa fa-save"></i> Creer
+                                        annonce
+                                    </button>
+                                    <a href="{% url 'index' %}" type="submit" class="btn btn-danger"><i
+                                            class="fa fa-close"></i> Annuler</a>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-         </div>
-      </section>
-      <!-- End Create Post -->
+        </div>
+    </section>
+    <!-- End Create Post -->
 {% endblock %}

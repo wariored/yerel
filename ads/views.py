@@ -9,6 +9,9 @@ from PIL import Image
 from django.http import Http404
 from django.urls import reverse
 import uuid
+from django.contrib.auth.decorators import login_required
+from pricing.views import has_exceed_ads_limit
+from . import forms
 
 
 def categories(request):
@@ -26,7 +29,8 @@ def create_post(request):
     dict_values = request.session.get('dict_values', None)
     if create_post_error:
         del request.session['create_post_error']
-        del request.session['dict_values']
+        if create_post_error != 'has_reached_limit':
+            del request.session['dict_values']
     elif create_post_success:
         del request.session['create_post_success']
     return render(request, 'ads/create_post.html',
@@ -49,10 +53,16 @@ def create_post_verification(request):
         name = request.POST.get('name', None)
         email = request.POST.get('email', None)
         phone_number = request.POST.get('phone_number', None)
+
+        # check if user has reached ads limit
         if request.user.is_authenticated:
-            if request.user.account:
-                if request.user.account.is_active():
-                    pass
+            ad_user = AdUser.objects.filter(email=request.user.email).first()
+        else:
+            ad_user = AdUser.objects.filter(email=email).first()
+        if ad_user.has_reached_ads_limit(request):
+            request.session['create_post_error'] = 'has_reached_limit'
+            return redirect('ads:create_post')
+
         dict_values = dict(title=title, price=price,
                            description=description, name=name, email=email, phone_number=phone_number
                            )
@@ -87,7 +97,7 @@ def create_post_verification(request):
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
         if photos:
-            if len(photos) > 5:
+            if len(photos) > conf_settings.MAX_PHOTOS_NUMBER_DEFAULT:
                 request.session['create_post_error'] = 'photos'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
@@ -134,11 +144,13 @@ def create_post_verification(request):
         else:
             user = request.user
             given_name = user.first_name + ' ' + user.last_name
-            ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name, phone_number=user.info.phone_number)
+            ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name,
+                                            phone_number=user.info.phone_number)
         subcategory = Category.objects.get(pk=category)
         location = Location.objects.get(pk=location)
         ad = Ad.objects.create(title=title, price=price, condition=condition, description=description,
-                               subcategory=subcategory, location=location, ad_user=ad_user, creation_date=timezone.now()
+                               subcategory=subcategory, location=location, ad_user=ad_user,
+                               creation_date=timezone.now()
                                )
         if photos:
             for photo in photos:
@@ -172,7 +184,7 @@ def single_item(request, random_url):
     except ValidationError:
         raise Http404
     return render(request, 'ads/single_item.html', {'ad': ad})
-    #if request.user.is_authenticated:
+    # if request.user.is_authenticated:
 
 
 def single_item_update(request, random_url):

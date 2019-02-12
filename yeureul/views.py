@@ -19,6 +19,7 @@ from django.utils.http import urlsafe_base64_encode
 from ads.models import Category
 from . import forms
 from .models import UserInfo, UserKey, ContactMessage
+from ads.models import AdUser
 
 
 def handler404(request, exception):
@@ -270,13 +271,19 @@ def settings(request):
         del request.session['update_profile_error']
     elif update_profile_success:
         del request.session['update_profile_success']
-    if request.session.get('activation'):
+    if 'activation' in request.session:
         activation = request.session['activation']
         del request.session['activation']
         return render(request, 'registration/account/settings.html', {'activation': activation})
 
+    ad_user = AdUser.objects.filter(email=request.user.email).first()
+    has_reached_ads_limit = ''
+    if ad_user.has_reached_ads_limit(request):
+        has_reached_ads_limit = 'ok'
+
     return render(request, 'registration/account/settings.html', {'update_profile_success': update_profile_success,
-                                                                  'update_profile_error': update_profile_error})
+                                                                  'update_profile_error': update_profile_error,
+                                                                  'has_reached_ads_limit': has_reached_ads_limit})
 
 
 @transaction.atomic
@@ -436,4 +443,3 @@ def uid_token_decoder(uidb64, token, key_type, auth_user=None):
 def _delete_file(path):
     """ Deletes file from filesystem. """
     os.remove(path)
-
