@@ -63,10 +63,8 @@
                                         </div>
                                     </div>
                                     <div class="item-img-grid">
-                                        <div class="favourite-icon">
-                                            <a class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip"
-                                               href="#" data-original-title="Save Ad">115 <i
-                                                    class="fa fa-heart"></i></a>
+                                        <div id="like_section">
+                                            {% include 'ads/like_section.html' %}
                                         </div>
                                         <div id="sync1" class="owl-carousel">
                                             {% if ad.img %}
@@ -135,7 +133,7 @@
                                     <div class="item-footer">
                                         <div class="row">
                                             <div class="col-xs-12 col-md-5">
-                                                <span class="item-views"> <i class="fa fa-eye"></i> Nombre de vues : <b>6544</b></span>
+                                                <span class="item-views"> <i class="fa fa-eye"></i> Nombre de vue{{product.views_number|pluralize}} : <b>{{ ad.views_number }}</b></span>
                                             </div>
                                             <div class="col-xs-12 col-md-7 text-right-md">
                                                 <div class="share-widget text-right">
@@ -336,4 +334,7 @@
         </div>
     </section>
     <!-- End Category List -->
+{% endblock %}
+{% block javascripts %}
+    <script src="{% static 'internals/js/ads/like_section.js' %}"></script>
 {% endblock %}
