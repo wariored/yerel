@@ -133,7 +133,8 @@
                                     <div class="item-footer">
                                         <div class="row">
                                             <div class="col-xs-12 col-md-5">
-                                                <span class="item-views"> <i class="fa fa-eye"></i> Nombre de vue{{product.views_number|pluralize}} : <b>{{ ad.views_number }}</b></span>
+                                                <span class="item-views"> <i
+                                                        class="fa fa-eye"></i> Nombre de vue{{ product.views_number|pluralize }} : <b>{{ ad.views_number }}</b></span>
                                             </div>
                                             <div class="col-xs-12 col-md-7 text-right-md">
                                                 <div class="share-widget text-right">
@@ -336,5 +337,29 @@
     <!-- End Category List -->
 {% endblock %}
 {% block javascripts %}
-    <script src="{% static 'internals/js/ads/like_section.js' %}"></script>
+    {#    <script src="{% static 'internals/js/ads/like_section.js' %}"></script>#}
+    <script>
+        $(document).ready(function (e) {
+            $(document).on('click', "#like", function (e) {
+                e.preventDefault();
+                var pk = $(this).attr('value');
+                var like_section = $('#like_section');
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "ads:like_post"   %}',
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    data: {'id': pk},
+                    dataType: 'json',
+                    success: function (response) {
+                        like_section.html(response['form'])
+                        console.log(like_section.html(response['form']));
+                    },
+                    error: function (rs, e) {
+                        alert("Une erreur est survenue");
+                        console.log(rs.responseText)
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

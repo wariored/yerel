@@ -1,11 +1,12 @@
 $(document).ready(function(e){
+    alert('{{ csrf_token }}');
     $(document).on('click', "#like" , function(e){
         e.preventDefault()  ;
         var pk = $(this).attr('value'); 
         $.ajax({
             type : 'POST', 
             url : '{% url "ads:like_post"   %}' ,
-            header : {'X-CSRFToken' : '{{ csrf_token }}' } , 
+            headers : {'X-CSRFToken' : '{{ csrf_token }}' } ,
             data : {'id':pk  }  , // , 'csrfmiddlewaretoken' : '{{ csrf_token }}' } ,
             dataType :'json', 
             success : function(response){
