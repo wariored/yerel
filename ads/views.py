@@ -11,7 +11,11 @@ from django.urls import reverse
 import uuid
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
+<<<<<<< HEAD
 from yeureul.utils_functions import similar 
+=======
+from yeureul import static_variables
+>>>>>>> 200063dd443ea9062dcfd2d05a12462e410ab4a6
 
 
 def categories(request):
@@ -97,11 +101,11 @@ def create_post_verification(request):
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
         if photos:
-            if len(photos) > conf_settings.MAX_PHOTOS_NUMBER_DEFAULT:
+            if len(photos) > static_variables.MAX_PHOTOS_NUMBER_DEFAULT:
                 request.session['create_post_error'] = 'photos'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
-            check_photos = ['error' for p in photos if p.size > int(conf_settings.MAX_UPLOAD_SIZE)]
+            check_photos = ['error' for p in photos if p.size > int(static_variables.MAX_UPLOAD_PHOTO_SIZE)]
             if 'error' in check_photos:
                 request.session['create_post_error'] = 'photos'
                 request.session['dict_values'] = dict_values
