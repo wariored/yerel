@@ -226,92 +226,31 @@
                             <h1>Annonces similaires</h1>
                         </div>
                         <div class="widget-body">
-                            <div class="similar-ads">
-                                <a href="single.html">
-                                    <div class="similar-ad-left">
-                                        <img class="img-responsive img-center"
-                                             src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
-                                    </div>
-                                    <div class="similar-ad-right">
-                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                            Buffalo </p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </a>
-                            </div>
-                            <div class="similar-ads">
-                                <a href="single.html">
-                                    <div class="similar-ad-left">
-                                        <img class="img-responsive img-center"
-                                             src="{% static 'externals/images/categories/restaurant/1.png' %}"
-                                             alt="">
-                                    </div>
-                                    <div class="similar-ad-right">
-                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                            Buffalo </p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </a>
-                            </div>
-                            <div class="similar-ads">
-                                <a href="single.html">
-                                    <div class="similar-ad-left">
-                                        <img class="img-responsive img-center"
-                                             src="{% static 'externals/images/categories/pets/1.png' %}" alt="">
-                                    </div>
-                                    <div class="similar-ad-right">
-                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                            Buffalo </p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </a>
-                            </div>
-                            <div class="similar-ads">
-                                <a href="single.html">
-                                    <div class="similar-ad-left">
-                                        <img class="img-responsive img-center"
-                                             src="{% static 'externals/images/categories/real_estate/2.png' %}"
-                                             alt="">
-                                    </div>
-                                    <div class="similar-ad-right">
-                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                            Buffalo </p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </a>
-                            </div>
-                            <div class="similar-ads">
-                                <a href="single.html">
-                                    <div class="similar-ad-left">
-                                        <img class="img-responsive img-center"
-                                             src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
-                                    </div>
-                                    <div class="similar-ad-right">
-                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                            Buffalo </p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </a>
-                            </div>
-                            <div class="similar-ads">
-                                <a href="single.html">
-                                    <div class="similar-ad-left">
-                                        <img class="img-responsive img-center"
-                                             src="{% static 'externals/images/categories/job/1.png' %}" alt="">
-                                    </div>
-                                    <div class="similar-ad-right">
-                                        <h4>Duis autem vel eum iriure dolor in hendrerit in vulputate velit .</h4>
-                                        <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                            Buffalo </p>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </a>
-                            </div>
+                            {% for ad in ads_similar %}
+                                <div class="similar-ads">
+                                        <a href="{% url 'ads:single_item' ad.random_url.hex  %}">
+                                            <div class="similar-ad-left">
+                                                    {% if pkad.img.exists  %}
+                                                        <div class="item"><img alt=""
+                                                                        src="{{ ad.img.first.media.url }}"
+                                                                        class="img-responsive img-center">
+                                                        </div>
+                                                    {% else %}
+                                                        <div class="item">
+                                                            <img class="img-responsive img-center"
+                                                            src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
+                                                        </div>
+                                                    {% endif %}
+                                            </div>
+                                            <div class="similar-ad-right">
+                                                <h4>{{ ad.title }}</h4>
+                                                <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -{% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
+                                                    {{ ad.location.name }} </p>{% endif %}
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </a>
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -337,8 +276,10 @@
     <!-- End Category List -->
 {% endblock %}
 {% block javascripts %}
-    {#    <script src="{% static 'internals/js/ads/like_section.js' %}"></script>#}
     <script>
+        /* Ajax request to send the like request without reloading all the page
+          when visitor click in the like button 
+        */ 
         $(document).ready(function (e) {
             $(document).on('click', "#like", function (e) {
                 e.preventDefault();
@@ -346,13 +287,12 @@
                 var like_section = $('#like_section');
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "ads:like_post"   %}',
+                    url: '{% url "ads:like_post" %}',
                     headers: {'X-CSRFToken': '{{ csrf_token }}'},
                     data: {'id': pk},
                     dataType: 'json',
                     success: function (response) {
                         like_section.html(response['form'])
-                        console.log(like_section.html(response['form']));
                     },
                     error: function (rs, e) {
                         alert("Une erreur est survenue");

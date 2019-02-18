@@ -1,15 +1,20 @@
+
+<!-- This section contain the like and will be updated when the visitor click in the like button -->
 {% if user.is_authenticated  %}
     <form action="{% url 'ads:like_post' %}" method="POST">
         {% csrf_token %}
-        <!-- <div class="favourite-icon">
-            <a class="fav-btn" title="Fav" data-placement="bottom" data-toggle="tooltip"
-            href="{% url 'ads:like_post' %}" id="like" randomUrl="{{ ad.random_url }}" value="{{ ad.id }}" name="post_id" data-original-title="Save Ad">{{ like_count }} <i
-            class="fa fa-heart" ></i></a>
-        </div> -->
-        <div class="favourite-icon">
-            <button type="submit" id="like" class="fav-btn" title="" data-placement="bottom" data-toggle="tooltip"
-            randomUrl="{{ ad.random_url }}" value="{{ ad.id }}" name="post_id" data-original-title="Save Ad">{{ like_count }} <i
-            class="fa fa-heart"></i></button>
-        </div>
+        {% if  not ad_liked %}
+            <div class="favourite-icon">
+                <a class="fav-btn" title="Aimer" data-placement="bottom" data-toggle="tooltip"
+                href="{% url 'ads:like_post' %}" id="like" value="{{ ad.id }}"  data-original-title="">{{ like_count }} <i
+                class="fa fa-heart-o" aria-hidden="true" ></i></a>
+            </div>
+        {% else %}
+            <div class="favourite-icon">
+                <a class="fav-btn" title="Ne pas aimer" data-placement="bottom" data-toggle="tooltip"
+                href="{% url 'ads:like_post' %}" id="like" value="{{ ad.id }}"  data-original-title="">{{ like_count }} <i
+                class="fa fa-heart"  ></i></a>
+            </div>
+        {% endif %}
     </form>
 {% endif %}
