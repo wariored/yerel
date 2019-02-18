@@ -6,7 +6,7 @@ from simple_history.models import HistoricalRecords
 import uuid
 import os
 from pricing.models import Account
-from yeureul import static_variables
+# from yeureul import static_variables
 
 
 def get_file_path(instance, filename):

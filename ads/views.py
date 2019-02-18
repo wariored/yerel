@@ -11,11 +11,8 @@ from django.urls import reverse
 import uuid
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-<<<<<<< HEAD
 from yeureul.utils_functions import similar 
-=======
-from yeureul import static_variables
->>>>>>> 200063dd443ea9062dcfd2d05a12462e410ab4a6
+# from yeureul import static_variables
 
 
 def categories(request):
