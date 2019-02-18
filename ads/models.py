@@ -6,7 +6,7 @@ from simple_history.models import HistoricalRecords
 import uuid
 import os
 from pricing.models import Account
-from yeureul import static_variables
+from yeureul import statics_variables
 
 
 def get_file_path(instance, filename):
@@ -75,14 +75,14 @@ class AdUser(models.Model):
                 if user.account.is_active():
                     if (
                             user.account.type == 'N' and
-                            ads_in_the_month_number == static_variables.ACCOUNT_NORMAL_ADS_NUMBER) or (
+                            ads_in_the_month_number == statics_variables.MAX_NORMAL) or (
                             user.account.type == 'A' and
-                            ads_in_the_month_number == static_variables.ACCOUNT_ADVANCED_ADS_NUMBER):
+                            ads_in_the_month_number == statics_variables.MAx_ADVANCED):
                         return True
                 else:
                     return True
         else:
-            if ads_number == static_variables.ACCOUNT_NONE_ADS_NUMBER:
+            if ads_number == statics_variables.MAX_NONE:
                 return True
 
         return False

@@ -3,7 +3,6 @@ from .models import Category, Ad, AdUser, AdFile, Location
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.conf import settings as conf_settings
 from django.utils import timezone
 from PIL import Image
 from django.http import Http404, JsonResponse
@@ -11,7 +10,7 @@ from django.urls import reverse
 import uuid
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
-from yeureul import static_variables
+from yeureul import statics_variables
 
 
 def categories(request):
@@ -97,11 +96,11 @@ def create_post_verification(request):
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
         if photos:
-            if len(photos) > static_variables.MAX_PHOTOS_NUMBER_DEFAULT:
+            if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['create_post_error'] = 'photos'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
-            check_photos = ['error' for p in photos if p.size > int(static_variables.MAX_UPLOAD_PHOTO_SIZE)]
+            check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['create_post_error'] = 'photos'
                 request.session['dict_values'] = dict_values

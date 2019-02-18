@@ -10,11 +10,16 @@
     <!-- pricing -->
     <section class="pricing-table">
         <div class="container">
-            {% if request.user.account.is_active %}
-                <p class="text-center"> Vous avez déja un
-                    compte <span class="text-success"> {{ request.user.account.get_type_display }} </span> actif qui va expirer le <span class="text-danger"> {% language 'fr' %}
-                        {{ request.user.account.end_date }} {% endlanguage %}</span>.
-                    Vous pouvez le renouveller ou changer de compte.</p>
+            {% if request.user.account %}
+                {% if request.user.account.is_active %}
+                    <p class="text-center"> Vous avez déja un
+                        compte <span class="text-success"> {{ request.user.account.get_type_display }} </span> actif qui
+                        va expirer le <span class="text-danger"> {% language 'fr' %}
+                            {{ request.user.account.end_date }} {% endlanguage %}</span>.
+                        Vous pouvez le renouveller ou changer de compte.</p>
+                {% else %}
+                    <p class="text-info text-center"> Votre abonnement a expiré. Veuillez le renouveler.</p>
+                {% endif %}
             {% else %}
                 <p class="text-center" style="margin-bottom: 10px">Par défaut, vous disposez d'un compte
                     <strong>Free</strong> où vous n'avez que <span class="text-danger">5 annonces</span> gratuites par
