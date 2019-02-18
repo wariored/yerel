@@ -6,7 +6,7 @@ from simple_history.models import HistoricalRecords
 import uuid
 import os
 from pricing.models import Account
-from django.conf import settings as conf_settings
+from yeureul import static_variables
 
 
 def get_file_path(instance, filename):
@@ -73,13 +73,16 @@ class AdUser(models.Model):
             else:
                 ads_in_the_month_number = ads_in_the_month.count()
                 if user.account.is_active():
-                    if (user.account.type == 'N' and ads_in_the_month_number == 20) or (
-                            user.account.type == 'A' and ads_in_the_month_number == 50):
+                    if (
+                            user.account.type == 'N' and
+                            ads_in_the_month_number == static_variables.ACCOUNT_NORMAL_ADS_NUMBER) or (
+                            user.account.type == 'A' and
+                            ads_in_the_month_number == static_variables.ACCOUNT_ADVANCED_ADS_NUMBER):
                         return True
                 else:
                     return True
         else:
-            if ads_number == 2:
+            if ads_number == static_variables.ACCOUNT_NONE_ADS_NUMBER:
                 return True
 
         return False
