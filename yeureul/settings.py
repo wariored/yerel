@@ -14,7 +14,7 @@ import os
 from typing import Dict
 
 from django.core.exceptions import ImproperlyConfigured
-import dj_database_url
+# import dj_database_url
 import paydunya
 
 
@@ -38,7 +38,6 @@ SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 # Application definition
