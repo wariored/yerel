@@ -36,9 +36,20 @@ def count_ads_by_categories():
 # get last published ads (active and not deleted)
 @register.inclusion_tag('header_footer/ads_categories.html')
 def last_ad(count=3):
-    last_ad = list()
+    # the last ad
+    last = list()
     try:
-        last_ad = Ad.objects.filter(is_active=True, is_deleted=False).order_by('-creation_date')[:count]
+        last = Ad.objects.filter(is_active=True, is_deleted=False).order_by('-creation_date')[:count]
     except IndexError:
         pass
-    return {'last_three_ads': last_ad}
+    return {'last_three_ads': last}
+
+
+@register.filter(name="ads_number")
+def ads_number(id_category):
+    category = Category.objects.filter(id=id_category, category_type='T')
+    ads_count = 0
+    for subcategory in category.subcategories.all():
+        # add ads' number of a subcategory to the count
+        ads_count += Ad.objects.filter(subcategory=subcategory, is_active=True, is_deleted=False).count()
+    return ads_count
