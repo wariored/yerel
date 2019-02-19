@@ -23,7 +23,8 @@ from ads.models import AdUser
 
 
 def handler404(request, exception):
- return render(request, 'error404.html', locals())
+    return render(request, 'error404.html', locals())
+
 
 # index of the site
 def index(request):
