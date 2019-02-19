@@ -219,58 +219,60 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>
-                <div class="listing-filters">
-                    <div class="widget listing-filter-block">
-                        <div class="widget-header">
-                            <h1>Annonces similaires</h1>
-                        </div>
-                        <div class="widget-body">
-                            {% for ad in ads_similar %}
-                                <div class="similar-ads">
-                                        <a href="{% url 'ads:single_item' ad.random_url.hex  %}">
+                    <div class="listing-filters">
+                        <div class="widget listing-filter-block">
+                            <div class="widget-header">
+                                <h1>Annonces similaires</h1>
+                            </div>
+                            <div class="widget-body">
+                                {% for ad in ads_similar %}
+                                    <div class="similar-ads">
+                                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
                                             <div class="similar-ad-left">
-                                                    {% if pkad.img.exists  %}
-                                                        <div class="item"><img alt=""
-                                                                        src="{{ ad.img.first.media.url }}"
-                                                                        class="img-responsive img-center">
-                                                        </div>
-                                                    {% else %}
-                                                        <div class="item">
-                                                            <img class="img-responsive img-center"
-                                                            src="{% static 'externals/images/categories/cars/1.png' %}" alt="">
-                                                        </div>
-                                                    {% endif %}
+                                                {% if pkad.img.exists %}
+                                                    <div class="item"><img alt=""
+                                                                           src="{{ ad.img.first.media.url }}"
+                                                                           class="img-responsive img-center">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="item">
+                                                        <img class="img-responsive img-center"
+                                                             src="{% static 'externals/images/categories/cars/1.png' %}"
+                                                             alt="">
+                                                    </div>
+                                                {% endif %}
                                             </div>
                                             <div class="similar-ad-right">
                                                 <h4>{{ ad.title }}</h4>
-                                                <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -{% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
-                                                    {{ ad.location.name }} </p>{% endif %}
+                                                <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -
+                                                    {% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
+                                                        {{ ad.location.name }} </p>{% endif %}
                                             </div>
                                             <div class="clearfix"></div>
                                         </a>
-                                </div>
-                            {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget listing-filter-block filter-categories margin-bottom-none">
+                        <div class="widget-header">
+                            <h1>Safety Tips</h1>
+                        </div>
+                        <div class="widget-body">
+                            <ul class="trends">
+                                <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
+                                <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
+                                <li><i class="fa fa-fw fa-key"></i> Polutpat ras lorem</li>
+                                <li><i class="fa fa-fw fa-key"></i> Luctus nec seded justo</li>
+                                <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
+                                <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-                <div class="widget listing-filter-block filter-categories margin-bottom-none">
-                    <div class="widget-header">
-                        <h1>Safety Tips</h1>
-                    </div>
-                    <div class="widget-body">
-                        <ul class="trends">
-                            <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
-                            <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
-                            <li><i class="fa fa-fw fa-key"></i> Polutpat ras lorem</li>
-                            <li><i class="fa fa-fw fa-key"></i> Luctus nec seded justo</li>
-                            <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
-                            <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
-                        </ul>
-                    </div>
-                </div>
+
             </div>
-        </div>
         </div>
     </section>
     <!-- End Category List -->
@@ -279,7 +281,7 @@
     <script>
         /* Ajax request to send the like request without reloading all the page
           when visitor click in the like button 
-        */ 
+        */
         $(document).ready(function (e) {
             $(document).on('click', "#like", function (e) {
                 e.preventDefault();
