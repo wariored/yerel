@@ -11,6 +11,7 @@ import uuid
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from yeureul import statics_variables
+from yeureul.utils_functions import similar
 
 
 def categories(request):
@@ -184,11 +185,28 @@ def single_item(request, random_url):
             ad.views_number += 1
             ad.save()
             request.session['viewed_post_%s' % random_url] = True
+            request.session.set_expiry(86400)
+        if request.user in ad.likes.all():
+            liked = True
+        else:
+            liked = False
+        similar_ads = list()
+        allAds = Ad.objects.all().exclude(pk=ad.pk)
+        for add in allAds:
+            if similar(add.description, ad.description) >= 0.5:
+                similar_ads.append(add)
+
         count = ad.likes.count()
+        context = {
+            'like_count': count,
+            'ad_liked': liked,
+            'ad': ad,
+            'ads_similar': similar_ads,
+        }
     except ValidationError:
         raise Http404
 
-    return render(request, 'ads/single_item.html', {'ad': ad, 'like_count': count})
+    return render(request, 'ads/single_item.html', context)
 
 
 def single_item_update(request, random_url):
@@ -211,17 +229,21 @@ def categories_grid(request):
     return render(request, 'ads/categories_pages/categories_grid.html')
 
 
+# handle the ad's like 
 def like_ad(request):
     ad = get_object_or_404(Ad, id=request.POST.get('id'))
-    print("l'annonce : ", ad)
+    # liked = False
     if request.user in ad.likes.all():
         ad.likes.remove(request.user)
+        liked = False
     else:
         ad.likes.add(request.user)
+        liked = True
 
     count = ad.likes.count()
     context = {
         'like_count': count,
+        'ad_liked': liked,
         'ad': ad,
     }
     if request.is_ajax():

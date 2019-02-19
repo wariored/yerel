@@ -53,4 +53,6 @@ urlpatterns = [
                       name='regenerate_activation_link'),
                   path('ads/', include('ads.urls')),
                   path('pricing/', include('pricing.urls')),
+                  path('index/', views.index, name='main-view'),
               ] + static(conf_settings.MEDIA_URL, document_root=conf_settings.MEDIA_ROOT)
+
