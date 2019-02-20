@@ -11,7 +11,7 @@ import uuid
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from yeureul import statics_variables
-from yeureul.utils_functions import similar
+from yeureul.utils_functions import ads_are_similar
 
 
 def categories(request):
@@ -191,9 +191,9 @@ def single_item(request, random_url):
         else:
             liked = False
         similar_ads = list()
-        allAds = Ad.objects.all().exclude(pk=ad.pk)
-        for add in allAds:
-            if similar(add.description, ad.description) >= 0.5:
+        all_ads = Ad.objects.all().exclude(pk=ad.pk)
+        for add in all_ads:
+            if ads_are_similar(add.description, ad.description):
                 similar_ads.append(add)
 
         count = ad.likes.count()
@@ -229,7 +229,8 @@ def categories_grid(request):
     return render(request, 'ads/categories_pages/categories_grid.html')
 
 
-# handle the ad's like 
+# handle the ad's like
+@login_required
 def like_ad(request):
     ad = get_object_or_404(Ad, id=request.POST.get('id'))
     # liked = False

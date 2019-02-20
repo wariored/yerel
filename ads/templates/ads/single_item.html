@@ -229,7 +229,7 @@
                                     <div class="similar-ads">
                                         <a href="{% url 'ads:single_item' ad.random_url.hex %}">
                                             <div class="similar-ad-left">
-                                                {% if pkad.img.exists %}
+                                                {% if ad.img.exists %}
                                                     <div class="item"><img alt=""
                                                                            src="{{ ad.img.first.media.url }}"
                                                                            class="img-responsive img-center">
