@@ -10,8 +10,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="{% url 'index' %}"><img alt="logo"
-                                                                  src="{% static 'externals/images/logo.png' %}"></a>
+            <a class="navbar-brand" href="{% url 'index' %}"><img class="logo" alt="logo"
+                                                                  src="{% static 'internals/img/1500X500_LARGE.jpg' %}"></a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
@@ -52,7 +52,8 @@
                             class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="{% url 'ads:create_post' %}"><i class="fa fa-fw fa-angle-right"></i> Poster votre annonce</a>
+                            <a href="{% url 'ads:create_post' %}"><i class="fa fa-fw fa-angle-right"></i> Poster votre
+                                annonce</a>
                         </li>
                         <li>
                             <a href="privacy.html"><i class="fa fa-fw fa-angle-right"></i> Privacy Policy</a>
