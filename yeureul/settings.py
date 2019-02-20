@@ -38,9 +38,9 @@ SECRET_KEY = get_env_variable('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-if DEBUG :
+if DEBUG:
     ALLOWED_HOSTS = []
-else :
+else:
     ALLOWED_HOSTS = ['*']
 
 # Application definition
