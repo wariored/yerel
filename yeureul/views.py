@@ -20,6 +20,7 @@ from ads.models import Category
 from . import forms
 from .models import UserInfo, UserKey, ContactMessage
 from ads.models import AdUser
+from . import statics_variables
 
 
 def handler404(request, exception):
@@ -327,7 +328,7 @@ def update_profile(request):
         user_info.address = address
 
         if avatar:
-            if avatar.size < int(conf_settings.MAX_UPLOAD_SIZE):
+            if avatar.size < int(statics_variables.MAX_SIZE):
                 try:
                     path = user_info.avatar.path
                     _delete_file(path)
