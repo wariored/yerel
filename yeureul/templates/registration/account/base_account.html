@@ -46,15 +46,15 @@
                             <p class="seller-detail"> Inscrit le : <strong>{{user.date_joined|date:'d-M-Y'}}</strong></p>
                         </div>
                         <div class="list-group">
-                            <a class="list-group-item" href="my-ads.html">
+                            <a class="list-group-item" href="{% url 'ads:my_ads' %}">
                                 <span class="label label-info">15</span>
                                 <i class="fa fa-fw fa-pencil"></i> Mes annonces
                             </a>
-                            <a class="list-group-item" href="favourite.html">
+                            <a class="list-group-item" href="{% url 'ads:favourite_ads' %}">
                                 <span class="label label-success">10</span>
-                                <i class="fa fa-fw fa-heart"></i> Annonces Favoris
+                                <i class="fa fa-fw fa-heart"></i> Annonces Favorites
                             </a>
-                            <a class="list-group-item" href="ad-alerts.html">
+                            <a class="list-group-item" href="{% url 'ads:my_alerts' %}">
                                 <i class="fa fa-fw fa-clock-o"></i> Alertes
                             </a>
                             <a class="list-group-item" href="{% url 'settings' %}">

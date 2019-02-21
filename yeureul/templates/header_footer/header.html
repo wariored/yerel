@@ -100,13 +100,13 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="my-ads.html"><i class="fa fa-fw fa-pencil"></i> Mes annonces</a>
+                                    <a href="{% url 'ads:my_ads' %}"><i class="fa fa-fw fa-pencil"></i> Mes annonces</a>
                                 </li>
                                 <li>
-                                    <a href="favourite.html"><i class="fa fa-fw fa-heart"></i> Annonces favories</a>
+                                    <a href="{% url 'ads:favourite_ads' %}"><i class="fa fa-fw fa-heart"></i> Annonces favories</a>
                                 </li>
                                 <li>
-                                    <a href="ad-alerts.html"><i class="fa fa-fw fa-clock-o"></i> Alertes</a>
+                                    <a href="{% url 'ads:my_alerts' %}"><i class="fa fa-fw fa-clock-o"></i> Alertes</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'settings' %}"><i class="fa fa-fw fa-gear"></i> Paramètres</a>

@@ -241,12 +241,25 @@ def like_ad(request):
         ad.likes.add(request.user)
         liked = True
 
-    count = ad.likes.count()
     context = {
-        'like_count': count,
         'ad_liked': liked,
         'ad': ad,
     }
     if request.is_ajax():
         html = render_to_string('ads/like_section.html', context, request=request)
         return JsonResponse({'form': html})
+
+
+@login_required
+def favourite_ads(request):
+    return render(request, 'ads/favourite.html')
+
+
+@login_required
+def my_ads(request):
+    return render(request, 'ads/my_ads.html')
+
+
+@login_required
+def my_alerts(request):
+    return render(request, 'ads/my_alerts.html')

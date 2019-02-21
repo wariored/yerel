@@ -6,13 +6,13 @@
         {% if  not ad_liked %}
             <div class="favourite-icon">
                 <a class="fav-btn" title="Aimer" data-placement="bottom" data-toggle="tooltip"
-                href="{% url 'ads:like_post' %}" id="like" value="{{ ad.id }}"  data-original-title="">{{ like_count }} <i
+                href="{% url 'ads:like_post' %}" id="like" value="{{ ad.id }}"  data-original-title="">{{ ad.likes.count }} <i
                 class="fa fa-heart-o" aria-hidden="true" ></i></a>
             </div>
         {% else %}
             <div class="favourite-icon">
                 <a class="fav-btn" title="Ne pas aimer" data-placement="bottom" data-toggle="tooltip"
-                href="{% url 'ads:like_post' %}" id="like" value="{{ ad.id }}"  data-original-title="">{{ like_count }} <i
+                href="{% url 'ads:like_post' %}" id="like" value="{{ ad.id }}"  data-original-title="">{{ ad.likes.count }} <i
                 class="fa fa-heart"  ></i></a>
             </div>
         {% endif %}
