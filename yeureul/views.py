@@ -278,8 +278,9 @@ def settings(request):
 
     ad_user = AdUser.objects.filter(email=request.user.email).first()
     has_reached_ads_limit = ''
-    if ad_user.has_reached_ads_limit(request):
-        has_reached_ads_limit = 'ok'
+    if ad_user:
+        if ad_user.has_reached_ads_limit(request):
+            has_reached_ads_limit = 'ok'
 
     return render(request, 'registration/account/settings.html', {'update_profile_success': update_profile_success,
                                                                   'update_profile_error': update_profile_error,
