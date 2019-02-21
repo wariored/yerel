@@ -1,0 +1,91 @@
+{% extends 'registration/account/base_account.html' %}
+{% load staticfiles %}
+{% block account_pagination %}
+    <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Mon compte</li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Mes alertes</li>
+{% endblock %}
+{% block account_content %}
+    <!-- My Alerts -->
+    <section class="my-alerts">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="widget my-profile margin-bottom-none">
+                        <div class="widget-header">
+                            <h1>Mes Alertes</h1>
+                        </div>
+                        <div class="widget-body">
+                            <h3>What Are Ad Alerts?</h3>
+                            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+                                Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris
+                                placerat eleifend leo. Pellentesque habitant morbi tristique senectus et netus et
+                                malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies
+                                eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
+                                ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                            <p>&nbsp;</p>
+                            <h3>How Do I Set An Ad Alert?</h3>
+                            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
+                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+                                Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.</p>
+                            <p>&nbsp;</p>
+                            <form class="row">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Email Address <span class="required">*</span></label>
+                                    <div class="col-sm-9">
+                                        <input class="form-control border-form" type="email" value=""
+                                               placeholder="example@gmail.com">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Frequency <span
+                                            class="required">*</span></label>
+                                    <div class="col-sm-9">
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" checked="" name="radioInline" value="option1"
+                                                   id="inlineRadio1">
+                                            <label for="inlineRadio1"> Once a day </label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" name="radioInline" value="option1" id="inlineRadio2">
+                                            <label for="inlineRadio2"> Once a week </label>
+                                        </div>
+                                        <div class="radio radio-info radio-inline">
+                                            <input type="radio" name="radioInline" value="option1" id="inlineRadio3">
+                                            <label for="inlineRadio3"> Once a month </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Pick a Category <span
+                                            class="required">*</span></label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control border-form">
+                                            <option selected="">All Category</option>
+                                            <option>Hand Phone</option>
+                                            <option>Motorcycle</option>
+                                            <option>Properti</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-offset-3 col-sm-9">
+                                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Create
+                                            Alert
+                                        </button>
+                                        <button class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End My alerts -->
+{% endblock %}
