@@ -47,7 +47,7 @@ def last_ad(count=3):
 
 @register.filter(name="ads_number")
 def ads_number(id_category):
-    category = Category.objects.filter(id=id_category, category_type='T')
+    category = Category.objects.get(id=id_category, category_type='T')
     ads_count = 0
     for subcategory in category.subcategories.all():
         # add ads' number of a subcategory to the count
