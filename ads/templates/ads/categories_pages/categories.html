@@ -34,7 +34,7 @@
             {% for category in categories_t %}
                 <div id="{{ category.name }}" class="row">
                     <div class="col-lg-3 col-md-3 col-sm-3">
-                        <div class="{{ category.widget }}">
+                        <div class="widget {{ category.widget }}">
                             <div class="widget-header">
                                 <small>{{ category.id|ads_number }} Annonces</small>
                                 <h1><i class="{{ category.icon }}"></i> {{ category.name }}</h1>
