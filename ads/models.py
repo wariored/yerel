@@ -48,12 +48,12 @@ class AdUser(models.Model):
     given_name = models.CharField(max_length=50)
     phone_number = models.IntegerField(null=True, blank=True)
     email = models.EmailField(blank=True)
-    user = models.ForeignKey(User, related_name='ads', null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='aduser', null=True, blank=True, on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.email
+        return self.email 
 
     def has_reached_ads_limit(self, request):
         today = timezone.datetime.today()
@@ -116,7 +116,7 @@ class Ad(models.Model):
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
-    creation_date = models.DateTimeField('da    te created')
+    creation_date = models.DateTimeField('date created')
     update_date = models.DateTimeField('date updated', auto_now_add=True)
     views_number = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, related_name='post_likes')

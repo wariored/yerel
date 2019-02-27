@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
+from django.core.paginator import  Paginator 
 
 
 def categories(request):
@@ -192,6 +193,7 @@ def single_item(request, random_url):
             liked = False
         similar_ads = list()
         all_ads = Ad.objects.all().exclude(pk=ad.pk)
+        print("This is the add : ", ad.ad_user.user)   
         for add in all_ads:
             if ads_are_similar(add.description, ad.description):
                 similar_ads.append(add)
@@ -257,7 +259,27 @@ def favourite_ads(request):
 
 @login_required
 def my_ads(request):
-    return render(request, 'ads/my_ads.html')
+    # myAds = Ad.objects.filter(ad_user = request.user)
+    myAds = []
+    for aduser in request.user.aduser.all():
+        myAds.append(aduser.ads.first())
+    paginator = Paginator(myAds , 5)
+    page = request.GET.get('page')
+    ads = paginator.get_page(page)
+    context = {
+        'ads': ads,
+    }
+    return render(request, 'ads/my_ads.html', context)
+
+@login_required
+def update_product(request, randomUrl):
+    pass
+
+@login_required
+def delete_product(request, randomUrl):
+    
+    pass
+
 
 
 @login_required
