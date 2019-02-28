@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Category, Ad, AdUser, AdFile, Location
+from .models import Category, Ad, AdUser, AdFile, Location, AdFeatured, HistoricalFeatured
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -191,10 +191,12 @@ def single_item(request, random_url):
         else:
             liked = False
         similar_ads = list()
-        all_ads = Ad.objects.all().exclude(pk=ad.pk)
+        all_ads = Ad.objects.all().exclude(pk=ad.pk).order_by('-update_date')
         for add in all_ads:
             if ads_are_similar(add.description, ad.description):
                 similar_ads.append(add)
+                if len(similar_ads) == 6:
+                    break
 
         count = ad.likes.count()
         context = {
@@ -263,3 +265,29 @@ def my_ads(request):
 @login_required
 def my_alerts(request):
     return render(request, 'ads/my_alerts.html')
+
+
+@login_required
+def feature_ad(request):
+    if request.is_ajax:
+        id = request.POST.get('id')
+        ad = get_object_or_404(Ad, id=id)
+        histo_feature = HistoricalFeatured.objects.filter(ad_id=ad.id).first()
+        try:
+            feature = ad.feature
+        except AdFeatured.DoesNotExist:
+            feature = AdFeatured(ad=ad)
+            feature.save()
+            if histo_feature:
+                histo_feature.date = timezone.now()
+                histo_feature.save()
+            else:
+                HistoricalFeatured.objects.create(ad_id=ad.id)
+        else:
+            feature.delete()
+            if histo_feature:
+                histo_feature.date = timezone.now()
+                histo_feature.save()
+        html = render_to_string('ads/feature_section.html', {'ad': ad}, request=request)
+        return JsonResponse({'featured': html})
+

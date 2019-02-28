@@ -15,5 +15,6 @@ urlpatterns = [
     path('favourite_ads/', views.favourite_ads, name="favourite_ads"),
     path('my_ads/', views.my_ads, name="my_ads"),
     path('my_alerts/', views.my_alerts, name="my_alerts"),
+    path('single_item/feature/', views.feature_ad, name="feature_ad"),
 
 ]
