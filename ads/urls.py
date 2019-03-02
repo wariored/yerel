@@ -15,5 +15,9 @@ urlpatterns = [
     path('favourite_ads/', views.favourite_ads, name="favourite_ads"),
     path('my_ads/', views.my_ads, name="my_ads"),
     path('my_alerts/', views.my_alerts, name="my_alerts"),
+    path('delete/<str:random_url>' , views.delete_ad, name="delete_ad"),
+    path('status/<str:random_url>' , views.ad_status, name="ad_status"),
+    path('update/<str:random_url>' , views.update_ad, name="update_ad"),
+
 
 ]

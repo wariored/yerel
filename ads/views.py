@@ -1,18 +1,23 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Category, Ad, AdUser, AdFile, Location
-from django.core.validators import validate_email
+import uuid
+
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.validators import validate_email
 from django.db import transaction
+from django.http import Http404, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
-from django.http import Http404, JsonResponse
-from django.urls import reverse
-import uuid
-from django.contrib.auth.decorators import login_required
-from django.template.loader import render_to_string
+
+from ads.forms import AdForm
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
-from django.core.paginator import  Paginator 
+
+from .forms import AdForm
+from .models import Ad, AdFile, AdUser, Category, Location
 
 
 def categories(request):
@@ -60,9 +65,10 @@ def create_post_verification(request):
             ad_user = AdUser.objects.filter(email=request.user.email).first()
         else:
             ad_user = AdUser.objects.filter(email=email).first()
-        if ad_user.has_reached_ads_limit(request):
-            request.session['create_post_error'] = 'has_reached_limit'
-            return redirect('ads:create_post')
+        if ad_user:
+            if ad_user.has_reached_ads_limit(request):
+                request.session['create_post_error'] = 'has_reached_limit'
+                return redirect('ads:create_post')
 
         dict_values = dict(title=title, price=price,
                            description=description, name=name, email=email, phone_number=phone_number
@@ -141,11 +147,17 @@ def create_post_verification(request):
                 request.session['create_post_error'] = 'phone_number'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
-            ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email)
+            try:
+                ad_user = AdUser.objects.get(email=email)
+            except AdUser.DoesNotFound:
+                ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email) 
         else:
             user = request.user
             given_name = user.first_name + ' ' + user.last_name
-            ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name,
+            try:
+                ad_user = AdUser.objects.get(email=user.email)
+            except AdUser.DoesNotFound:
+                ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name,
                                             phone_number=user.info.phone_number)
         subcategory = Category.objects.get(pk=category)
         location = Location.objects.get(pk=location)
@@ -177,6 +189,9 @@ def create_post_verification(request):
         request.session['create_post_success'] = 'success'
     return redirect('ads:create_post')
 
+@transaction.atomic
+def update_post_verification(request):
+    pass
 
 def single_item(request, random_url):
     try:
@@ -256,31 +271,98 @@ def like_ad(request):
 def favourite_ads(request):
     return render(request, 'ads/favourite.html')
 
+'''
+This function print the first 5 ads of the user 
+'''
+@login_required
+def my_ads(request, page=1):    
+    myAds = [aduser.ads.all().exclude(is_deleted = True).first()
+                for aduser in request.user.aduser.all()
+                if len(aduser.ads.all().exclude(is_deleted = True))!=0]
+    
+    paginator = Paginator(myAds, 1)
+    # page = request.GET.get('page')
+    print(page)
+    # ads = paginator.page(1)
+    try:
+        ads = paginator.get_page(page)
+    except EmptyPage:
+        ads = paginator.get_page(1)
+    except PageNotAnInteger:
+        ads = paginator.get_page(1)
+    context = {
+        'ads': ads
+    }
+    
+    if request.is_ajax():
+        html = render_to_string('ads/myAds.html', context, request=request)
+        return JsonResponse({'form': html})
+    else:
+        return render(request, 'ads/my_ads.html', context)
+
+# 
+
+
+'''
+Handle the update of a ad by the aduser 
+'''
+@login_required
+def update_ad(request, random_url):
+    try:
+        random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+        form = AdForm(request.POST or None , instance=ad)
+        if form.is_valid():
+            form.save()
+            return render(request, 'ads/single_item.html', {'ad': ad})
+        context = {
+            'form':form,
+            'ad':ad
+        }
+    except ValidationError:
+        raise Http404    
+    return render(request, 'ads/update_post.html', context)
 
 @login_required
-def my_ads(request):
-    # myAds = Ad.objects.filter(ad_user = request.user)
-    myAds = []
-    for aduser in request.user.aduser.all():
-        myAds.append(aduser.ads.first())
-    paginator = Paginator(myAds , 5)
-    page = request.GET.get('page')
-    ads = paginator.get_page(page)
-    context = {
-        'ads': ads,
-    }
+def delete_ad (request, random_url):
+    try:
+        random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+        delete_confirmation = False 
+        if request.method == "GET":
+            delete_confirmation = True
+    
+        if request.method == "POST":
+            validation = request.POST['validation']
+            if validation == 'Confirmer':
+                ad.is_deleted = True
+                ad.save()
+                print("deleted welll")
+            else:
+                pass
+            return redirect('ads:my_ads')
+        context = {
+        'delete_confirmation':delete_confirmation
+        }
+    except ValidationError:
+        raise Http404
     return render(request, 'ads/my_ads.html', context)
 
+
+'''
+ ad_satus function handle whether a ad is active or not 
+'''
 @login_required
-def update_product(request, randomUrl):
-    pass
-
-@login_required
-def delete_product(request, randomUrl):
-    
-    pass
-
-
+def ad_status(request, random_url):
+    try:
+        random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+        ad.is_active = not ad.is_active 
+        ad.save()
+    except ValidationError:
+        raise Http404
+    # return render(request, 'ads/my_ads.html')
+    return redirect('ads:my_ads')
 
 @login_required
 def my_alerts(request):
