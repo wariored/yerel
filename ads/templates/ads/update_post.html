@@ -1,0 +1,125 @@
+{% extends 'registration/base_authentication.html' %}
+{% block authentication_title %}
+    Modifier votre annonce
+{% endblock authentication_title %}
+{% block authentication_pagination %}
+    <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Annonces</li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Modifer votre annonce</li>
+{% endblock %}
+
+{% block authentication_content %}
+
+
+<!-- Update Post -->
+<section class="create-post">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="login-panel widget margin-bottom-none">
+                        <div class="login-body">
+                            <form method="POST" action="{% url 'ads:create_post_verification' %}"
+                                  enctype="multipart/form-data">
+                                <div class="form-group">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <!-- <label class="control-label">Titre de l'annonce <span
+                                            class="required">*</span></label>
+                                    <input value="{{ dict_values.title }}" name="title" type="text"
+                                           placeholder="exemple: Apple iPhone SE 2017" class="form-control border-form">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Categorie <span class="required">*</span></label>
+                                    <select name="category" class="form-control border-form">
+                                        {% for category in categories_t %}
+                                            <optgroup label="{{ category.name }}">
+                                                {% for subcategory in category.subcategories.all %}
+                                                    <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                                {% endfor %}
+                                            </optgroup>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-sm-3 control-label">Condition <span class="required">*</span></label>
+                                        <div class="col-sm-9">
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" id="inlineRadio1" value="N" name="condition"
+                                                       checked="">
+                                                <label for="inlineRadio1"> Nouvelle </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" id="inlineRadio2" value="U" name="condition">
+                                                <label for="inlineRadio2"> Utilisée </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Prix <span class="required">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">FCFA</span>
+                                        <input value="{{ dict_values.price }}" name="price" type="text"
+                                               placeholder="exemple: 9999" class="form-control border-form">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="photos" class="control-label">Ajouter des Photos (max 5)</label>
+                                    <input id="photos" type="file" name="photos" class="filestyle" multiple>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Lieu <span class="required">*</span></label>
+                                    <select name="location" class="form-control border-form">
+                                        {% for location in locations %}
+                                            <option value="{{ location.id }}">{{ location.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Description <span class="required">*</span></label>
+                                    <textarea name="description"
+                                              placeholder="Inclure la marque, le modèle, l'âge et tous les accessoires inclus."
+                                              class="form-control border-form">{{ dict_values.description }}</textarea>
+                                </div>
+                                {% if not user.is_authenticated %}
+                                    <div class="form-group">
+                                        <label class="control-label">Votre Nom <span class="required">*</span></label>
+                                        <input value="{{ dict_values.name }}" name="name" type="text"
+                                               placeholder="exemple: Adama Faye" class="form-control border-form">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Votre adresse mail <span class="required">*</span></label>
+                                        <input value="{{ dict_values.email }}" name="email" type="text"
+                                               placeholder="exemple: adama@gmail.com" class="form-control border-form">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">+221</span>
+                                            <input value="{{ dict_values.phone_number }}" name="phone_number"
+                                                   type="text" placeholder="exemple: 123456789"
+                                                   class="form-control border-form">
+                                        </div>
+                                    </div>
+                                {% endif %} -->
+                                <div class="form-group text-right margin-bottom-none">
+                                    <button type="subuttonbmit" class="btn btn-success"><i class="fa fa-save"></i> Creer
+                                        annonce
+                                    </button>
+                                    <a href="{% url 'index' %}" type="submit" class="btn btn-danger"><i
+                                            class="fa fa-close"></i> Annuler</a>
+                                    </button> 
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Update post -->
+{% endblock authentication_content %}
+    

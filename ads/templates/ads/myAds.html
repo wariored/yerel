@@ -1,0 +1,93 @@
+{% load i18n %}
+ <!-- My Ads --> 
+<section id="my_ads_section" class="my-ads">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="widget my-profile margin-bottom-none">
+                        <div class="widget-header">
+                            <h1>Mes Annonces</h1>
+                            {% if ad %} <h2>{{ ad.title }}</h2> {% endif %}
+                        </div>
+                        <div class="widget-body">
+                            <table class="table table-design">
+                                <tbody>
+                                    {% for ad in ads %}
+                                        <tr>
+                                                <td><img src="{{ ad.img.first.media.url }}" class="thumb-img img-responsive"
+                                                         alt=""></td>
+                                                <td>
+                                                    <div class="my-item-title"><a target="_blank" href="{% url 'ads:single_item' ad.random_url.hex %}"><strong>
+                                                          {{ ad.title }}</strong></a></div>
+                                                    <div class="item-meta">
+                                                        <ul>
+                                                            <li class="item-date"><i class="fa fa-clock-o"></i> {% language 'fr' %}
+                                                                {{ ad.creation_date }} {% endlanguage %}</li>
+                                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i>
+                                                                {{ ad.location.name }}</a></li>
+                                                            <li class="item-type"><i class="fa fa-bookmark"></i> {{ ad.condition }}</li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td><strong>{{ ad.price }}<i>F</i></strong></td>
+                                                <td> {% if ad.is_active %} Active {% else %} Pas active {% endif %}</td>
+                                                <td>
+                                                    <div class="action">
+                                                        <a class="label label-success" title="" data-placement="top"
+                                                           data-toggle="tooltip" href="{% url 'ads:update_ad' ad.random_url.hex %}" data-original-title="Editer l'annonce"><i
+                                                                class="fa fa-pencil"></i></a>
+                                                            {% if ad.is_active %}
+                                                        <a id="status" value="{{ ad.randow_url }}" class="label label-warning" title="" data-placement="top"
+                                                           data-toggle="tooltip" href="{% url 'ads:ad_status' ad.random_url.hex %}" data-original-title="Desactive"><i
+                                                                class="fa fa-close"></i></a>
+                                                            {% else %}
+                                                        <a id="status" value="{{ ad.randow_url }}" class="label label-warning " title="" data-placement="top"
+                                                        data-toggle="tooltip" href="{% url 'ads:ad_status' ad.random_url.hex %}" data-original-title="Active"><i
+                                                                class="fa fa-check"></i></a>
+                                                            {% endif %}
+                                                        <a class="label label-info" title="" data-placement="top"
+                                                           data-toggle="tooltip" href="{% url 'ads:single_item' ad.random_url.hex %}" data-original-title="Voir l'annonce"><i
+                                                                class="fa fa-eye"></i></a>
+                                                        <a class="label label-danger" title="" data-placement="top"
+                                                           data-toggle="tooltip" href="{% url 'ads:delete_ad' ad.random_url.hex %}" data-original-title="Supprimer"><i
+                                                                class="fa fa-trash"></i></a>
+                                                    </div>
+                                                </td>
+                                        </tr>
+                                      {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center">
+                                <form  action="" method="POST"></form>
+                                    {% csrf_token %}
+                                    {% if ads.has_other_pages %}
+                                    <ul class="pagination pagination-sm">
+                                        {% if ads.has_previous %}
+                                            <li><a id="paginate" value='{{ ads.previous_page_number }}' href="?page={{ ads.previous_page_number }}">«</a></li>
+                                        {% else %}
+                                        <li style="display:none" ><a></a></li>
+                                        {% endif %}  
+                                        
+                                        {% for num in ads.paginator.page_range %}
+                                            {% if ads.number == num %}
+                                                <li><a id="paginate" value="{{ num }}" href="?page={{ num }}">{{ num }}</a></li>
+                                            {% elif num > ads.number|add:'-3' and num < ads.number|add:'3' %}
+                                                <li><a id="paginate" href="?page={{ num }}"> {{ num }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    
+                                        {% if ads.has_next %}
+                                            <li><a id="paginate" value="{{ ads.next_page_number }}" href="?page={{ ads.next_page_number }}">»</a><li>
+                                        {% else %}
+                                            <li style="display:none" ><a></a></li>
+                                        {% endif %}   
+                                    </ul>
+                                {% endif %} 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End My Ads -->
