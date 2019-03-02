@@ -79,7 +79,7 @@
                                             {% endif %}
                                         </div>
                                         <div id="sync2" class="owl-carousel">
-                                            {% if ad.images %}
+                                            {% if ad.img %}
                                                 {% for img in ad.images.all %}
                                                     <div class="item"><img alt=""
                                                                            src="{{ img.media.url }}"
@@ -232,12 +232,12 @@
                                                 {% if ad.img.exists %}
                                                     <div class="item"><img alt=""
                                                                            src="{{ ad.img.first.media.url }}"
-                                                                           class="img-responsive img-center">
+                                                                           class="img-responsive img-center img-ad-single">
                                                     </div>
                                                 {% else %}
                                                     <div class="item">
                                                         <img class="img-responsive img-center"
-                                                             src="{% static 'externals/images/categories/cars/1.png' %}"
+                                                             src="{% static 'internals/img/none_ad.png' %}"
                                                              alt="">
                                                     </div>
                                                 {% endif %}

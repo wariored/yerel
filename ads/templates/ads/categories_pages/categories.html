@@ -1,949 +1,106 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load staticfiles ads_categories_number featured_ads %}
+{% load i18n %}
 {% block content %}
-<!-- Categories Page Search-->
-      <section class="categories-page-search">
-         <div class="container">
+    <!-- Categories Page Search-->
+    <section class="categories-page-search">
+        <div class="container">
             <div class="row">
-               <div class="main-search-box text-center">
-                  {% include 'static_content/search_form.html' %}
-               </div>
+                <div class="main-search-box text-center">
+                    {% include 'static_content/search_form.html' %}
+                </div>
             </div>
             <div class="row">
-               <!-- Categories Page Nav -->
-               <div class="all-categories-nav">
-                   {% for category in categories_t %}
-                      <a href="#{{ category.name }}">
-                         <i class="{{ category.icon }}"></i>
-                         <p>{{ category.name }} <small>5,56 Annonces</small></p>
-                      </a>
-                   {% endfor %}
-               </div>
-               <!-- End Categories Page Nav -->
+                <!-- Categories Page Nav -->
+                <div class="all-categories-nav">
+                    {% for category in categories_t %}
+                        <a href="#{{ category.name }}">
+                            <i class="{{ category.icon }}"></i>
+                            <p>{{ category.name }}
+                                <small>{{ category.id|ads_number }} Annonces</small>
+                            </p>
+                        </a>
+                    {% endfor %}
+                </div>
+                <!-- End Categories Page Nav -->
             </div>
-         </div>
-      </section>
-      <!-- End Categories Page Search-->
+        </div>
+    </section>
+    <!-- End Categories Page Search-->
 
-	  <!-- Categories List Page -->
-      <section class="categories-list main-categories-list">
-         <div class="container">
-             {% for category in categories_t %}
-                 {% if category.name == 'Restaurant' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget blue-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-glass shortcut-icon icon-blue"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
+    <!-- Categories List Page -->
+    <section class="categories-list main-categories-list">
+        <div class="container">
+            {% for category in categories_t %}
+                <div id="{{ category.name }}" class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="widget {{ category.widget }}">
+                            <div class="widget-header">
+                                <small>{{ category.id|ads_number }} Annonces</small>
+                                <h1><i class="{{ category.icon }}"></i> {{ category.name }}</h1>
+                            </div>
+                            <div class="widget-body">
                                 <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
+                                    {% for subcategory in category.subcategories.all|slice:'5' %}
+                                        <li><a href="#">{{ subcategory.name }} <span
+                                                class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                        </li>
+                                    {% endfor %}
+                                    <li><a href="#">Autres<span class="item-numbers">0</span></a></li>
                                     <li>&ensp;</li>
                                     <li>&ensp;</li>
                                     <li>&ensp;</li>
                                 </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/restaurant/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-glass"></i> <a href="#">Restaurant</a> , <a href="#">Cafe</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Buffalo </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/restaurant/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-glass"></i> <a href="#">Restaurant</a> , <a href="#">Cafe</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Buffalo </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/restaurant/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-glass"></i> <a href="#">Restaurant</a> , <a href="#">Cafe</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Buffalo </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/restaurant/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-glass"></i> <a href="#">Restaurant</a> , <a href="#">Cafe</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Buffalo </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
+                            </div>
+                        </div>
                     </div>
-                 {% endif %}
-                 {% if category.name == 'Immobilier' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget green-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-home shortcut-icon icon-green"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                  {% for subcategory in category.subcategories.all|slice:'5' %}
-                                      <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                  {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-green">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/real_estate/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-home"></i> <a href="#">Real Estate</a> , <a href="#">For Rent</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Frederick </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-green">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/real_estate/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-home"></i> <a href="#">Real Estate</a> , <a href="#">For Rent</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Frederick </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-green">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/real_estate/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-home"></i> <a href="#">Real Estate</a> , <a href="#">For Rent</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Frederick </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-green">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/real_estate/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-home"></i> <a href="#">Real Estate</a> , <a href="#">For Rent</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Frederick </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
+                    <div class="col-lg-9 col-md-9 col-sm-9">
+                        <div class="single-categorie">
+                            <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
+                                {% featured category.id as featured_ads %}
+                                {% for ad in featured_ads %}
+                                    <div class="item">
+                                        <div class="item-ads-grid {{ category.icon_ads }}">
+                                            <div class="item-img-grid">
+                                                {% if ad.img.exists %}
+                                                 <img alt=""
+                                                     src="{{ ad.img.first.media.url }}"
+                                                     class="img-responsive img-center ad_img">
+                                                {% else %}
+                                                    <img alt=""
+                                                     src="{% static 'internals/img/none_ad.png' %}"
+                                                     class="img-responsive img-center">
+                                                {% endif %}
+                                                <div class="item-title">
+                                                    <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                                        <h4>{{ ad.title }}</h4>
+                                                    </a>
+                                                    <h3>{{ ad.price }} FCFA</h3>
+                                                </div>
+                                            </div>
+                                            <div class="item-meta">
+                                                <ul>
+                                                    <li class="item-date"><i class="fa fa-clock-o"></i>
+                                                        {% language 'fr' %}
+                                                            {{ ad.creation_date }} {% endlanguage %}</li>
+                                                    <li class="item-cat"><i class="fa fa-glass"></i> <a
+                                                            href="#">{{ ad.subcategory.sup_category.name }}</a> , <a href="#">{{ ad.subcategory.name }}</a></li>
+                                                    <li class="item-location"><a href="#"><i
+                                                            class="fa fa-map-marker"></i>
+                                                        {{ ad.location.name }} </a></li>
+                                                    <li class="item-type"><i class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
-                 {% endif %}
-                 {% if category.name == 'Voitures' %}
-                     <div id="{{ category.name }}" class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget brown-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-car shortcut-icon icon-brown"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-brown">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/cars/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>It is a long established</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 03.15 AM</li>
-                                            <li class="item-cat"><i class="fa fa-car"></i> <a href="#">Cars</a> , <a href="#">Car Parts</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Augusta </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-brown">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/cars/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>It is a long established</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 03.15 AM</li>
-                                            <li class="item-cat"><i class="fa fa-car"></i> <a href="#">Cars</a> , <a href="#">Car Parts</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Augusta </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-brown">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/cars/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>It is a long established</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 03.15 AM</li>
-                                            <li class="item-cat"><i class="fa fa-car"></i> <a href="#">Cars</a> , <a href="#">Car Parts</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Augusta </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-brown">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/cars/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>It is a long established</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 03.15 AM</li>
-                                            <li class="item-cat"><i class="fa fa-car"></i> <a href="#">Cars</a> , <a href="#">Car Parts</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Augusta </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {% endif %}
-                 {% if category.name == 'Shopping' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget violet-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-shopping-cart shortcut-icon icon-violet"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-violet">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/shopping/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum </h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 11.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-shopping-cart"></i> <a href="#">Shopping</a> , <a href="#">Accessories</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> San Diego </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-violet">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/shopping/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum </h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 11.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-shopping-cart"></i> <a href="#">Shopping</a> , <a href="#">Accessories</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> San Diego </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-violet">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/shopping/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum </h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 11.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-shopping-cart"></i> <a href="#">Shopping</a> , <a href="#">Accessories</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> San Diego </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-violet">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/shopping/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum </h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 11.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-shopping-cart"></i> <a href="#">Shopping</a> , <a href="#">Accessories</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> San Diego </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {% endif %}
-                 {% if category.name == 'Emploi' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget dark-blue-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-briefcase shortcut-icon icon-dark-blue"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-dark-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/job/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 09.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-briefcase"></i> <a href="#">Job</a> , <a href="#">Banking</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Juneau</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-dark-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/job/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 09.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-briefcase"></i> <a href="#">Job</a> , <a href="#">Banking</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Juneau</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-dark-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/job/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 09.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-briefcase"></i> <a href="#">Job</a> , <a href="#">Banking</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Juneau</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-dark-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/job/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 09.45 PM</li>
-                                            <li class="item-cat"><i class="fa fa-briefcase"></i> <a href="#">Job</a> , <a href="#">Banking</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Juneau</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {% endif %}
-                 {% if category.name == 'Hotels' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget orange-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-building-o shortcut-icon icon-orange"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-orange">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/hotels/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-building-o"></i> <a href="#">Hotels</a> , <a href="#">Events & Nightlife</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fairbanks</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-orange">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/hotels/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-building-o"></i> <a href="#">Hotels</a> , <a href="#">Events & Nightlife</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fairbanks</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-orange">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/hotels/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-building-o"></i> <a href="#">Hotels</a> , <a href="#">Events & Nightlife</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fairbanks</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-orange">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/hotels/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Passage of Lorem Ipsum</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 02.05 AM</li>
-                                            <li class="item-cat"><i class="fa fa-building-o"></i> <a href="#">Hotels</a> , <a href="#">Events & Nightlife</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fairbanks</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {% endif %}
-                 {% if category.name == 'Services' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget light-blue-widget">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-star shortcut-icon icon-light-blue"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/services/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 12.09 PM</li>
-                                            <li class="item-cat"><i class="fa fa-star"></i> <a href="#">Services</a> , <a href="#">Computers</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fort Smith </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/services/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 12.09 PM</li>
-                                            <li class="item-cat"><i class="fa fa-star"></i> <a href="#">Services</a> , <a href="#">Computers</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fort Smith </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-blue">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/services/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 12.09 PM</li>
-                                            <li class="item-cat"><i class="fa fa-star"></i> <a href="#">Services</a> , <a href="#">Computers</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fort Smith </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-blue">
-                                      <div class="item-badge-grid featured-ads">
-                                         <a href="#">HOT</a>
-                                      </div>
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/services/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>There are many variations</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 12.09 PM</li>
-                                            <li class="item-cat"><i class="fa fa-star"></i> <a href="#">Services</a> , <a href="#">Computers</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Fort Smith </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {% endif %}
-                 {% if category.name == 'Animaux' %}
-                    <div id="{{ category.name }}" class="row">
-                       <div class="col-lg-3 col-md-3 col-sm-3">
-                          <div class="widget light-green-widget margin-bottom-none">
-                             <div class="widget-header">
-                                <small>98,156 Annonces</small>
-                                <h1><i class="fa fa-paw shortcut-icon icon-light-green"></i> {{ category.name }}</h1>
-                             </div>
-                             <div class="widget-body">
-                                <ul class="trends">
-                                   {% for subcategory in category.subcategories.all|slice:'5' %}
-                                       <li><a href="#">{{ subcategory.name }} <span class="item-numbers">155</span></a></li>
-                                   {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">4</span></a></li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                    <li>&ensp;</li>
-                                </ul>
-                             </div>
-                          </div>
-                       </div>
-                       <div class="col-lg-9 col-md-9 col-sm-9">
-                          <div class="single-categorie">
-                             <div id="owl-carousel-featured" class="owl-carousel categories-list-page">
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-green">
-                                      <div class="item-badge-grid featured-ads">
-                                         <a href="#">HOT</a>
-                                      </div>
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/pets/1.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-paw"></i> <a href="#">Pets</a> , <a href="#">Dogs</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Manchester</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-green">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/pets/2.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-paw"></i> <a href="#">Pets</a> , <a href="#">Dogs</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Manchester</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-green">
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/pets/3.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-paw"></i> <a href="#">Pets</a> , <a href="#">Dogs</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Manchester</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                                <div class="item">
-                                   <div class="item-ads-grid icon-light-green">
-                                      <div class="item-badge-grid featured-ads">
-                                         <a href="#">HOT</a>
-                                      </div>
-                                      <div class="item-img-grid">
-                                         <img alt="" src="{% static 'externals/images/categories/pets/4.png' %}" class="img-responsive img-center">
-                                         <div class="item-title">
-                                            <a href="single.html">
-                                               <h4>Lorem Ipsum is simply</h4>
-                                            </a>
-                                            <h3>$ 64.5000</h3>
-                                         </div>
-                                      </div>
-                                      <div class="item-meta">
-                                         <ul>
-                                            <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                            <li class="item-cat"><i class="fa fa-paw"></i> <a href="#">Pets</a> , <a href="#">Dogs</a></li>
-                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i> Manchester</a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                         </ul>
-                                      </div>
-                                   </div>
-                                </div>
-                             </div>
-                          </div>
-                       </div>
-                    </div>
-                 {% endif %}
-             {% endfor %}
-         </div>
-      </section>
-      <!-- End Categories List Page -->
+                </div>
+
+            {% endfor %}
+        </div>
+    </section>
+    <!-- End Categories List Page -->
 {% endblock content %}

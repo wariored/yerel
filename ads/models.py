@@ -6,7 +6,7 @@ from simple_history.models import HistoricalRecords
 import uuid
 import os
 from pricing.models import Account
-from yeureul import statics_variables
+from yeureul import statics_variables, utils_functions
 
 
 def get_file_path(instance, filename):
@@ -29,6 +29,7 @@ class Category(models.Model):
     name = models.CharField(max_length=30, null=False)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
     icon = models.CharField(max_length=70, null=True, blank=True)
+    icon_ads = models.CharField(max_length=70, null=True, blank=True)
     widget = models.CharField(max_length=20, null=True, blank=True)
     category_type = models.CharField(max_length=10, null=True, blank=True, default='T', choices=CATEGORY_TYPE)
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
@@ -77,7 +78,7 @@ class AdUser(models.Model):
                             user.account.type == 'N' and
                             ads_in_the_month_number == statics_variables.MAX_NORMAL) or (
                             user.account.type == 'A' and
-                            ads_in_the_month_number == statics_variables.MAx_ADVANCED):
+                            ads_in_the_month_number == statics_variables.MAX_ADVANCED):
                         return True
                 else:
                     return True
@@ -134,3 +135,16 @@ class AdFile(models.Model):
 
     def __str__(self):
         return self.ad.title + '_' + str(self.id)
+
+
+class AdFeatured(models.Model):
+    ad = models.OneToOneField(Ad, related_name='feature', on_delete=models.CASCADE)
+    start_date = models.DateTimeField('start date', auto_now_add=True)
+    end_date = models.DateTimeField('end date', default=utils_functions.days_hence(statics_variables.FEATURED_DAYS))
+    history = HistoricalRecords()
+
+    def is_active(self):
+        if self.end_date > timezone.now():
+            return True
+
+        return False

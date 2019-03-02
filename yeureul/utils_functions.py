@@ -1,4 +1,5 @@
 from difflib import SequenceMatcher
+from django.utils import timezone
 
 
 # This fonction allow to compute the similariry of two string
@@ -11,3 +12,7 @@ def ads_are_similar(ads_1, ads_2):
         return True
 
     return False
+
+
+def days_hence(days):
+    return timezone.now() + timezone.timedelta(days=days)
