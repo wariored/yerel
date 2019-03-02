@@ -14,6 +14,7 @@ urlpatterns = [
     path('single_item/like/', views.like_ad, name="like_post"),
     path('favourite_ads/', views.favourite_ads, name="favourite_ads"),
     path('my_ads/', views.my_ads, name="my_ads"),
+    path('my_ads/?page=<int:num>', views.my_ads_ajaxify, name="my_ads_ajaxify"),
     path('my_alerts/', views.my_alerts, name="my_alerts"),
     path('delete/<str:random_url>' , views.delete_ad, name="delete_ad"),
     path('status/<str:random_url>' , views.ad_status, name="ad_status"),

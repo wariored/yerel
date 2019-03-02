@@ -61,7 +61,8 @@
             $(document).on('click', "#paginate", function (e) {
                 e.preventDefault();
                 var pk = $(this).attr('value');
-                var like_section = $('#my_ads_section');
+                alert(pk); 
+                var ads_section = $('#my_ads_section');
                 $.ajax({
                     type: 'POST',
                     url: '{% url "ads:my_ads" %}' ,
@@ -70,7 +71,7 @@
                     dataType: 'json',
                     success: function (response) {
                         //alert('all thing is good')
-                        like_section.html(response['form'])
+                        ads_section.html(response['form'])
                     },
                     error: function (rs, e) {
                         alert("Une erreur est survenue");

@@ -275,13 +275,36 @@ def favourite_ads(request):
 This function print the first 5 ads of the user 
 '''
 @login_required
-def my_ads(request, page=1):    
+def my_ads(request):    
     myAds = [aduser.ads.all().exclude(is_deleted = True).first()
                 for aduser in request.user.aduser.all()
                 if len(aduser.ads.all().exclude(is_deleted = True))!=0]
     
     paginator = Paginator(myAds, 1)
-    # page = request.GET.get('page')
+    page = request.GET.get('page')
+    print(page)
+    # ads = paginator.page(1)
+    try:
+        ads = paginator.get_page(page)
+    except EmptyPage:
+        ads = paginator.get_page(1)
+    except PageNotAnInteger:
+        ads = paginator.get_page(1)
+    context = {
+        'ads': ads
+    }
+    return render(request, 'ads/my_ads.html', context)
+'''
+Function that return the ads by ajax in the pagination
+'''
+@login_required
+def my_ads_ajaxify(request, page):    
+    myAds = [aduser.ads.all().exclude(is_deleted = True).first()
+                for aduser in request.user.aduser.all()
+                if len(aduser.ads.all().exclude(is_deleted = True))!=0]
+    
+    paginator = Paginator(myAds, 1)
+    page = request.GET.get('page')
     print(page)
     # ads = paginator.page(1)
     try:
@@ -298,9 +321,7 @@ def my_ads(request, page=1):
         html = render_to_string('ads/myAds.html', context, request=request)
         return JsonResponse({'form': html})
     else:
-        return render(request, 'ads/my_ads.html', context)
-
-# 
+        pass
 
 
 '''
