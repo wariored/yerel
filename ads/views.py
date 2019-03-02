@@ -149,14 +149,14 @@ def create_post_verification(request):
                 return redirect('ads:create_post')
             try:
                 ad_user = AdUser.objects.get(email=email)
-            except AdUser.DoesNotFound:
+            except AdUser.DoesNotExist:
                 ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email) 
         else:
             user = request.user
             given_name = user.first_name + ' ' + user.last_name
             try:
                 ad_user = AdUser.objects.get(email=user.email)
-            except AdUser.DoesNotFound:
+            except AdUser.DoesNotExist:
                 ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name,
                                             phone_number=user.info.phone_number)
         subcategory = Category.objects.get(pk=category)
@@ -272,7 +272,7 @@ def favourite_ads(request):
     return render(request, 'ads/favourite.html')
 
 '''
-This function print the first 5 ads of the user 
+This function print the first 5 ads of the user with ajax request
 '''
 @login_required
 def my_ads(request):    
@@ -280,10 +280,8 @@ def my_ads(request):
                 for aduser in request.user.aduser.all()
                 if len(aduser.ads.all().exclude(is_deleted = True))!=0]
     
-    paginator = Paginator(myAds, 1)
+    paginator = Paginator(myAds, 4)
     page = request.GET.get('page')
-    print(page)
-    # ads = paginator.page(1)
     try:
         ads = paginator.get_page(page)
     except EmptyPage:
@@ -293,36 +291,11 @@ def my_ads(request):
     context = {
         'ads': ads
     }
-    return render(request, 'ads/my_ads.html', context)
-'''
-Function that return the ads by ajax in the pagination
-'''
-@login_required
-def my_ads_ajaxify(request, page):    
-    myAds = [aduser.ads.all().exclude(is_deleted = True).first()
-                for aduser in request.user.aduser.all()
-                if len(aduser.ads.all().exclude(is_deleted = True))!=0]
-    
-    paginator = Paginator(myAds, 1)
-    page = request.GET.get('page')
-    print(page)
-    # ads = paginator.page(1)
-    try:
-        ads = paginator.get_page(page)
-    except EmptyPage:
-        ads = paginator.get_page(1)
-    except PageNotAnInteger:
-        ads = paginator.get_page(1)
-    context = {
-        'ads': ads
-    }
-    
     if request.is_ajax():
         html = render_to_string('ads/myAds.html', context, request=request)
         return JsonResponse({'form': html})
-    else:
-        pass
 
+    return render(request, 'ads/my_ads.html', context)
 
 '''
 Handle the update of a ad by the aduser 
