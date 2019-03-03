@@ -11,13 +11,11 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
-
-from ads.forms import AdForm
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
 
 from .forms import AdForm
-from .models import Ad, AdFile, AdUser, Category, Location
+from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured
 
 
 def categories(request):
@@ -151,7 +149,6 @@ def create_post_verification(request):
                 ad_user = AdUser.objects.get(email=email)
             except AdUser.DoesNotExist:
                 ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email)
-            # except AdUser.MultipleObjectsReturned
         else:
             user = request.user
             given_name = user.first_name + ' ' + user.last_name
@@ -159,7 +156,7 @@ def create_post_verification(request):
                 ad_user = AdUser.objects.get(email=user.email)
             except AdUser.DoesNotExist:
                 ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name,
-                                            phone_number=user.info.phone_number)
+                                                phone_number=user.info.phone_number)
         subcategory = Category.objects.get(pk=category)
         location = Location.objects.get(pk=location)
         ad = Ad.objects.create(title=title, price=price, condition=condition, description=description,
@@ -190,9 +187,11 @@ def create_post_verification(request):
         request.session['create_post_success'] = 'success'
     return redirect('ads:create_post')
 
+
 @transaction.atomic
 def update_post_verification(request):
     pass
+
 
 def single_item(request, random_url):
     try:
@@ -208,11 +207,12 @@ def single_item(request, random_url):
         else:
             liked = False
         similar_ads = list()
-        all_ads = Ad.objects.all().exclude(pk=ad.pk)
-        print("This is the add : ", ad.ad_user.user)   
+        all_ads = Ad.objects.all().exclude(pk=ad.pk).order_by('-update_date')
         for add in all_ads:
             if ads_are_similar(add.description, ad.description):
                 similar_ads.append(add)
+                if len(similar_ads) == 6:
+                    break
 
         count = ad.likes.count()
         context = {
@@ -272,15 +272,18 @@ def like_ad(request):
 def favourite_ads(request):
     return render(request, 'ads/favourite.html')
 
+
 '''
 This function print the first 5 ads of the user with ajax request
 '''
+
+
 @login_required
-def my_ads(request):    
-    myAds = [aduser.ads.all().exclude(is_deleted = True).first()
-                for aduser in request.user.aduser.all()
-                if len(aduser.ads.all().exclude(is_deleted = True))!=0]
-    
+def my_ads(request):
+    myAds = [aduser.ads.all().exclude(is_deleted=True).first()
+             for aduser in request.user.aduser.all()
+             if len(aduser.ads.all().exclude(is_deleted=True)) != 0]
+
     paginator = Paginator(myAds, 4)
     page = request.GET.get('page')
     try:
@@ -298,35 +301,39 @@ def my_ads(request):
 
     return render(request, 'ads/my_ads.html', context)
 
+
 '''
 Handle the update of a ad by the aduser 
 '''
+
+
 @login_required
 def update_ad(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
-        form = AdForm(request.POST or None , instance=ad)
+        form = AdForm(request.POST or None, instance=ad)
         if form.is_valid():
             form.save()
             return render(request, 'ads/single_item.html', {'ad': ad})
         context = {
-            'form':form,
-            'ad':ad
+            'form': form,
+            'ad': ad
         }
     except ValidationError:
-        raise Http404    
+        raise Http404
     return render(request, 'ads/update_post.html', context)
 
+
 @login_required
-def delete_ad (request, random_url):
+def delete_ad(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
-        delete_confirmation = False 
+        delete_confirmation = False
         if request.method == "GET":
             delete_confirmation = True
-    
+
         if request.method == "POST":
             validation = request.POST['validation']
             if validation == 'Confirmer':
@@ -337,7 +344,7 @@ def delete_ad (request, random_url):
                 pass
             return redirect('ads:my_ads')
         context = {
-        'delete_confirmation':delete_confirmation
+            'delete_confirmation': delete_confirmation
         }
     except ValidationError:
         raise Http404
@@ -347,18 +354,46 @@ def delete_ad (request, random_url):
 '''
  ad_satus function handle whether a ad is active or not 
 '''
+
+
 @login_required
 def ad_status(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
-        ad.is_active = not ad.is_active 
+        ad.is_active = not ad.is_active
         ad.save()
     except ValidationError:
         raise Http404
     # return render(request, 'ads/my_ads.html')
     return redirect('ads:my_ads')
 
+
 @login_required
 def my_alerts(request):
     return render(request, 'ads/my_alerts.html')
+
+
+@login_required
+def feature_ad(request):
+    if request.is_ajax:
+        id = request.POST.get('id')
+        ad = get_object_or_404(Ad, id=id)
+        histo_feature = HistoricalFeatured.objects.filter(ad_id=ad.id).first()
+        try:
+            feature = ad.feature
+        except AdFeatured.DoesNotExist:
+            feature = AdFeatured(ad=ad)
+            feature.save()
+            if histo_feature:
+                histo_feature.date = timezone.now()
+                histo_feature.save()
+            else:
+                HistoricalFeatured.objects.create(ad_id=ad.id)
+        else:
+            feature.delete()
+            if histo_feature:
+                histo_feature.date = timezone.now()
+                histo_feature.save()
+        html = render_to_string('ads/feature_section.html', {'ad': ad}, request=request)
+        return JsonResponse({'featured': html})

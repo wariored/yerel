@@ -7,6 +7,7 @@ import uuid
 import os
 from pricing.models import Account
 from yeureul import statics_variables, utils_functions
+from .search import AdIndex
 
 
 def get_file_path(instance, filename):
@@ -118,13 +119,37 @@ class Ad(models.Model):
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created')
-    update_date = models.DateTimeField('date updated', auto_now_add=True)
+    update_date = models.DateTimeField('date updated', default=timezone.now)
     views_number = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, related_name='post_likes')
     history = HistoricalRecords()
 
     def __str__(self):
         return self.title
+
+    def is_featured(self):
+        try:
+            AdFeatured.objects.get(ad=self)
+        except AdFeatured.DoesNotExist:
+            return False
+        else:
+            return True
+
+    def indexing(self):
+        obj = AdIndex(
+            meta={'id': self.id},
+            ad_user=self.ad_user.given_name,
+            creation_date=self.creation_date,
+            title=self.title,
+            price=self.price,
+            description=self.description,
+            condition=self.condition,
+            location=self.location.name,
+            subcategory=self.subcategory.name
+
+        )
+        obj.save()
+        return obj.to_dict(include_meta=True)
 
 
 class AdFile(models.Model):
@@ -137,10 +162,14 @@ class AdFile(models.Model):
         return self.ad.title + '_' + str(self.id)
 
 
+def two_days_hence():
+    return timezone.now() + timezone.timedelta(days=2)
+
+
 class AdFeatured(models.Model):
     ad = models.OneToOneField(Ad, related_name='feature', on_delete=models.CASCADE)
     start_date = models.DateTimeField('start date', auto_now_add=True)
-    end_date = models.DateTimeField('end date', default=utils_functions.days_hence(statics_variables.FEATURED_DAYS))
+    end_date = models.DateTimeField('end date', default=two_days_hence)
     history = HistoricalRecords()
 
     def is_active(self):
@@ -148,3 +177,11 @@ class AdFeatured(models.Model):
             return True
 
         return False
+
+
+class HistoricalFeatured(models.Model):
+    """
+    This is Histirical record for the Model AdFeatured
+    """
+    ad_id = models.IntegerField(unique=True)
+    date = models.DateTimeField('start date', default=timezone.now)

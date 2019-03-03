@@ -1,0 +1,13 @@
+<!-- In this section the user will add an ad as featured -->
+
+{% if user.is_authenticated  and user.account and ad.ad_user.email == user.email %}
+    {% if user.account.is_active and not user.account.has_reached_limit %}
+        <input id="ad_id" type="hidden" value="{{ ad.id }}">
+        {% if not  ad.is_featured %}
+            <button id="featured" class="btn btn-success">Mettre en vedette</button>
+        {% else %}
+            <button id="featured" class="btn btn-danger">Enlever la vedette</button>
+        {% endif %}
+    {% endif %}
+
+{% endif %}

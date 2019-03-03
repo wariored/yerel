@@ -37,13 +37,22 @@
     <section class="single-detail">
         <div class="container">
             <div class="row">
+                <div class="col-sm-offset-4">
+                    <span id="feature_alert"></span>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+            <div id="feature_section">
+                {% include 'ads/feature_section.html' %}
+            </div>
+            <div class="row">
                 <div class="col-lg-8 col-md-6 col-sm-6">
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="item single-ads">
                                 <div class="item-ads-grid margin-bottom-none">
                                     <div class="item-title-single">
-                                        <a href="single.html">
+                                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
                                             <h1>{{ ad.title }}</h1>
                                         </a>
                                         <div class="item-meta">
@@ -67,24 +76,14 @@
                                             {% include 'ads/like_section.html' %}
                                         </div>
                                         <div id="sync1" class="owl-carousel">
-                                            {% if ad.img %}
+                                            {% if ad.img.exists %}
                                                 {% for img in ad.img.all %}
                                                     <div class="item"><img alt=""
                                                                            src="{{ img.media.url }}"
-                                                                           class="img-responsive img-center"></div>
+                                                                           class="img-responsive img-center ad_img_single">
+                                                    </div>
                                                 {% endfor %}
 
-                                            {% else %}
-
-                                            {% endif %}
-                                        </div>
-                                        <div id="sync2" class="owl-carousel">
-                                            {% if ad.img %}
-                                                {% for img in ad.images.all %}
-                                                    <div class="item"><img alt=""
-                                                                           src="{{ img.media.url }}"
-                                                                           class="img-responsive img-center"></div>
-                                                {% endfor %}
                                             {% else %}
 
                                             {% endif %}
@@ -99,7 +98,7 @@
                                                 <td>{{ ad.id }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Condition</td>
+                                                <td>Etat</td>
                                                 <td>{{ ad.get_condition_display }}</td>
                                             </tr>
                                             <!--
@@ -232,7 +231,7 @@
                                                 {% if ad.img.exists %}
                                                     <div class="item"><img alt=""
                                                                            src="{{ ad.img.first.media.url }}"
-                                                                           class="img-responsive img-center img-ad-single">
+                                                                           class="img-responsive img-center">
                                                     </div>
                                                 {% else %}
                                                     <div class="item">
@@ -257,16 +256,25 @@
                     </div>
                     <div class="widget listing-filter-block filter-categories margin-bottom-none">
                         <div class="widget-header">
-                            <h1>Safety Tips</h1>
+                            <h1>Conseils</h1>
                         </div>
                         <div class="widget-body">
                             <ul class="trends">
-                                <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
-                                <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
-                                <li><i class="fa fa-fw fa-key"></i> Polutpat ras lorem</li>
-                                <li><i class="fa fa-fw fa-key"></i> Luctus nec seded justo</li>
-                                <li><i class="fa fa-fw fa-key"></i> Morbi ut tellus ac leo</li>
-                                <li><i class="fa fa-fw fa-key"></i> Varius onec rhons</li>
+                                {% if user.is_authenticated %}
+                                    <li><i class="fa fa-fw fa-key"></i> Ne pas omettre les informations clés.</li>
+                                    <li><i class="fa fa-fw fa-key"></i> Ne pas exagérer sur la capacité ou la
+                                        performance d'un produit.
+                                    </li>
+                                    <li><i class="fa fa-fw fa-key"></i> Attention aux allégations dans les noms de
+                                        produits.
+                                    </li>
+                                    <li><i class="fa fa-fw fa-key"></i> Soyez sûr que les images s'affichent bien.</li>
+
+                                {% else %}
+                                    <li><i class="fa fa-fw fa-key"></i> Toujours regarder l'état du produit</li>
+                                    <li><i class="fa fa-fw fa-key"></i> Faire confiance en votre instinct</li>
+                                    <li><i class="fa fa-fw fa-key"></i> Les annonces similaires aident toujours</li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>
@@ -299,6 +307,32 @@
                     error: function (rs, e) {
                         alert("Une erreur est survenue");
                         console.log(rs.responseText)
+                    }
+                });
+            });
+            $(document).on('click', '#featured', function (e) {
+                var feature_section = $('#feature_section');
+                var id = $('#ad_id').val();
+                var feature_alert = $("#feature_alert");
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "ads:feature_ad" %}',
+                    headers: {'X-CSRFToken': "{{ csrf_token }}"},
+                    data: {'id': id},
+                    dataType: 'json',
+                    success: function (response) {
+                        feature_section.html(response['featured']);
+                        console.log('ok');
+                        feature_alert.html("La mise en vedette a été modifiée");
+                        feature_alert.addClass('alert alert-info');
+                        //feature_alert.addClass("alert alert-info");
+                        feature_alert.fadeTo(2000, 500).slideUp(500, function () {
+                            feature_alert.slideUp(500);
+                        });
+                    },
+                    error: function (rs, e) {
+                        alert("Une erreur est survenue");
+                        console.log(rs.responseText);
                     }
                 });
             });
