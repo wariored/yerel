@@ -280,9 +280,7 @@ This function print the first 5 ads of the user with ajax request
 
 @login_required
 def my_ads(request):
-    myAds = [aduser.ads.all().exclude(is_deleted=True).first()
-             for aduser in request.user.aduser.all()
-             if len(aduser.ads.all().exclude(is_deleted=True)) != 0]
+    myAds = request.user.aduser.first().ads.all().order_by('-creation_date')
 
     paginator = Paginator(myAds, 4)
     page = request.GET.get('page')
@@ -305,8 +303,6 @@ def my_ads(request):
 '''
 Handle the update of a ad by the aduser 
 '''
-
-
 @login_required
 def update_ad(request, random_url):
     try:
@@ -354,15 +350,23 @@ def delete_ad(request, random_url):
 '''
  ad_satus function handle whether a ad is active or not 
 '''
-
-
 @login_required
-def ad_status(request, random_url):
+def ad_status(request):
     try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
+        ad = get_object_or_404(Ad, id=request.POST.get('id'))
         ad.is_active = not ad.is_active
-        ad.save()
+        ad.save()        
+        myAds = request.user.aduser.first().ads.all().order_by('-creation_date')
+        paginator = Paginator(myAds, 4)
+        page = request.GET.get('page')
+        ads = paginator.get_page(page)
+        context = {
+        'ads': ads
+    }
+        if request.is_ajax():
+            html = render_to_string('ads/myAds.html', context, request=request)
+            return JsonResponse({'form': html})
+
     except ValidationError:
         raise Http404
     # return render(request, 'ads/my_ads.html')

@@ -77,6 +77,26 @@
                     }
                 });
             });
+            $(document).on('click', '#status', function(e){
+                e.preventDefault();
+                var pk = $(this).attr('value');
+                var ads_section = $("#my_ads_section");
+                $.ajax({
+                    type: 'POST',
+                    url : "{% url 'ads:ad_status' %}",
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    data: {'id': pk},
+                    dataType: 'json',
+                    success: function (response) {
+                        ads_section.html(response['form'])
+                    },
+                    error: function (rs, e) {
+                        alert("Une erreur est survenue");
+                        console.log(rs.responseText)
+                    }
+
+                });
+            });
         });
      </script>
 {% endblock javascripts %}
