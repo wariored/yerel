@@ -13,6 +13,7 @@ from django.utils import timezone
 from PIL import Image
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
+from django.core.mail import EmailMessage
 
 from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured
@@ -371,7 +372,15 @@ def ad_status(request, random_url):
 
 @login_required
 def my_alerts(request):
-    return render(request, 'ads/my_alerts.html')
+    alltop = Category.objects.filter(category_type = "T")
+    if request.method == "POST":
+        email = request.POST['email']
+        option = request.POST['radioInline']
+        category = request.POST['category']
+    context = {
+        'top':alltop , 
+    }
+    return render(request, 'ads/my_alerts.html', context)
 
 
 @login_required
