@@ -1,7 +1,7 @@
 import uuid
 
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.validators import validate_email
 from django.db import transaction
@@ -150,7 +150,8 @@ def create_post_verification(request):
             try:
                 ad_user = AdUser.objects.get(email=email)
             except AdUser.DoesNotExist:
-                ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email) 
+                ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email)
+            # except AdUser.MultipleObjectsReturned
         else:
             user = request.user
             given_name = user.first_name + ' ' + user.last_name
