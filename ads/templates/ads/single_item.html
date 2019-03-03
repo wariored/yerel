@@ -52,7 +52,7 @@
                             <div class="item single-ads">
                                 <div class="item-ads-grid margin-bottom-none">
                                     <div class="item-title-single">
-                                        <a href="single.html">
+                                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
                                             <h1>{{ ad.title }}</h1>
                                         </a>
                                         <div class="item-meta">

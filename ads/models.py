@@ -7,6 +7,7 @@ import uuid
 import os
 from pricing.models import Account
 from yeureul import statics_variables, utils_functions
+from .search import AdIndex
 
 
 def get_file_path(instance, filename):
@@ -134,6 +135,22 @@ class Ad(models.Model):
         else:
             return True
 
+    def indexing(self):
+        obj = AdIndex(
+            meta={'id': self.id},
+            ad_user=self.ad_user.given_name,
+            creation_date=self.creation_date,
+            title=self.title,
+            price=self.price,
+            description=self.description,
+            condition=self.condition,
+            location=self.location.name,
+            subcategory=self.subcategory.name
+
+        )
+        obj.save()
+        return obj.to_dict(include_meta=True)
+
 
 class AdFile(models.Model):
     """Images related to an Ad"""
@@ -145,10 +162,14 @@ class AdFile(models.Model):
         return self.ad.title + '_' + str(self.id)
 
 
+def two_days_hence():
+    return timezone.now() + timezone.timedelta(days=2)
+
+
 class AdFeatured(models.Model):
     ad = models.OneToOneField(Ad, related_name='feature', on_delete=models.CASCADE)
     start_date = models.DateTimeField('start date', auto_now_add=True)
-    end_date = models.DateTimeField('end date', default=utils_functions.days_hence(statics_variables.FEATURED_DAYS))
+    end_date = models.DateTimeField('end date', default=two_days_hence)
     history = HistoricalRecords()
 
     def is_active(self):
