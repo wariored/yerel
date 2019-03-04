@@ -1,7 +1,6 @@
 {% extends 'registration/account/base_account.html' %}
 {% load i18n %}
 {% load staticfiles %}
-
 {% block account_pagination %}
     <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
     <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
@@ -14,12 +13,13 @@
 {% block deleteConfirmation %}
 {% if delete_confirmation  %}
     <br>
-    <div class="container">
+    <div>
         <div class="alert alert-warning text-center">
             <br>
             <form method="POST">
                 {% csrf_token %}
                 <div class="form-group text-center">
+                    <h3 >Voulez-vous vraiment supprimer cette annonce?</h3>
                     <button type="submit" name='validation' value='Confirmer' 
                             class="btn btn-success" style="margin:10px">
                         <i class="fa fa-check" ></i>
@@ -39,7 +39,12 @@
     
 
 {% block account_content %}
-   {% include 'ads/myAds.html' %}
+ <!-- My Ads --> 
+<section class="my-ads">
+    {% include 'ads/myAds.html' %}
+</section>
+<!-- End My Ads -->
+  
 {% endblock %}
 
 {% block javascripts %}

@@ -280,7 +280,7 @@ This function print the first 5 ads of the user with ajax request
 
 @login_required
 def my_ads(request):
-    myAds = request.user.aduser.first().ads.all().order_by('-creation_date')
+    myAds = request.user.aduser.first().ads.all().order_by('-creation_date').filter(is_deleted=False)
 
     paginator = Paginator(myAds, 4)
     page = request.GET.get('page')
@@ -329,6 +329,15 @@ def delete_ad(request, random_url):
         delete_confirmation = False
         if request.method == "GET":
             delete_confirmation = True
+            myAds = request.user.aduser.first().ads.all().filter(is_deleted=False).order_by('-creation_date')
+
+            paginator = Paginator(myAds, 4)
+            page = request.GET.get('page')
+            ads = paginator.get_page(page)
+            context = {
+            'delete_confirmation': delete_confirmation,
+            'ads': ads
+            }
 
         if request.method == "POST":
             validation = request.POST['validation']
@@ -339,9 +348,7 @@ def delete_ad(request, random_url):
             else:
                 pass
             return redirect('ads:my_ads')
-        context = {
-            'delete_confirmation': delete_confirmation
-        }
+
     except ValidationError:
         raise Http404
     return render(request, 'ads/my_ads.html', context)
@@ -356,13 +363,13 @@ def ad_status(request):
         ad = get_object_or_404(Ad, id=request.POST.get('id'))
         ad.is_active = not ad.is_active
         ad.save()        
-        myAds = request.user.aduser.first().ads.all().order_by('-creation_date')
+        myAds = request.user.aduser.first().ads.all().filter(is_deleted=False).order_by('-creation_date')
         paginator = Paginator(myAds, 4)
         page = request.GET.get('page')
         ads = paginator.get_page(page)
         context = {
         'ads': ads
-    }
+        }
         if request.is_ajax():
             html = render_to_string('ads/myAds.html', context, request=request)
             return JsonResponse({'form': html})
