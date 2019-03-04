@@ -187,12 +187,73 @@ def create_post_verification(request):
         request.session['create_post_success'] = 'success'
     return redirect('ads:create_post')
 
+'''
+Handle the update of a ad by the aduser 
+'''
+@login_required
+def update_ad(request, random_url):
+    try:
+        random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+        categories = Category.objects.filter(category_type='T')
+        locations = Location.objects.all()
+        update_ad_error = request.session.get('update_ad_error', None)
+        if update_ad_error:
+            del request.session['update_ad_error']
+        context = {
+            'ad': ad,
+            'categories_t':categories,
+            'locations':locations,
+            'update_ad_error':update_ad_error
+            }
+    except ValidationError:
+        raise Http404
+    return render(request, 'ads/update_post.html', context)
+
+
 
 @transaction.atomic
-def update_post_verification(request):
-    pass
+def update_ad_verification(request, random_url):
+     if request.method == 'POST':
+            random_url = uuid.UUID(random_url)
+            ad = Ad.objects.get(random_url=random_url)
+            images = AdFile.objects.filter(ad=ad)
+            category = request.POST['category']
+            condition = request.POST['condition']
+            price = request.POST['price']
+            photos = request.FILES.getlist('photos', None)
+            location = request.POST['location']
+            description = request.POST['description']
+            
+            if not price or len(price) > 30:
+                request.session['update_ad_error'] = 'price'
+                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
 
-
+            if photos:
+                if len(photos) > statics_variables.MAX_PHOTOS:
+                    request.session['update_ad_error'] = 'photos'
+                    return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+                check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
+                if 'error' in check_photos:
+                    request.session['update_ad_error'] = 'photos'
+                    return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            if photos:
+                images.delete()
+                for photo in photos:
+                    try:
+                        Image.open(photo)
+                        AdFile.objects.create(ad=ad, media=photo)
+                    except:
+                        request.session['create_post_error'] = 'photo_format'
+                        return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            
+            ad.description = description
+            ad.price = price
+            ad.condition = condition
+            ad.subcategory = Category.objects.get(pk=category)
+            ad.location = Location.objects.get(pk=location)
+            ad.save()
+            return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
 def single_item(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
@@ -298,28 +359,6 @@ def my_ads(request):
         return JsonResponse({'form': html})
 
     return render(request, 'ads/my_ads.html', context)
-
-
-'''
-Handle the update of a ad by the aduser 
-'''
-@login_required
-def update_ad(request, random_url):
-    try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
-        form = AdForm(request.POST or None, instance=ad)
-        if form.is_valid():
-            form.save()
-            return render(request, 'ads/single_item.html', {'ad': ad})
-        context = {
-            'form': form,
-            'ad': ad
-        }
-    except ValidationError:
-        raise Http404
-    return render(request, 'ads/update_post.html', context)
-
 
 @login_required
 def delete_ad(request, random_url):

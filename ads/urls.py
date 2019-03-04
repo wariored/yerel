@@ -19,5 +19,6 @@ urlpatterns = [
     path('delete/<str:random_url>' , views.delete_ad, name="delete_ad"),
     path('status/' , views.ad_status, name="ad_status"),
     path('update/<str:random_url>' , views.update_ad, name="update_ad"),
+    path('update_ad_verifation/<str:random_url>' , views.update_ad_verification, name="update_ad_verification"),
 
 ]
