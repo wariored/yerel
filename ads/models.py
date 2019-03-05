@@ -7,7 +7,6 @@ import uuid
 import os
 from pricing.models import Account
 from yeureul import statics_variables, utils_functions
-from .search import AdIndex
 
 
 def get_file_path(instance, filename):
@@ -55,7 +54,7 @@ class AdUser(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.email 
+        return self.email
 
     def has_reached_ads_limit(self, request):
         today = timezone.datetime.today()
@@ -134,22 +133,6 @@ class Ad(models.Model):
             return False
         else:
             return True
-
-    def indexing(self):
-        obj = AdIndex(
-            meta={'id': self.id},
-            ad_user=self.ad_user.given_name,
-            creation_date=self.creation_date,
-            title=self.title,
-            price=self.price,
-            description=self.description,
-            condition=self.condition,
-            location=self.location.name,
-            subcategory=self.subcategory.name
-
-        )
-        obj.save()
-        return obj.to_dict(include_meta=True)
 
 
 class AdFile(models.Model):
