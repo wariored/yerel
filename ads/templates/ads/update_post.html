@@ -11,7 +11,15 @@
 {% endblock %}
 
 {% block authentication_content %}
-
+    {% if update_ad_error == 'price' %}
+        <div class="alert alert-danger text-center">Le prix doit être un nombre et ne doit pas être supérieur à 30
+                chiffres
+        </div>
+    {% elif update_ad_error == 'photos' %}
+        <div class="alert alert-danger text-center">Vous avez droit à 5 photos et la taille de chacune ne doit pas
+            dépasser 2.5Mo
+        </div>
+    {% endif %}
 
 <!-- Update Post -->
 <section class="create-post">
@@ -20,23 +28,23 @@
                 <div class="col-sm-6 col-sm-offset-3">
                     <div class="login-panel widget margin-bottom-none">
                         <div class="login-body">
-                            <form method="POST" action="{% url 'ads:create_post_verification' %}"
+                            <form method="POST" action="{% url 'ads:update_ad_verification' ad.random_url.hex %}"
                                   enctype="multipart/form-data">
-                                <div class="form-group">
-                                    {% csrf_token %}
-                                    {{ form.as_p }}
-                                    <!-- <label class="control-label">Titre de l'annonce <span
-                                            class="required">*</span></label>
-                                    <input value="{{ dict_values.title }}" name="title" type="text"
-                                           placeholder="exemple: Apple iPhone SE 2017" class="form-control border-form">
-                                </div>
+                                  {% csrf_token %}
+                                  <p>Le titre de votre annonce est : <strong>{{ ad.title }}</strong> et n'est pas modifiable</p>
                                 <div class="form-group">
                                     <label class="control-label">Categorie <span class="required">*</span></label>
                                     <select name="category" class="form-control border-form">
                                         {% for category in categories_t %}
                                             <optgroup label="{{ category.name }}">
                                                 {% for subcategory in category.subcategories.all %}
-                                                    <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                                    {% if ad.subcategory == subcategory %}
+                                                        <option selected value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                                    {% else %}
+                                                        <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                                    {% endif %}
+                                                    
+                                                    
                                                 {% endfor %}
                                             </optgroup>
                                         {% endfor %}
@@ -62,7 +70,7 @@
                                     <label class="control-label">Prix <span class="required">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-addon">FCFA</span>
-                                        <input value="{{ dict_values.price }}" name="price" type="text"
+                                        <input value="{{ ad.price }}" name="price" type="text"
                                                placeholder="exemple: 9999" class="form-control border-form">
                                     </div>
                                 </div>
@@ -74,7 +82,14 @@
                                     <label class="control-label">Lieu <span class="required">*</span></label>
                                     <select name="location" class="form-control border-form">
                                         {% for location in locations %}
-                                            <option value="{{ location.id }}">{{ location.name }}</option>
+                                            
+                                            {% if ad.location == location %}
+                                                <option selected value="{{ location.id }}">{{ location.name }}</option>
+                                            {% else %}
+                                                <option value="{{ location.id }}">{{ location.name }}</option>
+                                            {% endif %}
+                                                
+                                    
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -82,7 +97,7 @@
                                     <label class="control-label">Description <span class="required">*</span></label>
                                     <textarea name="description"
                                               placeholder="Inclure la marque, le modèle, l'âge et tous les accessoires inclus."
-                                              class="form-control border-form">{{ dict_values.description }}</textarea>
+                                              class="form-control border-form">{{ ad.description }}</textarea>
                                 </div>
                                 {% if not user.is_authenticated %}
                                     <div class="form-group">
@@ -104,9 +119,9 @@
                                                    class="form-control border-form">
                                         </div>
                                     </div>
-                                {% endif %} -->
+                                {% endif %}
                                 <div class="form-group text-right margin-bottom-none">
-                                    <button type="subuttonbmit" class="btn btn-success"><i class="fa fa-save"></i> Creer
+                                    <button type="submit" type="subuttonbmit" class="btn btn-success"><i class="fa fa-save"></i> Modifier
                                         annonce
                                     </button>
                                     <a href="{% url 'index' %}" type="submit" class="btn btn-danger"><i

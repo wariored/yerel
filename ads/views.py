@@ -1,7 +1,5 @@
-import uuid
-
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
+from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.core.validators import validate_email
 from django.db import transaction
@@ -14,9 +12,8 @@ from PIL import Image
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
 
-from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured
-
+import uuid
 
 def categories(request):
     categories_t = Category.objects.filter(category_type='T')
@@ -188,9 +185,73 @@ def create_post_verification(request):
     return redirect('ads:create_post')
 
 
+@login_required
+def update_ad(request, random_url):
+    """
+    Handle the update of a ad by the aduser
+    """
+    try:
+        if type(random_url) == str:
+            random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+        categories = Category.objects.filter(category_type='T')
+        locations = Location.objects.all()
+        update_ad_error = request.session.get('update_ad_error', None)
+        if update_ad_error:
+            del request.session['update_ad_error']
+        context = {
+            'ad': ad,
+            'categories_t': categories,
+            'locations': locations,
+            'update_ad_error': update_ad_error
+        }
+    except ValidationError:
+        raise Http404
+    return render(request, 'ads/update_post.html', context)
+
+
 @transaction.atomic
-def update_post_verification(request):
-    pass
+def update_ad_verification(request, random_url):
+    if request.method == 'POST':
+        random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+        images = AdFile.objects.filter(ad=ad)
+        category = request.POST['category']
+        condition = request.POST['condition']
+        price = request.POST['price']
+        photos = request.FILES.getlist('photos', None)
+        location = request.POST['location']
+        description = request.POST['description']
+
+        if not price or len(price) > 30:
+            request.session['update_ad_error'] = 'price'
+            return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+
+        if photos:
+            if len(photos) > statics_variables.MAX_PHOTOS:
+                request.session['update_ad_error'] = 'photos'
+                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
+            if 'error' in check_photos:
+                request.session['update_ad_error'] = 'photos'
+                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+        if photos:
+            images.delete()
+            for photo in photos:
+                try:
+                    Image.open(photo)
+                    AdFile.objects.create(ad=ad, media=photo)
+                except:
+                    request.session['create_post_error'] = 'photo_format'
+                    return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+
+        ad.description = description
+        ad.price = price
+        ad.condition = condition
+        ad.subcategory = Category.objects.get(pk=category)
+        ad.location = Location.objects.get(pk=location)
+        ad.save()
+        return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
 
 
 def single_item(request, random_url):
@@ -273,18 +334,24 @@ def favourite_ads(request):
     return render(request, 'ads/favourite.html')
 
 
-'''
-This function print the first 5 ads of the user with ajax request
-'''
-
-
 @login_required
 def my_ads(request):
-    myAds = [aduser.ads.all().exclude(is_deleted=True).first()
-             for aduser in request.user.aduser.all()
-             if len(aduser.ads.all().exclude(is_deleted=True)) != 0]
+    """
+    This function print the first 5 ads of the user with ajax request
+    It can handle delete request too
+    """
+    my_all_ads = []
+    ad_deletion = None
+    # if an Ad is deleted, check delete_ad views
+    if 'ad_deletion' in request.session:
+        ad_deletion = request.session['ad_deletion']
+        del request.session['ad_deletion']
+    try:
+        my_all_ads = request.user.adUser.ads.filter(is_deleted=False).order_by('-creation_date')
+    except AdUser.DoesNotExist:
+        pass
 
-    paginator = Paginator(myAds, 4)
+    paginator = Paginator(my_all_ads, 1)
     page = request.GET.get('page')
     try:
         ads = paginator.get_page(page)
@@ -292,77 +359,63 @@ def my_ads(request):
         ads = paginator.get_page(1)
     except PageNotAnInteger:
         ads = paginator.get_page(1)
-    context = {
-        'ads': ads
-    }
     if request.is_ajax():
+        context = {
+            'ads': ads,
+        }
         html = render_to_string('ads/myAds.html', context, request=request)
         return JsonResponse({'form': html})
 
+    context = {
+        'ads': ads,
+        'ad_deletion': ad_deletion
+    }
+
     return render(request, 'ads/my_ads.html', context)
 
 
-'''
-Handle the update of a ad by the aduser 
-'''
-
-
 @login_required
-def update_ad(request, random_url):
+def delete_ad(request, ad_id=None):
     try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
-        form = AdForm(request.POST or None, instance=ad)
-        if form.is_valid():
-            form.save()
-            return render(request, 'ads/single_item.html', {'ad': ad})
-        context = {
-            'form': form,
-            'ad': ad
-        }
-    except ValidationError:
+        ad_to_delete = Ad.objects.get(pk=ad_id, is_deleted=False)
+    except Ad.DoesNotExist:
         raise Http404
-    return render(request, 'ads/update_post.html', context)
+    else:
+        if request.user == ad_to_delete.ad_user.user:
+            ad_to_delete.is_deleted = True
+            ad_to_delete.is_active = False
+            ad_to_delete.save()
+            request.session['ad_deletion'] = 'ok'
+
+    return redirect("ads:my_ads")
 
 
 @login_required
-def delete_ad(request, random_url):
+def ad_status(request):
+    """
+     ad_satus function handle whether an ad is active or not
+    """
     try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
-        delete_confirmation = False
-        if request.method == "GET":
-            delete_confirmation = True
+        ad = get_object_or_404(Ad, id=request.POST.get('id'))
+        if request.user == ad.ad_user.user:
+            ad.is_active = not ad.is_active
+            ad.save()
+        my_all_ads = request.user.adUser.ads.filter(is_deleted=False).order_by('-creation_date')
+        paginator = Paginator(my_all_ads, 1)
 
-        if request.method == "POST":
-            validation = request.POST['validation']
-            if validation == 'Confirmer':
-                ad.is_deleted = True
-                ad.save()
-                print("deleted welll")
-            else:
-                pass
-            return redirect('ads:my_ads')
+        if request.is_ajax():
+            page = request.POST.get('page')
+        else:
+            page = request.GET.get('page')
+
+        ads = paginator.get_page(page)
         context = {
-            'delete_confirmation': delete_confirmation
+            'ads': ads
         }
-    except ValidationError:
-        raise Http404
-    return render(request, 'ads/my_ads.html', context)
+        if request.is_ajax():
+            html = render_to_string('ads/myAds.html', context, request=request)
+            return JsonResponse({'form': html})
 
-
-'''
- ad_satus function handle whether a ad is active or not 
-'''
-
-
-@login_required
-def ad_status(request, random_url):
-    try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
-        ad.is_active = not ad.is_active
-        ad.save()
     except ValidationError:
         raise Http404
     # return render(request, 'ads/my_ads.html')
@@ -377,8 +430,8 @@ def my_alerts(request):
 @login_required
 def feature_ad(request):
     if request.is_ajax:
-        id = request.POST.get('id')
-        ad = get_object_or_404(Ad, id=id)
+        ad_id = request.POST.get('id')
+        ad = get_object_or_404(Ad, id=ad_id)
         histo_feature = HistoricalFeatured.objects.filter(ad_id=ad.id).first()
         try:
             feature = ad.feature

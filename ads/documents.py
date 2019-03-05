@@ -41,5 +41,17 @@ class AdDocument(DocType):
             'condition',
         ]
 
-    # def get_instances_from_related(self, tag_instance):
-    #   return tag_instance.ad_set.all()
+    def get_instances_from_related(self, tag_instance):
+
+        """If related_models is set, define how to retrieve the instance(s) from the related model.
+        The related_models option should be used with caution because it can lead in the index
+        to the updating of a lot of items.
+        """
+        if isinstance(tag_instance, Category):
+            return tag_instance.subcateg_ads.all()
+        elif isinstance(tag_instance, AdUser):
+            return tag_instance.ads.all()
+        elif isinstance(tag_instance, Location):
+            return tag_instance.loc_ads.all()
+        elif isinstance(tag_instance, AdFile):
+            return tag_instance.ad
