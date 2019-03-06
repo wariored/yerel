@@ -351,7 +351,7 @@ def my_ads(request):
     except AdUser.DoesNotExist:
         pass
 
-    paginator = Paginator(my_all_ads, 1)
+    paginator = Paginator(my_all_ads, 5)
     page = request.GET.get('page')
     try:
         ads = paginator.get_page(page)
@@ -401,7 +401,7 @@ def ad_status(request):
             ad.is_active = not ad.is_active
             ad.save()
         my_all_ads = request.user.adUser.ads.filter(is_deleted=False).order_by('-creation_date')
-        paginator = Paginator(my_all_ads, 1)
+        paginator = Paginator(my_all_ads, 5)
 
         if request.is_ajax():
             page = request.POST.get('page')
