@@ -231,7 +231,7 @@ def update_ad_verification(request, random_url):
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
                 return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
-            check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
+            check_phexiotos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['update_ad_error'] = 'photos'
                 return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
