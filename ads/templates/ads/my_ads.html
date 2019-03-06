@@ -112,8 +112,7 @@
                 delete_confirmation.show();
                 $("#to_delete_title").html("<strong>" + title + "</strong>");
                 to_delete_id.val(ad_id);
-
-
+                $('html, body').animate({scrollTop: '0px'}, 0);
             });
             $("#deletion_rejected").click(function () {
                 delete_confirmation.hide();
