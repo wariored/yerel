@@ -7,6 +7,15 @@
     <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
     <li>Mes alertes</li>
 {% endblock %}
+{% block alert_message %}
+{% if email_error == 'email_error' %}
+<br>
+<div class="alert alert-danger text-center"> Email invalide</div>
+{% elif alert_success == 'alert_success' %}
+<br>
+<div class="alert alert-success text-center">Votre alerte est cree avec succes</div>
+{% endif %}
+{% endblock  %}
 {% block account_content %}
     <!-- My Alerts -->
     <section class="my-alerts">
@@ -18,65 +27,118 @@
                             <h1>Mes Alertes</h1>
                         </div>
                         <div class="widget-body">
-                            <h3>What Are Ad Alerts?</h3>
-                            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
-                                Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris
-                                placerat eleifend leo. Pellentesque habitant morbi tristique senectus et netus et
-                                malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies
-                                eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean
-                                ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                            <h3>Que sont les alertes publicitaires?</h3>
+                            <p>Une alerte publicitaire est un service d'envoi automatisé de courriers electroniques à partir 
+<<<<<<< HEAD
+                               des demandes d'alertes sur la categorie d'annonces choisie par l'utilisateur, à une fréquence régulière.
+                               
+=======
+                               de vos demandes d'alertes sur la categorie d'annonces choisie par l'utilisateur, à une fréquence régulière:
+>>>>>>> OULI
+                            </p>
                             <p>&nbsp;</p>
-                            <h3>How Do I Set An Ad Alert?</h3>
-                            <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis
-                                egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
-                                Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est.</p>
+                            <h3>Comment définir une alerte publicitaire?</h3>
+                            <p>
+                            </p>
                             <p>&nbsp;</p>
-                            <form class="row">
+                            <form method="POST" class="row" action="{% url 'ads:my_alert_confirmation' %}">
+                                {% csrf_token %}
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Email Address <span class="required">*</span></label>
+                                    <label class="col-sm-3 control-label">Adresse  Email <span class="required">*</span></label>
                                     <div class="col-sm-9">
-                                        <input class="form-control border-form" type="email" value=""
+                                        <input name="email" class="form-control border-form" type="email" value="{{ my_alert.email }}"
                                                placeholder="example@gmail.com">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Frequency <span
+                                    <label class="col-sm-3 control-label">Freqquence <span
                                             class="required">*</span></label>
                                     <div class="col-sm-9">
+                                        {% if my_alert.frequency == 'D' %}
                                         <div class="radio radio-info radio-inline">
-                                            <input type="radio" checked="" name="radioInline" value="option1"
+                                            <input type="radio" checked="" name="radioInline" value="D"
                                                    id="inlineRadio1">
-                                            <label for="inlineRadio1"> Once a day </label>
+                                            <label for="inlineRadio1"> Une fois par jour </label>
                                         </div>
                                         <div class="radio radio-info radio-inline">
-                                            <input type="radio" name="radioInline" value="option1" id="inlineRadio2">
-                                            <label for="inlineRadio2"> Once a week </label>
+                                            <input type="radio" name="radioInline" value="W" id="inlineRadio2">
+                                            <label for="inlineRadio2"> Une fois par semaine </label>
                                         </div>
                                         <div class="radio radio-info radio-inline">
-                                            <input type="radio" name="radioInline" value="option1" id="inlineRadio3">
-                                            <label for="inlineRadio3"> Once a month </label>
+                                            <input type="radio" name="radioInline" value="M" id="inlineRadio3">
+                                            <label for="inlineRadio3"> Une fois par mois </label>
                                         </div>
+                                        {% elif my_alert.frequency == 'W' %}
+                                        <div class="radio radio-info radio-inline">
+                                                <input type="radio"  name="radioInline" value="D"
+                                                       id="inlineRadio1">
+                                                <label for="inlineRadio1"> Une fois par jour </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" checked="" name="radioInline" value="W" id="inlineRadio2">
+                                                <label for="inlineRadio2"> Une fois par semaine </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" name="radioInline" value="M" id="inlineRadio3">
+                                                <label for="inlineRadio3"> Une fois par mois </label>
+                                            </div>
+                                        {% elif my_alert.frequency == 'M' %}
+                                        <div class="radio radio-info radio-inline">
+                                                <input type="radio"  name="radioInline" value="D"
+<<<<<<< HEAD
+def ad_status(request):
+def ad_status(request):
+id="inlineRadio1">
+=======
+                                                       id="inlineRadio1">
+>>>>>>> OULI
+                                                <label for="inlineRadio1"> Une fois par jour </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" name="radioInline" value="W" id="inlineRadio2">
+                                                <label for="inlineRadio2"> Une fois par semaine </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio"  checked="" name="radioInline" value="M" id="inlineRadio3">
+                                                <label for="inlineRadio3"> Une fois par mois </label>
+                                            </div>
+                                        {% else %}
+                                        <div class="radio radio-info radio-inline">
+                                                <input type="radio"  name="radioInline" value="D"
+                                                       id="inlineRadio1">
+                                                <label for="inlineRadio1"> Une fois par jour </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" name="radioInline" value="W" id="inlineRadio2">
+                                                <label for="inlineRadio2"> Une fois par semaine </label>
+                                            </div>
+                                            <div class="radio radio-info radio-inline">
+                                                <input type="radio" name="radioInline" value="M" id="inlineRadio3">
+                                                <label for="inlineRadio3"> Une fois par mois </label>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">Pick a Category <span
+                                    <label class="col-sm-3 control-label">Choisir une Categorie <span
                                             class="required">*</span></label>
                                     <div class="col-sm-9">
-                                        <select class="form-control border-form">
-                                            <option selected="">All Category</option>
-                                            <option>Hand Phone</option>
-                                            <option>Motorcycle</option>
-                                            <option>Properti</option>
+                                        <select name="category" class="form-control border-form">
+                                            {% for category in all_categories %}
+                                                {% if category == my_alert.category %}
+                                                <option selected value="{{ category.id }}" >{{ category.name}} </option>
+                                                {% else %}
+                                                <option value="{{ category.id }}" >{{ category.name}} </option>
+                                                {% endif %}
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-offset-3 col-sm-9">
-                                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Create
-                                            Alert
+                                        <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Valider
                                         </button>
-                                        <button class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Cancel
+                                        <button class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Annuler
                                         </button>
                                     </div>
                                 </div>
