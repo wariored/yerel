@@ -8,6 +8,7 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.core.validators import validate_email
 from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
@@ -16,7 +17,7 @@ from yeureul.utils_functions import ads_are_similar
 from django.core.mail import EmailMessage
 
 from .forms import AdForm
-from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured
+from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
 
 
 def categories(request):
@@ -370,18 +371,46 @@ def ad_status(request, random_url):
     return redirect('ads:my_ads')
 
 
-@login_required
+@login_required 
 def my_alerts(request):
-    alltop = Category.objects.filter(category_type = "T")
-    if request.method == "POST":
-        email = request.POST['email']
-        option = request.POST['radioInline']
-        category = request.POST['category']
+    try:
+        my_alert = Alert.objects.filter(user=request.user).last()
+        print(my_alert)
+    except:
+        pass
+    all_categories = Category.objects.filter(category_type = "T")
+    email_error_session = request.session.get('email_error', None)
+    alert_success = request.session.get('alert_success',None)
+    
+    if email_error_session :
+        del request.session['email_error']     
+    if alert_success:
+        del request.session['alert_success']
     context = {
-        'top':alltop , 
+        'all_categories': all_categories, 
+        'my_alert': my_alert ,
+        'email_error':  email_error_session,
+        'alert_success':alert_success
     }
     return render(request, 'ads/my_alerts.html', context)
 
+def my_alert_confirmation(request):
+     if request.method == "POST":
+        email = request.POST['email']
+        option = request.POST['radioInline']
+        category_id = request.POST['category']
+        category = Category.objects.get(id=category_id)
+        try:
+            validate_email(email)
+        except:
+            print("ok")
+            request.session['email_error'] = 'email_error'
+            return redirect('ads:my_alerts') 
+        
+        alert = Alert.objects.create(user = request.user, email = email, frequency = option, category = category )
+        alert.save()
+        request.session['alert_success'] = 'alert_success'
+        return redirect('ads:my_alerts') 
 
 @login_required
 def feature_ad(request):
