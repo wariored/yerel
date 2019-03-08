@@ -29,12 +29,7 @@
                         <div class="widget-body">
                             <h3>Que sont les alertes publicitaires?</h3>
                             <p>Une alerte publicitaire est un service d'envoi automatisé de courriers electroniques à partir 
-<<<<<<< HEAD
-                               des demandes d'alertes sur la categorie d'annonces choisie par l'utilisateur, à une fréquence régulière.
-                               
-=======
                                de vos demandes d'alertes sur la categorie d'annonces choisie par l'utilisateur, à une fréquence régulière:
->>>>>>> OULI
                             </p>
                             <p>&nbsp;</p>
                             <h3>Comment définir une alerte publicitaire?</h3>
@@ -85,13 +80,7 @@
                                         {% elif my_alert.frequency == 'M' %}
                                         <div class="radio radio-info radio-inline">
                                                 <input type="radio"  name="radioInline" value="D"
-<<<<<<< HEAD
-def ad_status(request):
-def ad_status(request):
-id="inlineRadio1">
-=======
                                                        id="inlineRadio1">
->>>>>>> OULI
                                                 <label for="inlineRadio1"> Une fois par jour </label>
                                             </div>
                                             <div class="radio radio-info radio-inline">
@@ -138,8 +127,9 @@ id="inlineRadio1">
                                     <div class="col-sm-offset-3 col-sm-9">
                                         <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Valider
                                         </button>
-                                        <button class="btn btn-danger" type="submit"><i class="fa fa-close"></i> Annuler
-                                        </button>
+                                        <a href="{% url 'ads:my_ads' %}" type="submit" class="btn btn-danger"><i
+                                            class="fa fa-close"></i> Annuler</a>
+                                    </button> 
                                     </div>
                                 </div>
                             </form>

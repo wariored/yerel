@@ -361,7 +361,6 @@ def my_ads(request):
 
     paginator = Paginator(my_all_ads, 5)
     page = request.GET.get('page')
-def ad_status(request):
     try:
         ads = paginator.get_page(page)
     except EmptyPage:
