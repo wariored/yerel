@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles ads_categories_number featured_ads %}
+{% load staticfiles ads_categories_number featured_ads timesince_creation %}
 {% load i18n %}
 {% block content %}
     <!-- Categories Page Search-->
@@ -82,7 +82,7 @@
                                                 <ul>
                                                     <li class="item-date"><i class="fa fa-clock-o"></i>
                                                         {% language 'fr' %}
-                                                            {{ ad.creation_date }} {% endlanguage %}</li>
+                                                            {{ ad.creation_date|timesince_creation }} {% endlanguage %}</li>
                                                     <li class="item-cat"><i class="fa fa-glass"></i> <a
                                                             href="#">{{ ad.subcategory.sup_category.name }}</a> , <a href="#">{{ ad.subcategory.name }}</a></li>
                                                     <li class="item-location"><a href="#"><i

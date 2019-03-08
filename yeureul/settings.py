@@ -39,7 +39,7 @@ SECRET_KEY = get_env_variable('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 if DEBUG:
-    ALLOWED_HOSTS = [] 
+    ALLOWED_HOSTS = []
 else:
     ALLOWED_HOSTS = ['*']
 
@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'simple_history',
     'reversion',
-    'elasticsearch_dsl'
+    'django_elasticsearch_dsl'
 ]
 
 MIDDLEWARE = [
@@ -187,5 +187,11 @@ if DEBUG:
 paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS
 
 OPR = dict()
-
 # end paydunya config  #####
+
+# elasticsearch_dsl config
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}

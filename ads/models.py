@@ -7,7 +7,6 @@ import uuid
 import os
 from pricing.models import Account
 from yeureul import statics_variables, utils_functions
-from .search import AdIndex
 
 
 def get_file_path(instance, filename):
@@ -50,12 +49,12 @@ class AdUser(models.Model):
     given_name = models.CharField(max_length=50)
     phone_number = models.IntegerField(null=True, blank=True)
     email = models.EmailField(blank=True)
-    user = models.ForeignKey(User, related_name='aduser', null=True, blank=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='adUser', null=True, blank=True, on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.email 
+        return self.email
 
     def has_reached_ads_limit(self, request):
         today = timezone.datetime.today()
@@ -112,7 +111,7 @@ class Ad(models.Model):
     price = models.FloatField(max_length=30, validators=[MinValueValidator(500)])
     condition = models.CharField(max_length=1, choices=AD_CONDITION, blank=True)
     description = models.TextField(max_length=2000)
-    random_url = models.UUIDField(default=uuid.uuid4)
+    random_url = models.UUIDField(default=uuid.uuid4, editable=False)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
@@ -134,22 +133,6 @@ class Ad(models.Model):
             return False
         else:
             return True
-
-    def indexing(self):
-        obj = AdIndex(
-            meta={'id': self.id},
-            ad_user=self.ad_user.given_name,
-            creation_date=self.creation_date,
-            title=self.title,
-            price=self.price,
-            description=self.description,
-            condition=self.condition,
-            location=self.location.name,
-            subcategory=self.subcategory.name
-
-        )
-        obj.save()
-        return obj.to_dict(include_meta=True)
 
 
 class AdFile(models.Model):
