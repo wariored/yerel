@@ -226,7 +226,11 @@ def update_ad_verification(request, random_url):
         if not price or len(price) > 30:
             request.session['update_ad_error'] = 'price'
             return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
-
+        
+        if not description or len(description) > 2000:
+            request.session['update_ad_error'] = 'description'
+            return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+        
         if photos:
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
