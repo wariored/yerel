@@ -19,6 +19,10 @@
         <div class="alert alert-danger text-center">Vous avez droit à 5 photos et la taille de chacune ne doit pas
             dépasser 2.5Mo
         </div>
+    {% elif update_ad_error == 'description' %}
+    <div class="alert alert-danger text-center">La description est obligatoire et ne pas dépasser 2000
+        caractères
+    </div>
     {% endif %}
 
 <!-- Update Post -->
