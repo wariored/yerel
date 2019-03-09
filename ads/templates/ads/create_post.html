@@ -28,7 +28,7 @@
         {% elif create_post_error == 'condition' %}
             <div class="alert alert-danger text-center">La condition n'est pas bonne</div>
         {% elif create_post_error == 'price' %}
-            <div class="alert alert-danger text-center">Le prix doit être un nombre et ne doit pas être supérieur à 30
+            <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit pas être supérieur à 30
                 chiffres
             </div>
         {% elif create_post_error == 'photos' %}
@@ -38,7 +38,7 @@
         {% elif create_post_error == 'location' %}
             <div class="alert alert-danger text-center">Le lieu n'existe pas</div>
         {% elif create_post_error == 'description' %}
-            <div class="alert alert-danger text-center">La description est obligatoire et ne pas dépasser 2000
+            <div class="alert alert-danger text-center">La description est obligatoire et doit être entre 20 et 2000
                 caractères
             </div>
         {% elif create_post_error == 'name' %}

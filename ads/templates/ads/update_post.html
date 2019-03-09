@@ -12,17 +12,21 @@
 
 {% block authentication_content %}
     {% if update_ad_error == 'price' %}
-        <div class="alert alert-danger text-center">Le prix doit être un nombre et ne doit pas être supérieur à 30
-                chiffres
+        <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit pas être
+            supérieur à 30 chiffres
         </div>
     {% elif update_ad_error == 'photos' %}
         <div class="alert alert-danger text-center">Vous avez droit à 5 photos et la taille de chacune ne doit pas
             dépasser 2.5Mo
         </div>
+    {% elif update_ad_error == 'description' %}
+        <div class="alert alert-danger text-center">La description est obligatoire et doit être entre 20 et 2000
+            caractères
+        </div>
     {% endif %}
 
-<!-- Update Post -->
-<section class="create-post">
+    <!-- Update Post -->
+    <section class="create-post">
         <div class="container">
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3">
@@ -30,8 +34,9 @@
                         <div class="login-body">
                             <form method="POST" action="{% url 'ads:update_ad_verification' ad.random_url.hex %}"
                                   enctype="multipart/form-data">
-                                  {% csrf_token %}
-                                  <p>Le titre de votre annonce est : <strong>{{ ad.title }}</strong> et n'est pas modifiable</p>
+                                {% csrf_token %}
+                                <p>Le titre de votre annonce est : <strong>{{ ad.title }}</strong> et n'est pas
+                                    modifiable</p>
                                 <div class="form-group">
                                     <label class="control-label">Categorie <span class="required">*</span></label>
                                     <select name="category" class="form-control border-form">
@@ -39,12 +44,13 @@
                                             <optgroup label="{{ category.name }}">
                                                 {% for subcategory in category.subcategories.all %}
                                                     {% if ad.subcategory == subcategory %}
-                                                        <option selected value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                                        <option selected
+                                                                value="{{ subcategory.id }}">{{ subcategory.name }}</option>
                                                     {% else %}
                                                         <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
                                                     {% endif %}
-                                                    
-                                                    
+
+
                                                 {% endfor %}
                                             </optgroup>
                                         {% endfor %}
@@ -82,14 +88,14 @@
                                     <label class="control-label">Lieu <span class="required">*</span></label>
                                     <select name="location" class="form-control border-form">
                                         {% for location in locations %}
-                                            
+
                                             {% if ad.location == location %}
                                                 <option selected value="{{ location.id }}">{{ location.name }}</option>
                                             {% else %}
                                                 <option value="{{ location.id }}">{{ location.name }}</option>
                                             {% endif %}
-                                                
-                                    
+
+
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -121,12 +127,13 @@
                                     </div>
                                 {% endif %}
                                 <div class="form-group text-right margin-bottom-none">
-                                    <button type="submit" type="subuttonbmit" class="btn btn-success"><i class="fa fa-save"></i> Modifier
+                                    <button type="submit" type="subuttonbmit" class="btn btn-success"><i
+                                            class="fa fa-save"></i> Modifier
                                         annonce
                                     </button>
                                     <a href="{% url 'index' %}" type="submit" class="btn btn-danger"><i
                                             class="fa fa-close"></i> Annuler</a>
-                                    </button> 
+                                    </button>
                                 </div>
                             </form>
                         </div>

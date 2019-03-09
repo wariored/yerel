@@ -15,6 +15,7 @@ from yeureul.utils_functions import ads_are_similar
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured
 import uuid
 
+
 def categories(request):
     categories_t = Category.objects.filter(category_type='T')
     return render(request, 'ads/categories_pages/categories.html',
@@ -93,8 +94,12 @@ def create_post_verification(request):
             return redirect('ads:create_post')
         else:
             try:
-                float(price)
+                price = float(price)
             except ValueError:
+                request.session['create_post_error'] = 'price'
+                request.session['dict_values'] = dict_values
+                return redirect('ads:create_post')
+            if price < 500.00:
                 request.session['create_post_error'] = 'price'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
@@ -119,7 +124,7 @@ def create_post_verification(request):
                 request.session['create_post_error'] = 'location'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
-        if not description or len(description) > 2000:
+        if not description or len(description) not in range(20, 2000):
             request.session['create_post_error'] = 'description'
             request.session['dict_values'] = dict_values
             return redirect('ads:create_post')
@@ -194,14 +199,14 @@ def update_ad(request, random_url):
         if type(random_url) == str:
             random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
-        categories = Category.objects.filter(category_type='T')
+        categories_t = Category.objects.filter(category_type='T')
         locations = Location.objects.all()
         update_ad_error = request.session.get('update_ad_error', None)
         if update_ad_error:
             del request.session['update_ad_error']
         context = {
             'ad': ad,
-            'categories_t': categories,
+            'categories_t': categories_t,
             'locations': locations,
             'update_ad_error': update_ad_error
         }
@@ -225,6 +230,19 @@ def update_ad_verification(request, random_url):
 
         if not price or len(price) > 30:
             request.session['update_ad_error'] = 'price'
+            return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+        else:
+            try:
+                price = float(price)
+            except ValueError:
+                request.session['update_ad_error'] = 'price'
+                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            if price < 500.00:
+                request.session['update_ad_error'] = 'price'
+                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+
+        if not description or len(description) not in range(20, 2000):
+            request.session['update_ad_error'] = 'description'
             return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
 
         if photos:
@@ -305,7 +323,9 @@ def single_item_delete(request, random_url):
 
 
 def categories_grid(request):
-    return render(request, 'ads/categories_pages/categories_grid.html')
+    categories_t = Category.objects.filter(category_type='T')
+
+    return render(request, 'ads/categories_pages/categories_grid.html', dict(categories_t=categories_t))
 
 
 # handle the ad's like
@@ -450,3 +470,7 @@ def feature_ad(request):
                 histo_feature.save()
         html = render_to_string('ads/feature_section.html', {'ad': ad}, request=request)
         return JsonResponse({'featured': html})
+
+
+def search(request):
+    pass

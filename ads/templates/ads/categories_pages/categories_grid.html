@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load i18n %}
+{% load i18n ads_categories %}
 {% block content %}
     <!-- Categories Page Search-->
     <section class="categories-page-search">
@@ -71,69 +71,16 @@
                             </div>
                             <div class="widget-body">
                                 <ul class="trends">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-glass shortcut-icon icon-blue"></i>
-                                            <p>Restaurant
-                                                <small>5,56 Ads</small>
-                                            </p>
-                                        </a>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-home shortcut-icon icon-green"></i>
-                                            <p>Real Estate
-                                                <small>9,156 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-car shortcut-icon icon-brown"></i>
-                                            <p>Cars
-                                                <small>6,16 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-shopping-cart shortcut-icon icon-violet"></i>
-                                            <p>Shopping
-                                                <small>98,156 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-briefcase shortcut-icon icon-dark-blue"></i>
-                                            <p>Job
-                                                <small>9,16 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-building-o shortcut-icon icon-orange"></i>
-                                            <p>Hotels
-                                                <small>6,56 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-star shortcut-icon icon-light-blue"></i>
-                                            <p>Services
-                                                <small>2,156 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-paw shortcut-icon icon-light-green"></i>
-                                            <p>Pets
-                                                <small>9,156 Ads</small>
-                                            </p>
-                                        </a>
-                                    </li>
+                                    {% for category in categories_t %}
+                                        <li>
+                                            <a href="#">
+                                                <i class="{{ category.icon }}"></i>
+                                                <p>{{ category.name }}
+                                                    <small>{{ category.id|ads_number }} {{ category.id|ads_number|pluralize:" Annonce, Annonces" }} </small>
+                                                </p>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
                                 </ul>
                             </div>
                         </div>
@@ -241,27 +188,14 @@
                         </div>
                         <div class="widget listing-filter-block margin-bottom-none">
                             <div class="widget-header">
-                                <h1>Trending Ads </h1>
+                                <h1>Tendances </h1>
                             </div>
                             <div class="widget-body">
                                 <div class="similar-ads">
                                     <a href="single.html">
                                         <div class="similar-ad-left">
                                             <img class="img-responsive img-center"
-                                                 src="{% static 'externals/images/categories/restaurant/1.png' %}" alt="">
-                                        </div>
-                                        <div class="similar-ad-right">
-                                            <h4>Duis autem vel eum iriure do hen...</h4>
-                                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
-                                                Buffalo </p>
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </a>
-                                </div>
-                                <div class="similar-ads">
-                                    <a href="single.html">
-                                        <div class="similar-ad-left">
-                                            <img class="img-responsive img-center" src="{% static 'externals/images/categories/pets/1.png' %}"
+                                                 src="{% static 'externals/images/categories/restaurant/1.png' %}"
                                                  alt="">
                                         </div>
                                         <div class="similar-ad-right">
@@ -276,7 +210,23 @@
                                     <a href="single.html">
                                         <div class="similar-ad-left">
                                             <img class="img-responsive img-center"
-                                                 src="{% static 'externals/images/categories/real_estate/2.png' %}" alt="">
+                                                 src="{% static 'externals/images/categories/pets/1.png' %}"
+                                                 alt="">
+                                        </div>
+                                        <div class="similar-ad-right">
+                                            <h4>Duis autem vel eum iriure do hen...</h4>
+                                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i>
+                                                Buffalo </p>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </a>
+                                </div>
+                                <div class="similar-ads">
+                                    <a href="single.html">
+                                        <div class="similar-ad-left">
+                                            <img class="img-responsive img-center"
+                                                 src="{% static 'externals/images/categories/real_estate/2.png' %}"
+                                                 alt="">
                                         </div>
                                         <div class="similar-ad-right">
                                             <h4>Duis autem vel eum iriure do hen...</h4>
@@ -438,7 +388,8 @@
                                         <a href="#">HOT</a>
                                     </div>
                                     <div class="item-img-grid">
-                                        <img alt="" src="{% static 'externals/images/categories/job/1.png' %}" class="img-responsive img-center">
+                                        <img alt="" src="{% static 'externals/images/categories/job/1.png' %}"
+                                             class="img-responsive img-center">
                                         <div class="item-title">
                                             <a href="single.html">
                                                 <h4>Lorem Ipsum is simply</h4>

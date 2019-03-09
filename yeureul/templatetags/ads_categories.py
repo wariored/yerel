@@ -1,5 +1,5 @@
 from django import template
-from ads.models import Ad, Category
+from ads.models import Ad, Category, Location
 
 register = template.Library()
 
@@ -53,3 +53,15 @@ def ads_number(id_category):
         # add ads' number of a subcategory to the count
         ads_count += Ad.objects.filter(subcategory=subcategory, is_active=True, is_deleted=False).count()
     return ads_count
+
+
+@register.simple_tag
+def categories_and_subcategories():
+    categories_t = Category.objects.filter(category_type='T')
+    return categories_t
+
+
+@register.simple_tag
+def locations():
+    locations_all = Location.objects.all()
+    return locations_all

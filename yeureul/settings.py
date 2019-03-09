@@ -58,7 +58,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'simple_history',
     'reversion',
-    'django_elasticsearch_dsl'
+    'django_elasticsearch_dsl',
+    'django_cleanup'
 ]
 
 MIDDLEWARE = [
