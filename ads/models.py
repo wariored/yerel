@@ -176,11 +176,12 @@ ALERT_TYPE = (
     ('M', 'MONTH'),
 )
 
+
 class Alert(models.Model):
-    user = models.ForeignKey(User, related_name = 'alert_perso', on_delete = models.CASCADE)
+    user = models.ForeignKey(User, related_name='alert_perso', on_delete=models.CASCADE)
     email = models.EmailField()
-    frequency = models.CharField(max_length = 1, choices = ALERT_TYPE)
-    category = models.ForeignKey(Category, related_name = 'categorie', on_delete = models.CASCADE)
-    
+    frequency = models.CharField(max_length=1, choices=ALERT_TYPE)
+    category = models.ForeignKey(Category, related_name='categorie', on_delete=models.CASCADE)
+
     def __str__(self):
-        return  self.email + "_" + str(self.frequency) + "_" + self.category.name
+        return self.email + "_" + str(self.frequency) + "_" + self.category.name
