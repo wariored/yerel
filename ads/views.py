@@ -6,13 +6,16 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
+from django.core.validators import validate_email
 from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
+from django.core.mail import EmailMessage
 
-from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured
+from .forms import AdForm
+from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
 import uuid
 
 
@@ -249,7 +252,7 @@ def update_ad_verification(request, random_url):
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
                 return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
-            check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
+            check_phexiotos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['update_ad_error'] = 'photos'
                 return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
@@ -444,7 +447,44 @@ def ad_status(request):
 
 @login_required
 def my_alerts(request):
-    return render(request, 'ads/my_alerts.html')
+    try:
+        my_alert = Alert.objects.filter(user=request.user).last()
+    except:
+        my_alert = None
+    all_categories = Category.objects.filter(category_type="T")
+    email_error_session = request.session.get('email_error', None)
+    alert_success = request.session.get('alert_success', None)
+
+    if email_error_session:
+        del request.session['email_error']
+    if alert_success:
+        del request.session['alert_success']
+    context = {
+        'all_categories': all_categories,
+        'my_alert': my_alert,
+        'email_error': email_error_session,
+        'alert_success': alert_success
+    }
+    return render(request, 'ads/my_alerts.html', context)
+
+
+def my_alert_confirmation(request):
+    if request.method == "POST":
+        email = request.POST['email']
+        option = request.POST['radioInline']
+        category_id = request.POST['category']
+        category = Category.objects.get(id=category_id)
+        try:
+            validate_email(email)
+        except:
+            print("ok")
+            request.session['email_error'] = 'email_error'
+            return redirect('ads:my_alerts')
+
+        alert = Alert.objects.create(user=request.user, email=email, frequency=option, category=category)
+        alert.save()
+        request.session['alert_success'] = 'alert_success'
+        return redirect('ads:my_alerts')
 
 
 @login_required
