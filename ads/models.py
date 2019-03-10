@@ -164,7 +164,7 @@ class AdFeatured(models.Model):
 
 class HistoricalFeatured(models.Model):
     """
-    This is Histirical record for the Model AdFeatured
+    This is Historical record for the Model AdFeatured
     """
     ad_id = models.IntegerField(unique=True)
     date = models.DateTimeField('start date', default=timezone.now)
@@ -178,10 +178,10 @@ ALERT_TYPE = (
 
 
 class Alert(models.Model):
-    user = models.ForeignKey(User, related_name='alert_perso', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='alerts', on_delete=models.CASCADE)
     email = models.EmailField()
     frequency = models.CharField(max_length=1, choices=ALERT_TYPE)
-    category = models.ForeignKey(Category, related_name='categorie', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='categ_alerts', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.email + "_" + str(self.frequency) + "_" + self.category.name

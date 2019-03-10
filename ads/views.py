@@ -386,7 +386,7 @@ def my_ads(request):
         context = {
             'ads': ads,
         }
-        html = render_to_string('ads/myAds.html', context, request=request)
+        html = render_to_string('ads/my_ads/myAds.html', context, request=request)
         return JsonResponse({'form': html})
 
     context = {
@@ -394,7 +394,7 @@ def my_ads(request):
         'ad_deletion': ad_deletion
     }
 
-    return render(request, 'ads/my_ads.html', context)
+    return render(request, 'ads/my_ads/my_ads.html', context)
 
 
 @login_required
@@ -436,7 +436,7 @@ def ad_status(request):
             'ads': ads
         }
         if request.is_ajax():
-            html = render_to_string('ads/myAds.html', context, request=request)
+            html = render_to_string('ads/my_ads/myAds.html', context, request=request)
             return JsonResponse({'form': html})
 
     except ValidationError:
@@ -447,38 +447,57 @@ def ad_status(request):
 
 @login_required
 def my_alerts(request):
-    try:
-        my_alert = Alert.objects.filter(user=request.user).last()
-    except:
-        my_alert = None
     all_categories = Category.objects.filter(category_type="T")
-    email_error_session = request.session.get('email_error', None)
+    alert_error = request.session.get('alert_error', None)
     alert_success = request.session.get('alert_success', None)
+    id_to_delete = request.GET.get('to_delete', None)
+    deletion = False
 
-    if email_error_session:
-        del request.session['email_error']
+    if id_to_delete:
+        try:
+            alert_to_delete = Alert.objects.get(pk=id_to_delete)
+        except Alert.DoesNotExist:
+            pass
+        else:
+            if request.user == alert_to_delete.user:
+                alert_to_delete.delete()
+                deletion = True
+
+    if alert_error:
+        del request.session['alert_error']
     if alert_success:
         del request.session['alert_success']
     context = {
         'all_categories': all_categories,
-        'my_alert': my_alert,
-        'email_error': email_error_session,
-        'alert_success': alert_success
+        'alert_error': alert_error,
+        'alert_success': alert_success,
+        'deletion': deletion
+
     }
-    return render(request, 'ads/my_alerts.html', context)
+    return render(request, 'ads/my_alerts/my_alerts.html', context)
 
 
+@login_required
 def my_alert_confirmation(request):
     if request.method == "POST":
         email = request.POST['email']
         option = request.POST['radioInline']
         category_id = request.POST['category']
         category = Category.objects.get(id=category_id)
+
+        my_alerts_count = Alert.objects.filter(user=request.user).count()
+        if my_alerts_count >= 3:
+            request.session['alert_error'] = 'limit_error'
+            return redirect('ads:my_alerts')
         try:
             validate_email(email)
-        except:
-            print("ok")
-            request.session['email_error'] = 'email_error'
+        except ValidationError:
+            request.session['alert_error'] = 'email_error'
+            return redirect('ads:my_alerts')
+
+        same_alert = Alert.objects.filter(user=request.user, email=email, frequency=option, category=category).first()
+        if same_alert:
+            request.session['alert_error'] = 'same_alert'
             return redirect('ads:my_alerts')
 
         alert = Alert.objects.create(user=request.user, email=email, frequency=option, category=category)
