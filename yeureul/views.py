@@ -340,6 +340,13 @@ def update_profile(request):
         if not request.session.get('update_profile_error'):
             user_info.save()
             user.save()
+            try:
+                user_ads = user.adUser
+            except AdUser.DoesNotExist:
+                pass
+            else:
+                user_ads.given_name = user.first_name + " " + user.last_name
+                user_ads.save()
             request.session['update_profile_success'] = True
 
     return redirect('settings')
