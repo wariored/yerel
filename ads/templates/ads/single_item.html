@@ -36,10 +36,10 @@
     <!-- Single Detail -->
     <section class="single-detail">
         <div class="container">
-        {% if not ad.is_active %}
-            <div class="text text-info text-center">Annonce non ativé. Personne ne peut la visualiser</div>
+            {% if not ad.is_active %}
+                <div class="text text-info text-center">Annonce non ativé. Personne ne peut la visualiser</div>
 
-        {% endif %}
+            {% endif %}
             <div class="row">
                 <div class="col-sm-offset-4">
                     <span id="feature_alert"></span>
@@ -49,9 +49,12 @@
             <div id="feature_section">
                 {% include 'ads/feature_section.html' %}
             </div>
-            <div class="single_buttons">
-                <a href="{% url 'ads:update_ad' ad.random_url.hex %}" class="btn btn-default">Modifier l'annonce</a>
-            </div>
+            {% if ad.ad_user.user == user %}
+                <div class="single_buttons">
+                    <a href="{% url 'ads:update_ad' ad.random_url.hex %}" class="btn btn-default">Modifier l'annonce</a>
+                </div>
+            {% endif %}
+
             <div class="row">
                 <div class="col-lg-8 col-md-6 col-sm-6">
                     <div class="row">

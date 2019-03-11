@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles ads_categories featured_ads timesince_ads %}
+{% load staticfiles ads_categories global_ads timesince_ads %}
 {% load i18n %}
 {% block content %}
     <!-- Categories Page Search-->
@@ -69,7 +69,7 @@
                                                 {% else %}
                                                     <img alt=""
                                                      src="{% static 'internals/img/none_ad.png' %}"
-                                                     class="img-responsive img-center">
+                                                     class="img-responsive img-center ad_img">
                                                 {% endif %}
                                                 <div class="item-title">
                                                     <a href="{% url 'ads:single_item' ad.random_url.hex %}">

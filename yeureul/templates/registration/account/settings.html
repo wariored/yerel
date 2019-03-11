@@ -1,5 +1,6 @@
 {% extends 'registration/account/base_account.html' %}
 {% load staticfiles i18n %}
+{% load global_ads %}
 
 {% block account_pagination %}
     <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
@@ -10,19 +11,29 @@
 {% endblock account_pagination %}
 
 {% block account_content %}
-    {% if request.user.account.is_active %}
-        <p class="text-center"> Vous disposez d'un
-            compte <span class="text-success"> {{ request.user.account.get_type_display }}</span> qui va expirer le
-            <span class="text-danger">{% language 'fr' %}
-                {{ request.user.account.end_date }} {% endlanguage %}</span>.
-        </p>
-    {% endif %}
-
 
     <div class="col-sm-6">
-        {% if has_reached_ads_limit == 'ok' %}
-            <div class="alert alert-info text-center">Vous avez atteint le nombre d'annonces offert. Veuillez renouveler votre compte.</div>
+        {% if request.user.account %}
+            {% if request.user.account.is_active %}
+                <p class="text-center"> Vous disposez d'un
+                    compte <span class="text-success"> {{ request.user.account.get_type_display }}</span> qui va expirer
+                    le
+                    <span class="text-danger">{% language 'fr' %}
+                        {{ request.user.account.end_date }} {% endlanguage %}</span>.
+                </p>
+            {% else %}
+                <p class="text-center text text-info">
+                    Votre compte n'est plus actif. Veuillez le renouveller <a href="{% url 'pricing:pricing' %}">ici</a>
+                </p>
+            {% endif %}
         {% endif %}
+
+        {% if has_reached_ads_limit == 'ok' %}
+            <div class="alert alert-info text-center">Vous avez atteint le nombre d'annonces offert. Veuillez renouveler
+                votre compte <a href="{% url 'pricing:pricing' %}">ici</a>.
+            </div>
+        {% endif %}
+
         {% if activation == True %}
             <div class="alert alert-success text-center">Votre compte a été activé avec succès</div>
         {% elif activation == 'key_expired' %}
@@ -145,87 +156,34 @@
     <div class="col-sm-3">
         <div class="widget listing-filter-block margin-bottom-none">
             <div class="widget-header">
-                <h1>Trending Ads </h1>
+                <h1>Tendances </h1>
             </div>
+            {% trending_ads_list as trending_ads %}
             <div class="widget-body">
-                <div class="similar-ads">
-                    <a href="single.html">
-                        <div class="similar-ad-left">
-                            <img class="img-responsive img-center"
-                                 src=" {% static 'externals/images/categories/restaurant/1.png' %} " alt="">
-                        </div>
-                        <div class="similar-ad-right">
-                            <h4>Duis autem vel eum iriure do hen...</h4>
-                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </a>
-                </div>
-                <div class="similar-ads">
-                    <a href="single.html">
-                        <div class="similar-ad-left">
-                            <img class="img-responsive img-center"
-                                 src=" {% static 'externals/images/categories/pets/1.png' %}" alt="">
-                        </div>
-                        <div class="similar-ad-right">
-                            <h4>Duis autem vel eum iriure do hen...</h4>
-                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </a>
-                </div>
-                <div class="similar-ads">
-                    <a href="single.html">
-                        <div class="similar-ad-left">
-                            <img class="img-responsive img-center"
-                                 src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
-                        </div>
-                        <div class="similar-ad-right">
-                            <h4>Duis autem vel eum iriure do hen...</h4>
-                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </a>
-                </div>
-                <div class="similar-ads">
-                    <a href="single.html">
-                        <div class="similar-ad-left">
-                            <img class="img-responsive img-center"
-                                 src=" {% static 'externals/images/categories/cars/1.png' %}" alt="">
-                        </div>
-                        <div class="similar-ad-right">
-                            <h4>Duis autem vel eum iriure do hen...</h4>
-                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </a>
-                </div>
-                <div class="similar-ads">
-                    <a href="single.html">
-                        <div class="similar-ad-left">
-                            <img class="img-responsive img-center"
-                                 src=" {% static 'externals/images/categories/job/1.png' %}" alt="">
-                        </div>
-                        <div class="similar-ad-right">
-                            <h4>Duis autem vel eum iriure do hen...</h4>
-                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </a>
-                </div>
-                <div class="similar-ads">
-                    <a href="single.html">
-                        <div class="similar-ad-left">
-                            <img class="img-responsive img-center"
-                                 src=" {% static 'externals/images/categories/real_estate/2.png' %}" alt="">
-                        </div>
-                        <div class="similar-ad-right">
-                            <h4>Duis autem vel eum iriure do hen...</h4>
-                            <p><i class="fa fa-dollar"></i> 450 - <i class="fa fa-map-marker"></i> Buffalo </p>
-                        </div>
-                        <div class="clearfix"></div>
-                    </a>
-                </div>
+                {% for ad in trending_ads|slice:"6" %}
+                    <div class="similar-ads">
+                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                            {% if ad.img.exists %}
+                                <div class="similar-ad-left">
+                                    <img class="img-responsive img-center"
+                                         src="{{ ad.img.first.media.url }}" alt="tendance_{{ ad.id }}">
+                                </div>
+                            {% else %}
+                                <div class="similar-ad-left">
+                                    <img class="img-responsive img-center"
+                                         src="{% static 'internals/img/none_ad.png' %}" alt="tendance_{{ ad.id }}">
+                                </div>
+                            {% endif %}
+                            <div class="similar-ad-right">
+                                <h4>{{ ad.title }}</h4>
+                                <p style="font-size: 11px;"> {{ ad.price }} F- <i
+                                        class="fa fa-map-marker"></i> {{ ad.location.name }} </p>
+                            </div>
+                            <div class="clearfix"></div>
+                        </a>
+                    </div>
+
+                {% endfor %}
             </div>
         </div>
     </div>
