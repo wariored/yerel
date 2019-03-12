@@ -17,6 +17,7 @@ from django.core.mail import EmailMessage
 from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
 import uuid
+from django.core.paginator import Paginator
 
 
 def categories(request):
@@ -306,7 +307,7 @@ def single_item(request, random_url):
     except ValidationError:
         raise Http404
 
-    return render(request, 'ads/single_item.html', context)
+    return render(request, 'ads/single_item/single_item.html', context)
 
 
 def single_item_update(request, random_url):
@@ -314,7 +315,7 @@ def single_item_update(request, random_url):
         ad = Ad.objects.get(random_url=random_url)
     except ValidationError:
         raise Http404
-    return render(request, 'ads/single_item.html', {'ad': ad})
+    return render(request, 'ads/single_item/single_item.html', {'ad': ad})
 
 
 def single_item_delete(request, random_url):
@@ -322,13 +323,28 @@ def single_item_delete(request, random_url):
         ad = Ad.objects.get(random_url=random_url)
     except ValidationError:
         raise Http404
-    return render(request, 'ads/single_item.html')
+    return render(request, 'ads/single_item/single_item.html')
 
 
 def categories_grid(request):
     categories_t = Category.objects.filter(category_type='T')
 
-    return render(request, 'ads/categories_pages/categories_grid.html', dict(categories_t=categories_t))
+    page = request.GET.get('page')
+    category_id = request.GET.get('category', None)
+    selected_category = None
+    if category_id:
+        try:
+            selected_category = Category.objects.get(pk=category_id)
+            selected_ads = Ad.objects.filter(is_active=True, is_deleted=False, subcategory__in=selected_category.subcategories.all()).order_by('-creation_date')
+        except Category.DoesNotExist:
+            raise Http404
+    else:
+        selected_ads = Ad.objects.filter(is_active=True, is_deleted=False).order_by('-creation_date')
+
+    paginator = Paginator(selected_ads, 12)
+    selected_ads = paginator.get_page(page)
+    return render(request, 'ads/categories_pages/categories_grid.html',
+                  dict(categories_t=categories_t, selected_category=selected_category, selected_ads=selected_ads))
 
 
 # handle the ad's like
@@ -348,7 +364,7 @@ def like_ad(request):
         'ad': ad,
     }
     if request.is_ajax():
-        html = render_to_string('ads/like_section.html', context, request=request)
+        html = render_to_string('ads/single_item/like_section.html', context, request=request)
         return JsonResponse({'form': html})
 
 
@@ -527,9 +543,5 @@ def feature_ad(request):
             if histo_feature:
                 histo_feature.date = timezone.now()
                 histo_feature.save()
-        html = render_to_string('ads/feature_section.html', {'ad': ad}, request=request)
+        html = render_to_string('ads/single_item/feature_section.html', {'ad': ad}, request=request)
         return JsonResponse({'featured': html})
-
-
-def search(request):
-    pass

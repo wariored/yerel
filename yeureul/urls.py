@@ -54,5 +54,5 @@ urlpatterns = [
                   path('ads/', include('ads.urls')),
                   path('pricing/', include('pricing.urls')),
                   path('index/', views.index, name='main-view'),
+                  url(r'^faq/$', views.faq, name='faq'),
               ] + static(conf_settings.MEDIA_URL, document_root=conf_settings.MEDIA_ROOT)
-

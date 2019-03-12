@@ -413,6 +413,10 @@ def close_account_verification(request):
     return redirect('settings')
 
 
+def faq(request):
+    return render(request, 'yeureul/faq.html')
+
+
 def uid_token_generator(user, key_type):
     uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
