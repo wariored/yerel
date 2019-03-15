@@ -412,7 +412,7 @@ def categories_grid(request):
             except Location.DoesNotExist:
                 pass
 
-    paginator = Paginator(selected_ads, 4)
+    paginator = Paginator(selected_ads, 12)
     selected_ads = paginator.get_page(page)
     return render(request, 'ads/categories_pages/categories_grid.html',
                   dict(categories_t=categories_t, selected_category=selected_category, selected_ads=selected_ads,
