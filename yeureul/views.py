@@ -19,7 +19,7 @@ from django.utils.http import urlsafe_base64_encode
 from ads.models import Category
 from . import forms
 from .models import UserInfo, UserKey, ContactMessage
-from ads.models import AdUser
+from ads.models import AdUser, Ad
 from . import statics_variables
 
 
@@ -32,12 +32,9 @@ def index(request):
     categories = Category.objects.filter(category_type='T')
     categories_t_1 = categories[:4]
     categories_t_2 = categories[4:8]
-    return render(request, 'yeureul/index.html',
-                  {
-                      'categories_t_1': categories_t_1,
-                      'categories_t_2': categories_t_2,
-                  }
-                  )
+    ads_count = Ad.objects.all().count()
+    return render(request, 'yeureul/index.html', dict(categories_t_1=categories_t_1,
+                                                      categories_t_2=categories_t_2, ads_count=ads_count))
 
 
 # robots and humans files

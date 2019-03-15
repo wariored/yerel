@@ -1,30 +1,39 @@
-{% load ads_categories %}
+{% load ads_categories useful_in_global %}
 {% categories_and_subcategories as categories_t %}
-{% locations  as all_locations %}
+{% locations as all_locations %}
+{% if selected_subcategories %}
+    {% define_variable selected_subcategories|first as selected_subcategory %}
+{% endif %}
 <form action="{% url 'ads:categories_grid' %}" method="GET">
     <div class="col-md-4 col-sm-4 search-input">
-        <input name="text_to_find" placeholder="Que recherchez-vous...?" class="form-control input-lg search-form" type="text">
+        <input name="text_to_find" placeholder="Que recherchez-vous...?" class="form-control input-lg search-form"
+               type="text" value="{{ text_to_search }}">
     </div>
     <div class="col-md-3 col-sm-3 search-input">
-        <select name="category" class="form-control input-lg search-form">
-            <option selected="selected" value="all_categories">Toutes les categories</option>
+        <select name="subcategories" class="form-control input-lg search-form">
+            <option value="all_categories">Toutes les
+                categories
+            </option>
+
             {% for category in categories_t %}
                 <optgroup label="{{ category.name }}">
                     {% for subcategory in category.subcategories.all %}
-                        <option value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                        <option {% if selected_subcategory == subcategory %} selected="selected"{% endif %}
+                                                                             value="{{ subcategory.id }}">{{ subcategory.name }}</option>
                     {% endfor %}
                 </optgroup>
             {% endfor %}
-            <option value="other_categories"> Autres</option>
+            {#            <option value="other_categories"> Autres</option>#}
         </select>
     </div>
     <div class="col-md-3 col-sm-3 search-input">
         <select name="location" class="form-control input-lg search-form">
             <option selected="selected" value="all_locations">Tous les lieux</option>
             {% for location in all_locations %}
-                <option value="{{ location.id }}">{{ location.name }}</option>
+                <option {% if selected_location == location %} selected="selected" {% endif %}
+                                                               value="{{ location.id }}">{{ location.name }}</option>
             {% endfor %}
-            <option value="other_locations">Autres Lieux</option>
+            {#            <option {% if selected_location.name == 'Autres' %}selected="selected"{% endif %} value="other_locations">Autres Lieux</option>#}
         </select>
     </div>
     <div class="col-md-2 col-sm-2 search-input">

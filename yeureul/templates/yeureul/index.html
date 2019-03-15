@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles trending_ads timesince_ads %}
-{% load i18n %}
+{% load i18n ads_categories %}
 {% block content %}
     <!-- Search Box -->
     <section class="search-box">
@@ -42,62 +42,39 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="carousel-section-header">
-                        <h1>Tendances <a href="categories.html" class="btn btn-md btn-primary pull-right">Voir
-                            plus d'annonces<b>24727</b> <i class="fa fa-arrow-right"></i></a></h1>
+                        <h1>Tendances <a href="{% url 'ads:categories' %}" class="btn btn-md btn-primary pull-right">Voir
+                            plus d'annonces<b>{{ ads_count }}</b> <i class="fa fa-arrow-right"></i></a></h1>
                     </div>
                     <div id="owl-carousel-featured" class="owl-carousel owl-carousel-featured">
-                        <div class="item">
-                            <div class="item-ads-grid icon-blue">
-                                <div class="item-badge-grid featured-ads">
-                                    <a href="#">TOP</a>
-                                </div>
-                                <div class="item-img-grid">
-                                    <img alt="" src="{% static 'externals/images/categories/restaurant/1.png' %}"
-                                         class="img-responsive img-center">
-                                    <div class="item-title">
-                                        <a href="single.html">
-                                            <h4>There are many variations</h4>
-                                        </a>
-                                        <h3>$ 64.5000</h3>
-                                    </div>
-                                </div>
-                                <div class="item-meta">
-                                    <ul>
-                                        <li class="item-date"><i class="fa fa-clock-o"></i> Today 10.35 AM</li>
-                                        <li class="item-cat"><i class="fa fa-glass"></i> <a href="categories.html">Restaurant</a>
-                                            , <a href="categories.html">Cafe</a></li>
-                                        <li class="item-location"><a href="categories.html"><i
-                                                class="fa fa-map-marker"></i>
-                                            Buffalo </a></li>
-                                        <li class="item-type"><i class="fa fa-bookmark"></i> New</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+
                         {% trending_ads_list as trending_ads %}
                         {% for ad in trending_ads %}
                             <div class="item">
-                                <div class="item-ads-grid {{ category.icon_ads }}">
-                                     
-                                    {% if ad.ad_user.user.account and ad.ad_user.user.account.type in "AP" %}
-                                        <div class="item-badge-grid btn-primary">
-                                            <a href="#">Annonce premium</a>
-                                        </div>
-                                    {% elif ad.views_number >= 100 %}
+                                <div class="item-ads-grid {{ ad.subcategory.sup_category.icon_ads }}">
+                                    {% if ad.views_number >= 100 %}
                                         <div class="item-badge-grid featured-ads">
                                             <a href="#">TOP</a>
                                         </div>
+                                    {% elif ad.ad_user.user.account.is_active and ad.ad_user.user.account.type in "AP" %}
+                                        <div class="item-badge-grid btn-primary">
+                                            <a href="#">Annonce premium</a>
+                                        </div>
+
+                                    {% elif ad.is_featured and ad.views_number >= 10 %}
+                                        <div class="item-badge-grid premium-ads">
+                                            <a href="#">HOT</a>
+                                        </div>
                                     {% endif %}
-                                    
+
                                     <div class="item-img-grid">
                                         {% if ad.img.exists %}
                                             <img alt=""
-                                                src="{{ ad.img.first.media.url }}"
-                                                class="img-responsive img-center ad_img">
+                                                 src="{{ ad.img.first.media.url }}"
+                                                 class="img-responsive img-center ad_img">
                                         {% else %}
                                             <img alt=""
-                                                src="{% static 'internals/img/none_ad.png' %}"
-                                                class="img-responsive img-center ad_img">
+                                                 src="{% static 'internals/img/none_ad.png' %}"
+                                                 class="img-responsive img-center ad_img">
                                         {% endif %}
                                         <div class="item-title">
                                             <a href="single.html">
@@ -110,13 +87,16 @@
                                         <ul>
                                             <li class="item-date"><i class="fa fa-clock-o"></i>
                                                 <span class="text-info">{% language 'fr' %}
-                                                    {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span></li>
+                                                    {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span>
+                                            </li>
                                             <li class="item-cat"><i class="fa fa-glass"></i> <a
-                                                    href="#">{{ ad.subcategory.sup_category.name }}</a> , <a href="#">{{ ad.subcategory.name }}</a></li>
+                                                    href="#">{{ ad.subcategory.sup_category.name }}</a> , <a
+                                                    href="#">{{ ad.subcategory.name }}</a></li>
                                             <li class="item-location"><a href="#"><i
                                                     class="fa fa-map-marker"></i>
                                                 {{ ad.location.name }} </a></li>
-                                            <li class="item-type"><i class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
+                                            <li class="item-type"><i
+                                                    class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -137,14 +117,15 @@
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="widget {{ category.widget }}">
                             <div class="widget-header">
-                                <small>98,156 Ads</small>
+                                <small>{{ category.id|ads_number }} {{ category.id|ads_number|pluralize:" Annonce, Annonces" }}</small>
                                 <h1><i class="{{ category.icon }}"></i> {{ category.name }}</h1>
                             </div>
                             <div class="widget-body">
                                 <ul class="trends">
 
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="#">{{ subcategory.name }} <span class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                        <li><a href="#">{{ subcategory.name }} <span
+                                                class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                     <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
@@ -159,13 +140,14 @@
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="widget {{ category.widget }} margin-bottom-none">
                             <div class="widget-header">
-                                <small>98,156 Ads</small>
+                                <small>{{ category.id|ads_number }} {{ category.id|ads_number|pluralize:" Annonce, Annonces" }}</small>
                                 <h1><i class="{{ category.icon }}"></i> {{ category.name }}</h1>
                             </div>
                             <div class="widget-body">
                                 <ul class="trends">
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="#">{{ subcategory.name }} <span class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                        <li><a href="#">{{ subcategory.name }} <span
+                                                class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                     <li><a href="#">Voir plus <span class="item-numbers">9</span></a></li>

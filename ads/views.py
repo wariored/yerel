@@ -16,8 +16,11 @@ from django.core.mail import EmailMessage
 
 from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
+from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
+from elasticsearch_dsl.query import Q
+
 
 
 def categories(request):
@@ -331,20 +334,91 @@ def categories_grid(request):
 
     page = request.GET.get('page')
     category_id = request.GET.get('category', None)
+    selected_condition = request.GET.get('condition', None)
+    subcategories_id = request.GET.get('subcategories', None)
+    min_max_price = request.GET.get('min_max_price', None)
+    price_order_type = request.GET.get('price_order', None)
+    location = request.GET.get('location', None)
+    text_to_search = request.GET.get('text_to_find', None)
     selected_category = None
+    selected_subcategories = None
+    filter_by_price = None
+    selected_location = None
+
     if category_id:
         try:
             selected_category = Category.objects.get(pk=category_id)
-            selected_ads = Ad.objects.filter(is_active=True, is_deleted=False, subcategory__in=selected_category.subcategories.all()).order_by('-creation_date')
+            selected_ads = Ad.objects.filter(is_active=True, is_deleted=False,
+                                             subcategory__in=selected_category.subcategories.all()).order_by(
+                '-creation_date')
         except Category.DoesNotExist:
             raise Http404
     else:
         selected_ads = Ad.objects.filter(is_active=True, is_deleted=False).order_by('-creation_date')
 
-    paginator = Paginator(selected_ads, 12)
+    if text_to_search:
+        found_ads = []
+        search = AdDocument.search()
+        search = search.query(
+            Q('match', title=text_to_search) |
+            Q('match', description=text_to_search)
+        )
+        for ad in search:
+            found_ads.append(ad.id)
+        selected_ads = selected_ads.filter(id__in=found_ads)
+
+    if selected_condition:
+        selected_ads = selected_ads.filter(condition=selected_condition)
+
+    if subcategories_id:
+        if subcategories_id not in ['all_categories', 'other_categories']:
+            subcategories_id = subcategories_id.split(',')
+            selected_ads = selected_ads.filter(subcategory__id__in=subcategories_id)
+            selected_subcategories = Category.objects.filter(id__in=subcategories_id)
+    if min_max_price:
+        min_max_price = min_max_price.split(",")
+        if len(min_max_price) == 2:
+            min_price = min_max_price[0]
+            max_price = min_max_price[1]
+            if not min_price:
+                min_price = 0.0
+            if not max_price:
+                max_price = 2e31
+            try:
+                min_price = float(min_price)
+                max_price = float(max_price)
+            except ValueError:
+                pass
+            else:
+                if min_price <= max_price:
+                    selected_ads = selected_ads.filter(price__range=(min_price, max_price))
+                    if max_price == 2e31:
+                        max_price = ''
+                    filter_by_price = {
+                        'min': min_price,
+                        'max': max_price
+                    }
+    if price_order_type:
+        if price_order_type == 'low':
+            selected_ads = selected_ads.order_by('price')
+        elif price_order_type == 'high':
+            selected_ads = selected_ads.order_by('-price')
+
+    if location:
+        if location != 'all_locations':
+            selected_ads = selected_ads.filter(location__id=location)
+            try:
+                selected_location = Location.objects.get(pk=location)
+            except Location.DoesNotExist:
+                pass
+
+    paginator = Paginator(selected_ads, 4)
     selected_ads = paginator.get_page(page)
     return render(request, 'ads/categories_pages/categories_grid.html',
-                  dict(categories_t=categories_t, selected_category=selected_category, selected_ads=selected_ads))
+                  dict(categories_t=categories_t, selected_category=selected_category, selected_ads=selected_ads,
+                       selected_condition=selected_condition, selected_subcategories=selected_subcategories,
+                       filter_by_price=filter_by_price, price_order_type=price_order_type,
+                       selected_location=selected_location, text_to_search=text_to_search))
 
 
 # handle the ad's like
