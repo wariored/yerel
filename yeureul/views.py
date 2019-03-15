@@ -156,18 +156,14 @@ def signup_verification(request):
 
 
 def account_validation(request, uidb64=None, token=None):
-    if request.user.is_authenticated:
-        check_token = uid_token_decoder(uidb64, token, key_type="A", auth_user=request.user)
-    else:
-        check_token = uid_token_decoder(uidb64, token, key_type="A")
-
-    if check_token and request.user.is_authenticated:
-        user_info = UserInfo.objects.get(user=request.user)
-        if not user_info.activated_account:
-            user_info.activated_account = True
-            user_info.save()
-            request.session['activation'] = True
-            return redirect('settings')
+    user_key = get_object_or_404(UserKey, key_type="A", token=token)
+    check_token = uid_token_decoder(uidb64, token, key_type="A")
+    if check_token:
+        user_key.user.info.activated_account = True
+        user_key.user.info.save()
+        login(request, user_key.user)
+        request.session['activation'] = True
+        return redirect('settings')
     request.session['activation'] = 'key_expired'
     return redirect('settings')
 
@@ -428,7 +424,7 @@ def uid_token_generator(user, key_type):
     return uid, token
 
 
-def uid_token_decoder(uidb64, token, key_type, auth_user=None):
+def uid_token_decoder(uidb64, token, key_type):
     if uidb64 is not None and token is not None:
         from django.utils.http import urlsafe_base64_decode
         uid = force_text(urlsafe_base64_decode(uidb64).decode())
@@ -438,15 +434,11 @@ def uid_token_decoder(uidb64, token, key_type, auth_user=None):
             user_model = get_user_model()
             user = user_model.objects.get(pk=uid)
             user_key = UserKey.objects.get(user=user, key_type=key_type, token=token)
-            if auth_user is not None and auth_user != user:
-                return False
             if user_key.key_expires < timezone.now():
                 return False
-            else:
-                return default_token_generator.check_token(user, token)
-        except:
+            return default_token_generator.check_token(user, token)
+        except (User.DoesNotExist, UserKey.DoesNotExist):
             pass
-
     return False
 
 

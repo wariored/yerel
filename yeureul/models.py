@@ -46,7 +46,7 @@ class UserKey(models.Model):
     """
     user = models.ForeignKey(User, related_name='keys', on_delete=models.CASCADE)  # 1 to many link with Django User
     key_type = models.CharField(max_length=1, choices=KEY_TYPE)
-    token = models.CharField(max_length=100)
+    token = models.CharField(max_length=100, unique=True)
     key_expires = models.DateTimeField(default=one_day_hence)
     history = HistoricalRecords()
 
