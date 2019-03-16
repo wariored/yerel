@@ -60,7 +60,6 @@ class AdUser(models.Model):
         today = timezone.datetime.today()
         ads_number = Ad.objects.filter(ad_user__email=self.email, creation_date__month=today.month,
                                        creation_date__year=today.year).count()
-        print(ads_number)
 
         if request.user.is_authenticated:
             user = request.user

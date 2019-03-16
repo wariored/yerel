@@ -12,7 +12,8 @@
 
 {% block authentication_content %}
     {% if update_ad_error == 'price' %}
-        <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit pas être
+        <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit pas
+            être
             supérieur à 30 chiffres
         </div>
     {% elif update_ad_error == 'photos' %}
@@ -61,12 +62,17 @@
                                         <label class="col-sm-3 control-label">Condition <span class="required">*</span></label>
                                         <div class="col-sm-9">
                                             <div class="radio radio-info radio-inline">
-                                                <input type="radio" id="inlineRadio1" value="N" name="condition"
-                                                       checked="">
+
+                                                <input {% if ad.condition == 'N' %} checked="checked" {% endif %}
+                                                                                    type="radio" id="inlineRadio1"
+                                                                                    value="N" name="condition"
+                                                >
                                                 <label for="inlineRadio1"> Nouvelle </label>
                                             </div>
                                             <div class="radio radio-info radio-inline">
-                                                <input type="radio" id="inlineRadio2" value="U" name="condition">
+                                                <input {% if ad.condition == 'U' %} checked="checked" {% endif %}
+                                                                                    type="radio" id="inlineRadio2"
+                                                                                    value="U" name="condition">
                                                 <label for="inlineRadio2"> Utilisée </label>
                                             </div>
                                         </div>
@@ -83,6 +89,13 @@
                                 <div class="form-group">
                                     <label for="photos" class="control-label">Ajouter des Photos (max 5)</label>
                                     <input id="photos" type="file" name="photos" class="filestyle" multiple>
+                                    {% if ad.img.exists %}
+                                        Voci vos images, l'ajout de nouvelles images les supprimera:<br>
+                                        {% for img in ad.img.all %}
+                                            <a href="{{ img.media.url }}">{{ img.media.name }}</a><br>
+                                        {% endfor %}
+
+                                    {% endif %}
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Lieu <span class="required">*</span></label>

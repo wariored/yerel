@@ -28,7 +28,8 @@
         {% elif create_post_error == 'condition' %}
             <div class="alert alert-danger text-center">La condition n'est pas bonne</div>
         {% elif create_post_error == 'price' %}
-            <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit pas être supérieur à 30
+            <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit
+                pas être supérieur à 30
                 chiffres
             </div>
         {% elif create_post_error == 'photos' %}
@@ -52,6 +53,8 @@
             <div class="alert alert-danger text-center">Vous ne devez selectionner que des photos</div>
         {% elif create_post_error == 'has_reached_limit' %}
             <div class="alert alert-danger text-center">Vous avez atteint épuisé le nombre d'annonces offert</div>
+        {% elif create_post_error == 'activation' %}
+            <div class="alert alert-danger text-center">Veuillez activer votre compte svp!</div>
         {% endif %}
 
     {% endif %}

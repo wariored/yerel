@@ -22,7 +22,6 @@ from django.core.paginator import Paginator
 from elasticsearch_dsl.query import Q
 
 
-
 def categories(request):
     categories_t = Category.objects.filter(category_type='T')
     return render(request, 'ads/categories_pages/categories.html',
@@ -30,6 +29,7 @@ def categories(request):
                   )
 
 
+@login_required
 def create_post(request):
     categories_t = Category.objects.filter(category_type='T')
     locations = Location.objects.all().order_by('name')
@@ -38,7 +38,7 @@ def create_post(request):
     dict_values = request.session.get('dict_values', None)
     if create_post_error:
         del request.session['create_post_error']
-        if create_post_error != 'has_reached_limit':
+        if create_post_error != 'has_reached_limit' and dict_values:
             del request.session['dict_values']
     elif create_post_success:
         del request.session['create_post_success']
@@ -65,6 +65,9 @@ def create_post_verification(request):
 
         # check if user has reached ads limit
         if request.user.is_authenticated:
+            if not request.user.info.activated_account:
+                request.session['create_post_error'] = 'activation'
+                return redirect('ads:create_post')
             ad_user = AdUser.objects.filter(email=request.user.email).first()
         else:
             ad_user = AdUser.objects.filter(email=email).first()
@@ -256,19 +259,19 @@ def update_ad_verification(request, random_url):
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
                 return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
-            check_phexiotos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
+            check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['update_ad_error'] = 'photos'
                 return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
-        if photos:
-            images.delete()
             for photo in photos:
                 try:
                     Image.open(photo)
-                    AdFile.objects.create(ad=ad, media=photo)
                 except:
                     request.session['create_post_error'] = 'photo_format'
                     return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            images.delete()
+            for photo in photos:
+                AdFile.objects.create(ad=ad, media=photo)
 
         ad.description = description
         ad.price = price
