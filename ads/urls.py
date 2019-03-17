@@ -13,6 +13,7 @@ urlpatterns = [
     path('categories/categories_grid/', views.categories_grid, name='categories_grid'),
     path('ad/like/', views.like_ad, name="like_post"),
     path('favourite_ads/', views.favourite_ads, name="favourite_ads"),
+    path('unlike/', views.unlike_ad, name="unlike"),
     path('my_ads/', views.my_ads, name="my_ads"),
     path('my_alerts/', views.my_alert_confirmation, name="my_alert_confirmation"),
     path('my_alerts/confirmation', views.my_alerts, name="my_alerts"),

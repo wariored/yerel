@@ -1,0 +1,75 @@
+{% extends 'registration/account/base_account.html' %}
+{% load staticfiles %}
+{% load i18n %}
+{% block account_pagination %}
+    <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Mon compte</li>
+    <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+    <li>Annonces Favorites</li>
+{% endblock %}
+
+{% block deleteConfirmation %}
+
+{% endblock deleteConfirmation %}
+{% if ad_unlike == 'ok' %}
+    <div class="alert alert-success text-center">Operation reussit</div>
+{% endif %}
+
+{% block account_content %}
+ <!-- Favourite Ads -->
+    <section class="my-ads">
+        {% include 'ads/favourite/favourite_section.html' %}
+    </section>
+ <!-- End Favourite Ads -->
+{% endblock %}
+
+{% block javascripts %}
+<script>
+        $(document).ready(function () {
+            var ads_section = $("#my_fav_section");
+            var actu_page_num = 1;
+            $(document).on('click', ".paginate", function (e) {
+                e.preventDefault();
+                var page_number = $(this).data('value');
+                actu_page_num = page_number;
+                $.ajax({
+                    type: 'POST',
+                    url: '?page=' + page_number,
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    data: {'page': page_number},
+                    dataType: 'json',
+                    success: function (response) {
+                        ads_section.html(response['form'])
+                    },
+                    error: function (rs, e) {
+                        alert("Une erreur est survenue");
+                        console.log(rs.responseText)
+                    }
+                });
+            });
+        });
+
+        $(document).on('click', '.unlike', function () {
+            var pk = $(this).data('value');
+            var ads_section = $("#my_fav_section");
+            var actu_page_num = 1;
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'ads:unlike' %}",
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                data: {'id': pk, 'page': actu_page_num},
+                dataType: 'json',
+                success: function (response) {
+                    ads_section.html(response['form'])
+                },
+                error: function (rs, e) {
+                    alert("Une erreur est survenue");
+                    console.log(rs.responseText)
+                }
+
+            });
+        }); 
+        
+</script>
+{% endblock %}
