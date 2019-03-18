@@ -53,11 +53,11 @@
                         </div>
                         <div class="list-group">
                             <a class="list-group-item" href="{% url 'ads:my_ads' %}">
-                                <span class="label label-info">15</span>
+                                <span class="label label-info">{{ user.adUser.ads.count }}</span>
                                 <i class="fa fa-fw fa-pencil"></i> Mes annonces
                             </a>
                             <a class="list-group-item" href="{% url 'ads:favourite_ads' %}">
-                                <span class="label label-success">10</span>
+                                <span class="label label-success">{{ user.post_likes.count }}</span>
                                 <i class="fa fa-fw fa-heart"></i> Annonces Favorites
                             </a>
                             <a class="list-group-item" href="{% url 'ads:my_alerts' %}">

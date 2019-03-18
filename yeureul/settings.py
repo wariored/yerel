@@ -174,15 +174,21 @@ EMAIL_HOST_USER = 'yeureul01@gmail.com'
 EMAIL_HOST_PASSWORD = 'yeureul123'
 
 # PayDunya config #####
-PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
-    'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
-    'PAYDUNYA-PRIVATE-KEY': "test_private_Wys1xQyOzpyZLv3xfnewupdtNAg",
-    'PAYDUNYA-TOKEN': "XVD9DqykJBgGxp2XpgdD"
-}
 
 # Activer le mode 'test'. Le debug est à False par défaut
 if DEBUG:
     paydunya.debug = True
+    PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
+        'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
+        'PAYDUNYA-PRIVATE-KEY': "test_private_Wys1xQyOzpyZLv3xfnewupdtNAg",
+        'PAYDUNYA-TOKEN': "XVD9DqykJBgGxp2XpgdD"
+    }
+else:
+    PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
+        'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
+        'PAYDUNYA-PRIVATE-KEY': "live_private_lXejvZ8piTeXdzD6EKSTdQyeJcH",
+        'PAYDUNYA-TOKEN': "fqymhtMub4lbUQAlIuy4"
+    }
 
 # Configurer les clés d'API
 paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS

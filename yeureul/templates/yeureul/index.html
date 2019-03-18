@@ -15,21 +15,13 @@
                 </div>
                 <div class="top-categories margin-bottom-none">
                     <h4>Categories les plus populaires</h4>
-                    <a href="categories.html">
-                        <i class="fa fa-book"></i>Livres
+                    {% popular_subcategories as populars %}
+                    {% for p in populars %}
+                        <a href="{% url 'ads:categories_grid' %}?category={{ p.sup_category.id }}&subcategories={{ p.id }}">
+                        <i class=""></i>{{ p.name }}
                     </a>
-                    <a href="categories.html">
-                        <i class="fa fa-briefcase"></i>Emplois
-                    </a>
-                    <a href="categories.html">
-                        <i class="fa fa-mobile"></i>Mobiles
-                    </a>
-                    <a href="categories.html">
-                        <i class="fa fa-laptop"></i>Ordinateurs
-                    </a>
-                    <a href="categories.html">
-                        <i class="fa fa-building-o"></i>Propriétés
-                    </a>
+
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -128,7 +120,6 @@
                                                 class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
-                                    <li><a href="#">Voir Plus <span class="item-numbers">1</span></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -150,7 +141,6 @@
                                                 class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
-                                    <li><a href="#">Voir plus <span class="item-numbers">9</span></a></li>
                                 </ul>
                             </div>
                         </div>

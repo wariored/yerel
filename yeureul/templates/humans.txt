@@ -6,7 +6,10 @@
     Cheikh Tidjane Konteye -- Backend Developer and Machine Learning Enthusiast  -- cheikh@cheikhkonteye.com -- http://cheikhkonteye.com
     Papa Momar Nokho -- Full Stack Developer  --  papamomarnokho@gmail.com
     Cheikh Sadibou Diouf -- Full Stack Developer  --  dioufcs97@gmail.com
-    Mor Kaire -- Full Stack Developer  --  kairemor@gmail.com
+    Mor Kairé -- Full Stack Developer  --  kairemor@gmail.com
+    Oulymata Seck -- Full Stack Developer  --
+    Ndèye Maty Diaw -- Full Stack Developer  --
+
 
 # THANKS
 

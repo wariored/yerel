@@ -378,6 +378,8 @@
                 }
                 else {
                     if (min_price && max_price) {
+                        min_price = parseFloat(min_price);
+                        max_price = parseFloat(max_price);
                         if (min_price > max_price) {
                             price_error.show();
                             price_error.html("Le max doit être supérieur au min ");

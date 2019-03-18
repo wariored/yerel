@@ -1,5 +1,6 @@
 from django import template
 from ads.models import Ad, Category, Location
+from django.db.models import Count
 
 register = template.Library()
 
@@ -65,3 +66,9 @@ def categories_and_subcategories():
 def locations():
     locations_all = Location.objects.all()
     return locations_all
+
+
+@register.simple_tag
+def popular_subcategories():
+    populars = Category.objects.filter(category_type='B').annotate(count=Count('subcateg_ads')).order_by('-count')
+    return populars[:5]
