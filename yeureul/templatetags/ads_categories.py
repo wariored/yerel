@@ -72,3 +72,9 @@ def locations():
 def popular_subcategories():
     populars = Category.objects.filter(category_type='B').annotate(count=Count('subcateg_ads')).order_by('-count')
     return populars[:5]
+
+
+@register.filter
+def likes_number(user_id):
+    num = Ad.objects.filter(is_deleted=False, is_active=True, likes__id=user_id).count()
+    return num

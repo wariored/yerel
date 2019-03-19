@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load staticfiles ads_categories %}
 {% block content %}
 <!-- Breadcumb -->
 <section class="profile-breadcumb">
@@ -57,7 +57,7 @@
                                 <i class="fa fa-fw fa-pencil"></i> Mes annonces
                             </a>
                             <a class="list-group-item" href="{% url 'ads:favourite_ads' %}">
-                                <span class="label label-success">{{ user.post_likes.count }}</span>
+                                <span class="label label-success">{{ user.id|likes_number }}</span>
                                 <i class="fa fa-fw fa-heart"></i> Annonces Favorites
                             </a>
                             <a class="list-group-item" href="{% url 'ads:my_alerts' %}">
