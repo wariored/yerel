@@ -2,110 +2,112 @@
 {% load staticfiles %}
 {% load i18n %}
 {% block content %}
-    <!-- Categories Page Search-->
-    <section class="categories-page-search">
-        <div class="container">
-            <div class="row">
-                <div class="main-search-box text-center">
-                    {% include 'static_content/search_form.html' %}
-                </div>
+<!-- Categories Page Search-->
+<section class="categories-page-search">
+    <div class="container">
+        <div class="row">
+            <div class="main-search-box text-center">
+                {% include 'static_content/search_form.html' %}
             </div>
-            <div class="row">
-                <div class="col-xs-12 text-center">
-                    <div class="breadcumb_section search_breadcumb">
-                        <div class="page_pagination">
-                            <ul>
-                                <li><a href="{% url 'index' %}">Accueil</a></li>
-                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li><a href="{% url 'ads:categories' %}">Categories</a></li>
-                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li><a href="#"> {{ ad.subcategory.sup_category.name }} </a></li>
-                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li>{{ ad.subcategory.name }}</li>
-                                <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-                                <li>{{ ad.title|truncatechars:20 }}</li>
-                            </ul>
-                        </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <div class="breadcumb_section search_breadcumb">
+                    <div class="page_pagination">
+                        <ul>
+                            <li><a href="{% url 'index' %}">Accueil</a></li>
+                            <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                            <li><a href="{% url 'ads:categories' %}">Categories</a></li>
+                            <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                            <li><a href="#"> {{ ad.subcategory.sup_category.name }} </a></li>
+                            <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                            <li>{{ ad.subcategory.name }}</li>
+                            <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
+                            <li>{{ ad.title|truncatechars:20 }}</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <!-- End Categories Page Search-->
+    </div>
+</section>
+<!-- End Categories Page Search-->
 
-    <!-- Single Detail -->
-    <section class="single-detail">
-        <div class="container">
-            {% if not ad.is_active %}
-                <div class="text text-info text-center">Annonce non ativé. Personne ne peut la visualiser</div>
-
+<!-- Single Detail -->
+{% if signal_success == True %}
+    <div class="alert-success text text-center signal_alert">
+        <p>Annonce signalee</p>
+    </div>
+{% endif %}
+<section class="single-detail">
+    <div class="container">
+        {% if not ad.is_active %}
+        <div class="text text-info text-center">Annonce non ativé. Personne ne peut la visualiser</div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-offset-4">
+                <span id="feature_alert"></span>
+            </div>
+            <div class="col-sm-4"></div>
+        </div>
+        <div class="row">
+            {% if ad.ad_user.user == user %}
+            <div class="single_buttons col-sm-2">
+                <a href="{% url 'ads:update_ad' ad.random_url.hex %}" class="btn btn-default">Modifier
+                    l'annonce</a>
+            </div>
             {% endif %}
-            <div class="row">
-                <div class="col-sm-offset-4">
-                    <span id="feature_alert"></span>
-                </div>
-                <div class="col-sm-4"></div>
+            <div id="feature_section" class="col-sm-2">
+                {% include 'ads/single_item/feature_section.html' %}
             </div>
-            <div class="row">
-                {% if ad.ad_user.user == user %}
-                    <div class="single_buttons col-sm-2">
-                        <a href="{% url 'ads:update_ad' ad.random_url.hex %}" class="btn btn-default">Modifier
-                            l'annonce</a>
-                    </div>
-                {% endif %}
-                <div id="feature_section" class="col-sm-2">
-                    {% include 'ads/single_item/feature_section.html' %}
-                </div>
-            </div>
+        </div>
 
-            <div class="row">
-                <div class="col-lg-8 col-md-6 col-sm-6">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="item single-ads">
-                                <div class="item-ads-grid margin-bottom-none">
-                                    <div class="item-title-single">
-                                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
-                                            <h1>{{ ad.title }}</h1>
-                                        </a>
-                                        <div class="item-meta">
-                                            <ul>
-                                                <li class="item-date"><i class="fa fa-clock-o"></i>{% language 'fr' %}
-                                                    {{ ad.creation_date }} {% endlanguage %}--
-                                                </li>
-                                                <li class="item-cat"><a
-                                                        href="categories2.html">{{ ad.subcategory.sup_category.name }}</a>
-                                                    , <a
-                                                            href="categories2.html">{{ ad.subcategory.name }}</a></li>
-                                                <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i>
+        <div class="row">
+            <div class="col-lg-8 col-md-6 col-sm-6">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="item single-ads">
+                            <div class="item-ads-grid margin-bottom-none">
+                                <div class="item-title-single">
+                                    <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                        <h1>{{ ad.title }}</h1>
+                                    </a>
+                                    <div class="item-meta">
+                                        <ul>
+                                            <li class="item-date"><i class="fa fa-clock-o"></i>{% language 'fr' %}
+                                                {{ ad.creation_date }} {% endlanguage %}--
+                                            </li>
+                                            <li class="item-cat"><a
+                                                    href="categories2.html">{{ ad.subcategory.sup_category.name }}</a>
+                                                , <a href="categories2.html">{{ ad.subcategory.name }}</a></li>
+                                            <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i>
                                                     {{ ad.location }} </a></li>
-                                                <li class="item-type"><i
-                                                        class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
-                                            </ul>
-                                        </div>
+                                            <li class="item-type"><i class="fa fa-bookmark"></i>
+                                                {{ ad.get_condition_display }}</li>
+                                        </ul>
                                     </div>
-                                    <div class="item-img-grid">
-                                        <div id="like_section">
-                                            {% include 'ads/single_item/like_section.html' %}
-                                        </div>
-                                        <div id="sync1" class="owl-carousel">
-                                            {% if ad.img.exists %}
-                                                {% for img in ad.img.all %}
-                                                    <div class="item"><img alt=""
-                                                                           src="{{ img.media.url }}"
-                                                                           class="img-responsive img-center ad_img_single">
-                                                    </div>
-                                                {% endfor %}
-
-                                            {% else %}
-
-                                            {% endif %}
-                                        </div>
+                                </div>
+                                <div class="item-img-grid">
+                                    <div id="like_section">
+                                        {% include 'ads/single_item/like_section.html' %}
                                     </div>
-                                    <div class="single-item-meta">
-                                        <h4><strong>Spécifications</strong></h4>
-                                        <table class="table table-condensed table-hover table-bordered">
-                                            <tbody>
+                                    <div id="sync1" class="owl-carousel">
+                                        {% if ad.img.exists %}
+                                        {% for img in ad.img.all %}
+                                        <div class="item"><img alt="" src="{{ img.media.url }}"
+                                                class="img-responsive img-center ad_img_single">
+                                        </div>
+                                        {% endfor %}
+
+                                        {% else %}
+
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="single-item-meta">
+                                    <h4><strong>Spécifications</strong></h4>
+                                    <table class="table table-condensed table-hover table-bordered">
+                                        <tbody>
                                             <tr>
                                                 <td>Annonce N°</td>
                                                 <td>{{ ad.id }}</td>
@@ -124,13 +126,13 @@
                                                <td>PayPal, Credit Card</td>
                                             </tr>
                                             -->
-                                            </tbody>
-                                        </table>
-                                        <h4><strong>Description</strong></h4>
-                                        <p>
-                                            {{ ad.description }}
-                                        </p>
-                                        <!--
+                                        </tbody>
+                                    </table>
+                                    <h4><strong>Description</strong></h4>
+                                    <p>
+                                        {{ ad.description }}
+                                    </p>
+                                    <!--
                                        <ul>
                                           <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Geotagging &ndash; add location info to your photos</li>
                                           <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Object tracking &ndash; lock focus on a specific object</li>
@@ -141,28 +143,37 @@
                                           <li><i class="fa fa-angle-right fa-fw" aria-hidden="true"></i> Video playback, supported file formats: 3GPP, MP4, M4V, AvI, XVID, WEBM</li>
                                        </ul>
                                        -->
-                                    </div>
-                                    <div class="item-footer">
-                                        <div class="row">
-                                            <div class="col-xs-12 col-md-5">
-                                                <span class="item-views"> <i
-                                                        class="fa fa-eye"></i> Nombre de vue{{ product.views_number|pluralize }} : <b>{{ ad.views_number }}</b></span>
-                                            </div>
-                                            <div class="col-xs-12 col-md-7 text-right-md">
-                                                <div class="share-widget text-right">
-                                                    <span>Partager cette annonce : </span>
-                                                    <div class="social-links social-bg pull-right">
-                                                        <ul>
-                                                            <li><a class="fa fa-twitter" target="_blank" href="#"></a>
-                                                            </li>
-                                                            <li><a class="fa fa-facebook" target="_blank" href="#"></a>
-                                                            </li>
-                                                            <li><a class="fa fa-google-plus" target="_blank"
-                                                                   href="#"></a></li>
-                                                            <li><a class="fa fa-instagram" target="_blank" href="#"></a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                </div>
+                                <div class="item-footer">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-5">
+                                            <span class="item-views"> <i class="fa fa-eye"></i> Nombre de
+                                                vue{{ product.views_number|pluralize }} :
+                                                <b>{{ ad.views_number }}</b></span>
+                                        </div>
+                                        <div class="col-xs-12 col-md-7 text-right-md">
+                                            <div class="share-widget text-right">
+                                                <span>Partager cette annonce : </span>
+                                                <div class="social-links social-bg pull-right">
+                                                    <ul>
+                                                        </li>
+                                                        <li><a class="fa fa-instagram" target="_blank" href="#"></a>
+                                                        </li>
+
+                                                        <li>
+                                                            <a class="fa fa-facebook" target="_blank"
+                                                                href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="fa fa-twitter" target="_blank"
+                                                                href="https://twitter.com/home?status={{ shared_ad }}%20{{ request.build_absolute_uri }}">
+                                                            </a>
+                                                        </li>
+                                                        <li>
+
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
@@ -172,183 +183,196 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="price-widget short-widget">
-                        <strong style="word-wrap: break-word">{{ ad.price }}</strong>
-                        <i>F</i>
+                <div class="text-right mt-4 ">
+                    <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
+                       Signaler cette annonce  <i class="fa fa-exclamation-triangle text-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="price-widget short-widget">
+                    <strong style="word-wrap: break-word">{{ ad.price }}</strong>
+                    <i>F</i>
+                </div>
+                <div class="widget user-widget">
+                    {% if ad.ad_user.user %}
+                    <div class="widget-body text-center">
+                        <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
+                        <span class="user-status user-online"></span>
+                        <!-- <span class="user-status user-offline"></span> -->
+                        <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
+                        <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
+                            <strong>non donné</strong><br>
+                            <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
+                                {% language 'fr' %}{{ ad.ad_user.user.date_joined }} {% endlanguage %}</strong>
+                        </p>
                     </div>
-                    <div class="widget user-widget">
-                        {% if ad.ad_user.user %}
-                            <div class="widget-body text-center">
-                                <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
-                                <span class="user-status user-online"></span>
-                                <!-- <span class="user-status user-offline"></span> -->
-                                <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
-                                <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
-                                    <strong>non donné</strong><br>
-                                    <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
-                                        {% language 'fr' %}{{ ad.ad_user.user.date_joined }} {% endlanguage %}</strong>
-                                </p>
-                            </div>
-                            <div class="widget-footer">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="profile-action-btns text-center">
-                                            <a href="#" data-toggle="tooltip" data-placement="top"
-                                               title="0133 4568 9876"
-                                               class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
-                                            <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message"
-                                               class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"
-                                               title="Live Chat" class="btn btn-primary btn-lg"><i
-                                                    class="fa fa-comment-o"></i></a>
-                                        </div>
-                                    </div>
+                    <div class="widget-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="profile-action-btns text-center">
+                                    <a href="#" data-toggle="tooltip" data-placement="top"
+                                        title="{{ ad.ad_user.phone_number }}" class="btn btn-primary btn-lg"><i
+                                            class="fa fa-whatsapp"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message"
+                                        class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#popup" title="Live Chat"
+                                        class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>
                                 </div>
-                            </div>
-                        {% else %}
-                            <div class="widget-body text-center">
-                                <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
-                                <span class="user-status user-online"></span>
-                                <!-- <span class="user-status user-offline"></span> -->
-                                <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
-                            </div>
-                            <div class="widget-footer">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="profile-action-btns text-center">
-                                            <a href="#" data-toggle="tooltip" data-placement="top"
-                                               title="0133 4568 9876"
-                                               class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
-                                            <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message"
-                                               class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"
-                                               title="Live Chat" class="btn btn-primary btn-lg"><i
-                                                    class="fa fa-comment-o"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="listing-filters">
-                        <div class="widget listing-filter-block">
-                            <div class="widget-header">
-                                <h1>Annonces similaires</h1>
-                            </div>
-                            <div class="widget-body">
-                                {% for ad in ads_similar %}
-                                    <div class="similar-ads">
-                                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
-                                            <div class="similar-ad-left">
-                                                {% if ad.img.exists %}
-                                                    <div class="item"><img alt=""
-                                                                           src="{{ ad.img.first.media.url }}"
-                                                                           class="img-responsive img-center">
-                                                    </div>
-                                                {% else %}
-                                                    <div class="item">
-                                                        <img class="img-responsive img-center"
-                                                             src="{% static 'internals/img/none_ad.png' %}"
-                                                             alt="">
-                                                    </div>
-                                                {% endif %}
-                                            </div>
-                                            <div class="similar-ad-right">
-                                                <h4>{{ ad.title }}</h4>
-                                                <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -
-                                                    {% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
-                                                        {{ ad.location.name }} </p>{% endif %}
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </a>
-                                    </div>
-                                {% endfor %}
                             </div>
                         </div>
                     </div>
-                    <div class="widget listing-filter-block filter-categories margin-bottom-none">
+                    {% else %}
+                    <div class="widget-body text-center">
+                        <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
+                        <span class="user-status user-online"></span>
+                        <!-- <span class="user-status user-offline"></span> -->
+                        <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
+                    </div>
+                    <div class="widget-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="profile-action-btns text-center">
+                                    <a href="#" data-toggle="tooltip" data-placement="top" title="0133 4568 9876"
+                                        class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
+                                    <a href="#" data-toggle="tooltip" data-placement="top" title="Send Message"
+                                        class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#popup" title="Live Chat"
+                                        class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="listing-filters">
+                    <div class="widget listing-filter-block">
                         <div class="widget-header">
-                            <h1>Conseils</h1>
+                            <h1>Annonces similaires</h1>
                         </div>
                         <div class="widget-body">
-                            <ul class="trends">
-                                {% if user.is_authenticated %}
-                                    <li><i class="fa fa-fw fa-key"></i> Ne pas omettre les informations clés.</li>
-                                    <li><i class="fa fa-fw fa-key"></i> Ne pas exagérer sur la capacité ou la
-                                        performance d'un produit.
-                                    </li>
-                                    <li><i class="fa fa-fw fa-key"></i> Attention aux allégations dans les noms de
-                                        produits.
-                                    </li>
-                                    <li><i class="fa fa-fw fa-key"></i> Soyez sûr que les images s'affichent bien.</li>
-
-                                {% else %}
-                                    <li><i class="fa fa-fw fa-key"></i> Toujours regarder l'état du produit</li>
-                                    <li><i class="fa fa-fw fa-key"></i> Faire confiance en votre instinct</li>
-                                    <li><i class="fa fa-fw fa-key"></i> Les annonces similaires aident toujours</li>
-                                {% endif %}
-                            </ul>
+                            {% for ad in ads_similar %}
+                            <div class="similar-ads">
+                                <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                    <div class="similar-ad-left">
+                                        {% if ad.img.exists %}
+                                        <div class="item"><img alt="" src="{{ ad.img.first.media.url }}"
+                                                class="img-responsive img-center">
+                                        </div>
+                                        {% else %}
+                                        <div class="item">
+                                            <img class="img-responsive img-center"
+                                                src="{% static 'internals/img/none_ad.png' %}" alt="">
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="similar-ad-right">
+                                        <h4>{{ ad.title }}</h4>
+                                        <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -
+                                            {% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
+                                            {{ ad.location.name }} </p>{% endif %}
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
+                <div class="widget listing-filter-block filter-categories margin-bottom-none">
+                    <div class="widget-header">
+                        <h1>Conseils</h1>
+                    </div>
+                    <div class="widget-body">
+                        <ul class="trends">
+                            {% if user.is_authenticated %}
+                            <li><i class="fa fa-fw fa-key"></i> Ne pas omettre les informations clés.</li>
+                            <li><i class="fa fa-fw fa-key"></i> Ne pas exagérer sur la capacité ou la
+                                performance d'un produit.
+                            </li>
+                            <li><i class="fa fa-fw fa-key"></i> Attention aux allégations dans les noms de
+                                produits.
+                            </li>
+                            <li><i class="fa fa-fw fa-key"></i> Soyez sûr que les images s'affichent bien.</li>
 
+                            {% else %}
+                            <li><i class="fa fa-fw fa-key"></i> Toujours regarder l'état du produit</li>
+                            <li><i class="fa fa-fw fa-key"></i> Faire confiance en votre instinct</li>
+                            <li><i class="fa fa-fw fa-key"></i> Les annonces similaires aident toujours</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
             </div>
+
         </div>
-    </section>
-    <!-- End Category List -->
+    </div>
+</section>
+<!-- End Category List -->
 {% endblock %}
 {% block javascripts %}
-    <script>
-        /* Ajax request to send the like request without reloading all the page
+<script>
+    /* Ajax request to send the like request without reloading all the page
           when visitor click in the like button
         */
-        $(document).ready(function (e) {
-            $(document).on('click', "#like", function (e) {
-                e.preventDefault();
-                var pk = $(this).data('value');
-                var like_section = $('#like_section');
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "ads:like_post" %}',
-                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
-                    data: {'id': pk},
-                    dataType: 'json',
-                    success: function (response) {
-                        like_section.html(response['form'])
-                    },
-                    error: function (rs, e) {
-                        alert("Une erreur est survenue");
-                        console.log(rs.responseText)
-                    }
-                });
-            });
-            $(document).on('click', '#featured', function (e) {
-                var feature_section = $('#feature_section');
-                var id = $('#ad_id').val();
-                var feature_alert = $("#feature_alert");
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "ads:feature_ad" %}',
-                    headers: {'X-CSRFToken': "{{ csrf_token }}"},
-                    data: {'id': id},
-                    dataType: 'json',
-                    success: function (response) {
-                        feature_section.html(response['featured']);
-                        console.log('ok');
-                        feature_alert.html("La mise en vedette a été modifiée");
-                        feature_alert.addClass('alert alert-info');
-                        //feature_alert.addClass("alert alert-info");
-                        feature_alert.fadeTo(2000, 500).slideUp(500, function () {
-                            feature_alert.slideUp(500);
-                        });
-                    },
-                    error: function (rs, e) {
-                        alert("Une erreur est survenue");
-                        console.log(rs.responseText);
-                    }
-                });
+        
+        setTimeout(() => {
+            $('.signal_alert').hide()
+        }, 3000)
+    $(document).ready(function (e) {
+        $(document).on('click', "#like", function (e) {
+            e.preventDefault();
+            var pk = $(this).data('value');
+            var like_section = $('#like_section');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "ads:like_post" %}',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                data: {
+                    'id': pk
+                },
+                dataType: 'json',
+                success: function (response) {
+                    like_section.html(response['form'])
+                },
+                error: function (rs, e) {
+                    alert("Une erreur est survenue");
+                    console.log(rs.responseText)
+                }
             });
         });
-    </script>
+        $(document).on('click', '#featured', function (e) {
+            var feature_section = $('#feature_section');
+            var id = $('#ad_id').val();
+            var feature_alert = $("#feature_alert");
+            $.ajax({
+                type: 'POST',
+                url: '{% url "ads:feature_ad" %}',
+                headers: {
+                    'X-CSRFToken': "{{ csrf_token }}"
+                },
+                data: {
+                    'id': id
+                },
+                dataType: 'json',
+                success: function (response) {
+                    feature_section.html(response['featured']);
+                    console.log('ok');
+                    feature_alert.html("La mise en vedette a été modifiée");
+                    feature_alert.addClass('alert alert-info');
+                    //feature_alert.addClass("alert alert-info");
+                    feature_alert.fadeTo(2000, 500).slideUp(500, function () {
+                        feature_alert.slideUp(500);
+                    });
+                },
+                error: function (rs, e) {
+                    alert("Une erreur est survenue");
+                    console.log(rs.responseText);
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

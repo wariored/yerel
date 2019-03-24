@@ -20,6 +20,7 @@ from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
 from elasticsearch_dsl.query import Q
+from urllib.parse import quote_plus 
 
 
 def categories(request):
@@ -286,6 +287,7 @@ def single_item(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
+        share_ad = quote_plus(ad.description)
         if not request.session.get('viewed_post_%s' % random_url, False) and ad.ad_user.user != request.user:
             ad.views_number += 1
             ad.save()
@@ -303,12 +305,15 @@ def single_item(request, random_url):
                 if len(similar_ads) == 6:
                     break
 
+        signal_succes = False 
         count = ad.likes.count()
         context = {
             'like_count': count,
             'ad_liked': liked,
             'ad': ad,
             'ads_similar': similar_ads,
+            'shared_ad':share_ad,
+            'signal_success':signal_succes
         }
     except ValidationError:
         raise Http404
@@ -477,7 +482,7 @@ def unlike_ad(request):
         ad = get_object_or_404(Ad, id=request.POST.get('id'))
         
         ad.likes.remove(request.user)
-        request.session['ad_unlike'] = 'ok'
+        # request.session['ad_unlike'] = 'ok'
 
         my_fav_ads = request.user.post_likes.filter(is_active=True,is_deleted=False).order_by('-creation_date')
         
@@ -674,3 +679,21 @@ def feature_ad(request):
                 histo_feature.save()
         html = render_to_string('ads/single_item/feature_section.html', {'ad': ad}, request=request)
         return JsonResponse({'featured': html})
+
+def signal(request,random_url):
+    try:
+        random_url = uuid.UUID(random_url)
+        ad = Ad.objects.get(random_url=random_url)
+    except Ad.DoesNotExist:
+        pass
+    else:
+        if not request.session.get('signal_ad_%s' % random_url, False):
+            ad.signal += 1
+            ad.save()
+            request.session['signal_ad_%s' % random_url] = True
+        signal_succes = True
+        context = {
+            'ad':ad,
+            'signal_success':signal_succes
+        }
+        return render(request, 'ads/single_item/single_item.html', context)  

@@ -120,6 +120,7 @@ class Ad(models.Model):
     update_date = models.DateTimeField('date updated', default=timezone.now)
     views_number = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, related_name='post_likes')
+    signal = models.IntegerField(default=0)
     history = HistoricalRecords()
 
     def __str__(self):
