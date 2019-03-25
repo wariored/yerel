@@ -305,7 +305,7 @@ def single_item(request, random_url):
                 if len(similar_ads) == 6:
                     break
 
-        signal_succes = False 
+        # signal_succes = False 
         count = ad.likes.count()
         context = {
             'like_count': count,
@@ -313,7 +313,7 @@ def single_item(request, random_url):
             'ad': ad,
             'ads_similar': similar_ads,
             'shared_ad':share_ad,
-            'signal_success':signal_succes
+            # 'signal_success':signal_succes
         }
     except ValidationError:
         raise Http404
@@ -687,11 +687,12 @@ def signal(request,random_url):
     except Ad.DoesNotExist:
         pass
     else:
+        signal_succes = True
         if not request.session.get('signal_ad_%s' % random_url, False):
             ad.signal += 1
-            ad.save()
             request.session['signal_ad_%s' % random_url] = True
-        signal_succes = True
+            ad.save()
+        
         context = {
             'ad':ad,
             'signal_success':signal_succes

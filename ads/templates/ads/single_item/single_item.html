@@ -35,9 +35,9 @@
 
 <!-- Single Detail -->
 {% if signal_success == True %}
-    <div class="alert-success text text-center signal_alert">
-        <p>Annonce signalee</p>
-    </div>
+<div class="alert-success text text-center signal_alert">
+    <p>Annonce signalee</p>
+</div>
 {% endif %}
 <section class="single-detail">
     <div class="container">
@@ -183,11 +183,24 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-right mt-4 ">
-                    <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
-                       Signaler cette annonce  <i class="fa fa-exclamation-triangle text-right"></i>
-                    </a>
-                </div>
+                
+                {% if not signal_success %}    
+                    {% if user.is_authenticated %}
+                        {% if not user == ad.ad_user.user %}
+                        <div class="text-right mt-4 ">
+                            <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
+                                Signaler cette annonce <i class="fa fa-exclamation-triangle text-right"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% else %}
+                    <div class="text-right mt-4 ">
+                        <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
+                            Signaler cette annonce <i class="fa fa-exclamation-triangle text-right"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                {% endif %}
             </div>
             <div class="col-lg-4 col-md-6 col-sm-6">
                 <div class="price-widget short-widget">
@@ -315,10 +328,10 @@
     /* Ajax request to send the like request without reloading all the page
           when visitor click in the like button
         */
-        
-        setTimeout(() => {
-            $('.signal_alert').hide()
-        }, 3000)
+
+    setTimeout(() => {
+        $('.signal_alert').hide()
+    }, 3000)
     $(document).ready(function (e) {
         $(document).on('click', "#like", function (e) {
             e.preventDefault();
