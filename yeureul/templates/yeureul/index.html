@@ -82,8 +82,8 @@
                                                     {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span>
                                             </li>
                                             <li class="item-cat"><i class="fa fa-glass"></i> <a
-                                                    href="#">{{ ad.subcategory.sup_category.name }}</a> , <a
-                                                    href="#">{{ ad.subcategory.name }}</a></li>
+                                                    href="{% url 'ads:categories_grid' %}?category={{ ad.subcategory.sup_category.id }}">{{ ad.subcategory.sup_category.name }}</a> , <a
+                                                    href="{% url 'ads:categories_grid' %}?category={{ ad.subcategory.sup_category.id }}&subcategories={{ ad.subcategory.id }}">{{ ad.subcategory.name }}</a></li>
                                             <li class="item-location"><a href="#"><i
                                                     class="fa fa-map-marker"></i>
                                                 {{ ad.location.name }} </a></li>
@@ -116,7 +116,7 @@
                                 <ul class="trends">
 
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="#">{{ subcategory.name }} <span
+                                        <li><a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }} <span
                                                 class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
@@ -137,7 +137,7 @@
                             <div class="widget-body">
                                 <ul class="trends">
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="#">{{ subcategory.name }} <span
+                                        <li><a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }} <span
                                                 class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}

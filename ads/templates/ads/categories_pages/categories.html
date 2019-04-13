@@ -46,7 +46,7 @@
                                                 class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
-                                    <li><a href="#">Autres<span class="item-numbers">0</span></a></li>
+                                    <li>&ensp;</li>
                                     <li>&ensp;</li>
                                     <li>&ensp;</li>
                                     <li>&ensp;</li>
@@ -63,13 +63,13 @@
                                         <div class="item-ads-grid {{ category.icon_ads }}">
                                             <div class="item-img-grid">
                                                 {% if ad.img.exists %}
-                                                 <img alt=""
-                                                     src="{{ ad.img.first.media.url }}"
-                                                     class="img-responsive img-center ad_img">
+                                                    <img alt=""
+                                                         src="{{ ad.img.first.media.url }}"
+                                                         class="img-responsive img-center ad_img">
                                                 {% else %}
                                                     <img alt=""
-                                                     src="{% static 'internals/img/none_ad.png' %}"
-                                                     class="img-responsive img-center ad_img">
+                                                         src="{% static 'internals/img/none_ad.png' %}"
+                                                         class="img-responsive img-center ad_img">
                                                 {% endif %}
                                                 <div class="item-title">
                                                     <a href="{% url 'ads:single_item' ad.random_url.hex %}">
@@ -82,13 +82,17 @@
                                                 <ul>
                                                     <li class="item-date"><i class="fa fa-clock-o"></i>
                                                         <span class="text-info">{% language 'fr' %}
-                                                            {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span></li>
+                                                            {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span>
+                                                    </li>
                                                     <li class="item-cat"><i class="fa fa-glass"></i> <a
-                                                            href="#">{{ ad.subcategory.sup_category.name }}</a> , <a href="#">{{ ad.subcategory.name }}</a></li>
+                                                            href="#">{{ ad.subcategory.sup_category.name }}</a> , <a
+                                                            href="#">{{ ad.subcategory.name }}</a></li>
                                                     <li class="item-location"><a href="#"><i
                                                             class="fa fa-map-marker"></i>
                                                         {{ ad.location.name }} </a></li>
-                                                    <li class="item-type"><i class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
+                                                    <li class="item-type"><i
+                                                            class="fa fa-bookmark"></i> {{ ad.get_condition_display }}
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
