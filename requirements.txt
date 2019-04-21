@@ -21,3 +21,4 @@ django-widget-tweaks==1.4.3
 django-elasticsearch-dsl==0.5.1
 django-cleanup==3.2.0
 gunicorn==19.9.0
+django-heroku==0.3.1
