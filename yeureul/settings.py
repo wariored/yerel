@@ -14,8 +14,8 @@ import os
 from typing import Dict
 
 from django.core.exceptions import ImproperlyConfigured
-# import dj_database_url
-import paydunya
+import dj_database_url
+# import paydunya
 
 
 # get the environment variable
@@ -40,8 +40,10 @@ SECRET_KEY = get_env_variable('SECRET_KEY')
 DEBUG = True
 if DEBUG:
     ALLOWED_HOSTS = []
+    BASE_URL = 'http://localhost:8000/'
 else:
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = ['yerel.heroku.com']
+    BASE_URL = 'https://yerel.heroku.com/'
 
 # Application definition
 
@@ -95,18 +97,19 @@ WSGI_APPLICATION = 'yeureul.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
-        'PASSWORD': 'postgre',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-        'NAME': 'yeureul',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'USER': 'postgres',
+            'PASSWORD': 'postgre',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+            'NAME': 'yeureul',
+        }
     }
-}
-# DATABASES = {'default': dj_database_url.config(conn_max_age=600, ssl_require=True)}
+else:
+    DATABASES = {'default': dj_database_url.config()}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -164,8 +167,6 @@ LOGIN_URL = 'login'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-BASE_URL = 'http://localhost:8000/'
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
@@ -176,24 +177,24 @@ EMAIL_HOST_PASSWORD = 'yeureul123'
 # PayDunya config #####
 
 # Activer le mode 'test'. Le debug est à False par défaut
-if DEBUG:
-    paydunya.debug = True
-    PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
-        'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
-        'PAYDUNYA-PRIVATE-KEY': "test_private_Wys1xQyOzpyZLv3xfnewupdtNAg",
-        'PAYDUNYA-TOKEN': "XVD9DqykJBgGxp2XpgdD"
-    }
-else:
-    PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
-        'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
-        'PAYDUNYA-PRIVATE-KEY': "live_private_lXejvZ8piTeXdzD6EKSTdQyeJcH",
-        'PAYDUNYA-TOKEN': "fqymhtMub4lbUQAlIuy4"
-    }
-
-# Configurer les clés d'API
-paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS
-
-OPR = dict()
+# if DEBUG:
+#     paydunya.debug = True
+#     PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
+#         'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
+#         'PAYDUNYA-PRIVATE-KEY': "test_private_Wys1xQyOzpyZLv3xfnewupdtNAg",
+#         'PAYDUNYA-TOKEN': "XVD9DqykJBgGxp2XpgdD"
+#     }
+# else:
+#     PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
+#         'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
+#         'PAYDUNYA-PRIVATE-KEY': "live_private_lXejvZ8piTeXdzD6EKSTdQyeJcH",
+#         'PAYDUNYA-TOKEN': "fqymhtMub4lbUQAlIuy4"
+#     }
+#
+# # Configurer les clés d'API
+# paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS
+#
+# OPR = dict()
 # end paydunya config  #####
 
 # elasticsearch_dsl config

@@ -4,7 +4,8 @@ from .models import Account, one_month_hence
 from django.urls import reverse
 from django.http import Http404
 from django.http import HttpResponseNotFound
-import paydunya
+# import paydunya
+
 from django.conf import settings as conf_settings
 
 
@@ -33,37 +34,38 @@ def pricing_activation(request, account_type, token='None'):
 
 @login_required
 def pricing_activation_verification_1(request, account_type, token='None'):
-    if not account_type_exists(account_type):
-        return HttpResponseNotFound("Cette page n'existe pas")
-    if request.method == "POST":
-        email_number = request.POST['email_number']
-        try:
-            int(email_number)
-        except ValueError:
-            pass
-        else:
-            email_number = "+221" + email_number
-
-        amount = account_corresponding_payment(account_type)
-        opr_data = {
-            'account_alias': email_number,
-            'description': "Payment d'un compte " + account_type + " chez Yërël",
-            'total_amount': amount
-        }
-        store = paydunya.Store(name='Yerel')
-        conf_settings.OPR[request.user] = paydunya.OPR(opr_data, store)
-        successful, response = conf_settings.OPR[request.user].create()
-        print(response)
-        if successful:
-            token = response['token']
-            print(token)
-        else:
-            request.session['payment_error'] = True
-            # {'response_code': '00', 'response_text': 'PSR-test_8Odlpj',
-            # 'description': 'Onsite Payment Request successfully sent.', 'token': 'PSR-test_8Odlpj',
-            # 'invoice_token': 'test_76wcGtD4fF'}
-
-        return redirect(reverse('pricing:activation', args=[account_type, token]))
+    # if not account_type_exists(account_type):
+    #     return HttpResponseNotFound("Cette page n'existe pas")
+    # if request.method == "POST":
+    #     email_number = request.POST['email_number']
+    #     try:
+    #         int(email_number)
+    #     except ValueError:
+    #         pass
+    #     else:
+    #         email_number = "+221" + email_number
+    #
+    #     amount = account_corresponding_payment(account_type)
+    #     opr_data = {
+    #         'account_alias': email_number,
+    #         'description': "Payment d'un compte " + account_type + " chez Yërël",
+    #         'total_amount': amount
+    #     }
+    #     store = paydunya.Store(name='Yerel')
+    #     conf_settings.OPR[request.user] = paydunya.OPR(opr_data, store)
+    #     successful, response = conf_settings.OPR[request.user].create()
+    #     print(response)
+    #     if successful:
+    #         token = response['token']
+    #         print(token)
+    #     else:
+    #         request.session['payment_error'] = True
+    #         # {'response_code': '00', 'response_text': 'PSR-test_8Odlpj',
+    #         # 'description': 'Onsite Payment Request successfully sent.', 'token': 'PSR-test_8Odlpj',
+    #         # 'invoice_token': 'test_76wcGtD4fF'}
+    #
+    #     return redirect(reverse('pricing:activation', args=[account_type, token]))
+    return Http404
 
 
 @login_required
