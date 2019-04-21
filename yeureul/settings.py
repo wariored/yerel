@@ -59,8 +59,6 @@ INSTALLED_APPS = [
     'ads.apps.AdsConfig',
     'pricing.apps.PricingConfig',
     'widget_tweaks',
-    'simple_history',
-    'reversion',
     'django_elasticsearch_dsl',
     'django_cleanup'
 ]
@@ -102,7 +100,8 @@ DATABASES = {'default': dj_database_url.config()}
 
 
 # Password validation
-# https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
+# https://docs
+# .djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
