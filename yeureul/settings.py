@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'yeureul.wsgi.application'
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 PROD = True
 if PROD:
-    DATABASES = {'default': dj_database_url.config()}
+    DATABASES['default'] = dj_database_url.config()
 else:
     DATABASES = {
         'default': {
