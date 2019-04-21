@@ -98,7 +98,10 @@ WSGI_APPLICATION = 'yeureul.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-if DEBUG:
+PROD = True
+if PROD:
+    DATABASES = {'default': dj_database_url.config()}
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -109,8 +112,6 @@ if DEBUG:
             'NAME': 'yeureul',
         }
     }
-else:
-    DATABASES = {'default': dj_database_url.config()}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
