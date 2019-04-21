@@ -20,3 +20,4 @@ django-simple-history==2.7.0
 django-widget-tweaks==1.4.3
 django-elasticsearch-dsl==0.5.1
 django-cleanup==3.2.0
+gunicorn==19.9.0

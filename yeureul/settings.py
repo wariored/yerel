@@ -16,6 +16,7 @@ from typing import Dict
 from django.core.exceptions import ImproperlyConfigured
 import dj_database_url
 # import paydunya
+import django_heroku
 
 
 # get the environment variable
@@ -157,9 +158,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR,  'templates'),
+    # Add to this list all the locations containing your static files
 )
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
@@ -203,3 +206,4 @@ ELASTICSEARCH_DSL = {
         'hosts': 'localhost:9200'
     },
 }
+django_heroku.settings(locals())
