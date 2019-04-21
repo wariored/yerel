@@ -37,14 +37,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 if DEBUG:
-    ALLOWED_HOSTS = []
     BASE_URL = 'http://localhost:8000/'
 else:
-    ALLOWED_HOSTS = ['yerel.heroku.com']
     BASE_URL = 'https://yerel.heroku.com/'
+
+# SECURITY WARNING: don't run with debug turned on in production!
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yerel.heroku.com']
 
 # Application definition
 
@@ -161,7 +161,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR,  'templates'),
+    os.path.join(BASE_DIR, 'templates'),
     # Add to this list all the locations containing your static files
 )
 LOGIN_REDIRECT_URL = 'index'
