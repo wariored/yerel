@@ -98,19 +98,7 @@ WSGI_APPLICATION = 'yeureul.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-PROD = True
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'USER': 'postgres',
-            'PASSWORD': 'postgre',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-            'NAME': 'yeureul',
-        }
-    }
-if PROD:
-    DATABASES['default'] = dj_database_url.config()
+DATABASES = {'default': dj_database_url.config()}
 
 
 # Password validation
