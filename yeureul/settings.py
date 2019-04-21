@@ -71,7 +71,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'yeureul.urls'
@@ -97,7 +96,16 @@ WSGI_APPLICATION = 'yeureul.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 DATABASES = {'default': dj_database_url.config()}
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgre',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#         'NAME': 'yeureul',
+#     }
+# }
 
 # Password validation
 # https://docs
