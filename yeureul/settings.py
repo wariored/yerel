@@ -191,7 +191,7 @@ EMAIL_HOST_PASSWORD = 'yeureul123'
 # elasticsearch_dsl config
 ELASTICSEARCH_DSL = {
     'default': {
-        'hosts': 'localhost:9200'
+        'hosts': 'https://m0l4tc8844:3bpgklxhyq@birch-220453499.eu-west-1.bonsaisearch.net'
     },
 }
 django_heroku.settings(locals())
