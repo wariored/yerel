@@ -31,6 +31,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+
 # elasticsearch_dsl config
 ELASTICSEARCH_DSL = {
     'default': {
