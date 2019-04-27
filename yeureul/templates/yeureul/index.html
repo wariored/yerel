@@ -69,7 +69,7 @@
                                                  class="img-responsive img-center ad_img">
                                         {% endif %}
                                         <div class="item-title">
-                                            <a href="single.html">
+                                            <a href="{% url 'ads:single' ad.random_url.hex  %}">
                                                 <h4>{{ ad.title }}</h4>
                                             </a>
                                             <h3>{{ ad.price }} FCFA</h3>

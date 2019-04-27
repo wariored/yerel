@@ -110,7 +110,7 @@ USE_TZ = True
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '../../media')
+MEDIA_ROOT = os.path.join(BASE_DIR, '../media')
 MEDIA_URL = '/media/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -121,3 +121,9 @@ EMAIL_HOST_USER = 'yeureul01@gmail.com'
 EMAIL_HOST_PASSWORD = 'yeureul123'
 
 DEBUG = False
+
+STATIC_ROOT = os.path.join(BASE_DIR, '../../staticfiles')
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates'),
+    # Add to this list all the locations containing your static files
+)
