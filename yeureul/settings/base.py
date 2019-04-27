@@ -11,11 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from typing import Dict
-
 from django.core.exceptions import ImproperlyConfigured
-# import dj_database_url
-# import paydunya
 
 
 # get the environment variable
@@ -35,17 +31,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = get_env_variable('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-if DEBUG:
-    ALLOWED_HOSTS = []
-    BASE_URL = 'http://localhost:8000/'
-else:
-    ALLOWED_HOSTS = ['yerel.heroku.com']
-    BASE_URL = 'https://yerel.heroku.com/'
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -90,23 +75,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'yeureul.wsgi.application'
-
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'USER': 'postgres',
-            'PASSWORD': 'postgre',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-            'NAME': 'yeureul',
-        }
-    }
-# DATABASES = {'default': dj_database_url.config()}
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 
@@ -124,22 +92,11 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-# REST global settings
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.registration` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    ],
-}
+
+WSGI_APPLICATION = 'yeureul.wsgi.application'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -150,17 +107,10 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.1/howto/static-files/
-
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
 LOGIN_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, '../../media')
 MEDIA_URL = '/media/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -170,32 +120,4 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'yeureul01@gmail.com'
 EMAIL_HOST_PASSWORD = 'yeureul123'
 
-# PayDunya config #####
-
-# Activer le mode 'test'. Le debug est à False par défaut
-# if DEBUG:
-#     paydunya.debug = True
-#     PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
-#         'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
-#         'PAYDUNYA-PRIVATE-KEY': "test_private_Wys1xQyOzpyZLv3xfnewupdtNAg",
-#         'PAYDUNYA-TOKEN': "XVD9DqykJBgGxp2XpgdD"
-#     }
-# else:
-#     PAYDUNYA_ACCESS_TOKENS: Dict[str, str] = {
-#         'PAYDUNYA-MASTER-KEY': "4xhWbWkN-ahcQ-dQrZ-trfq-4rbCkcl1dGUe",
-#         'PAYDUNYA-PRIVATE-KEY': "live_private_lXejvZ8piTeXdzD6EKSTdQyeJcH",
-#         'PAYDUNYA-TOKEN': "fqymhtMub4lbUQAlIuy4"
-#     }
-#
-# # Configurer les clés d'API
-# paydunya.api_keys = PAYDUNYA_ACCESS_TOKENS
-#
-# OPR = dict()
-# end paydunya config  #####
-
-# elasticsearch_dsl config
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': 'localhost:9200'
-    },
-}
+DEBUG = False
