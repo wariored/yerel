@@ -373,6 +373,7 @@ def categories_grid(request):
         )
         for ad in search:
             found_ads.append(ad.id)
+
         selected_ads = selected_ads.filter(id__in=found_ads)
 
     if selected_condition:

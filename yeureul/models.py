@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from simple_history.models import HistoricalRecords
 
 import uuid
 import os
@@ -28,7 +27,6 @@ class UserInfo(models.Model):
     activated_account = models.BooleanField(default=False)
     creation_date = models.DateTimeField('date created')
     updated_date = models.DateTimeField('date updated', auto_now_add=True)
-    history = HistoricalRecords()
 
     def __str__(self):
         return self.user.username
@@ -48,7 +46,6 @@ class UserKey(models.Model):
     key_type = models.CharField(max_length=1, choices=KEY_TYPE)
     token = models.CharField(max_length=100, unique=True)
     key_expires = models.DateTimeField(default=one_day_hence)
-    history = HistoricalRecords()
 
     def __str__(self):
         return self.user.username + '_' + self.key_type
@@ -63,4 +60,3 @@ class ContactMessage(models.Model):
     subject = models.CharField(max_length=200, null=True, blank=True)
     email = models.EmailField(max_length=254, null=True, blank=True)
     message = models.TextField(max_length=2000)
-    history = HistoricalRecords()
