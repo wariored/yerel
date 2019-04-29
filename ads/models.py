@@ -109,7 +109,7 @@ class Ad(models.Model):
     random_url = models.UUIDField(default=uuid.uuid4, editable=False)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    on_pause = models.BooleanField(default=False) # an ad is on pause when it's reported a lot
+    on_pause = models.BooleanField(default=False)  # an ad is on pause when it's reported a lot
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
@@ -130,8 +130,11 @@ class Ad(models.Model):
         else:
             return True
 
-    def can_be_showed(self):
+    def can_be_shown_to_public(self):
         return self.is_active and not self.is_deleted and not self.on_pause
+
+    def can_be_edited(self):
+        return not self.is_deleted and not self.on_pause
 
 
 class AdFile(models.Model):
