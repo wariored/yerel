@@ -3,6 +3,7 @@ import django_heroku
 
 from .base import *
 
+DEBUG = False
 BASE_URL = 'https://yerel.heroku.com/'
 
 # SECURITY WARNING: don't run with debug turned on in production!

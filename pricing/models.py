@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from simple_history.models import HistoricalRecords
 from django.apps import apps
 from yeureul import statics_variables
 
@@ -22,7 +21,7 @@ class Account(models.Model):
     end_date = models.DateTimeField(default=one_month_hence)
     token = models.CharField(max_length=255)
     user = models.OneToOneField(User, related_name='account', on_delete=models.PROTECT)
-    history = HistoricalRecords()
+
 
     def clean(self):
         pass
