@@ -8,6 +8,6 @@ register = template.Library()
 @register.simple_tag
 def trending_ads_list():
     two_weeks_before = timezone.now() - timezone.timedelta(days=14)
-    ads = Ad.objects.filter(creation_date__range=(two_weeks_before, timezone.now()), is_deleted=False,
-                            is_active=True).order_by('-views_number')[:8]
+    ads = Ad.manager_object.can_be_shown_to_public().filter(
+        creation_date__range=(two_weeks_before, timezone.now())).order_by('-views_number')[:8]
     return ads

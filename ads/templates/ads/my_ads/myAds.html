@@ -34,8 +34,8 @@
                                     <div class="action">
                                         <a class="label label-success" data-placement="top"
                                            data-toggle="tooltip" href="{% url 'ads:update_ad' ad.random_url.hex %}"
-                                           title="Editer l'annonce"><i
-                                                class="fa fa-pencil"></i></a>
+                                           title="Editer l'annonce"
+                                        ><i class="fa fa-pencil"></i></a>
                                         {% if ad.is_active %}
                                             <button value="{{ ad.id }}" class="label label-warning status"
                                                     title="Desactiver" data-placement="top"
@@ -57,11 +57,19 @@
                                         <button type="button" data-value="{{ ad.id }}" value="{{ ad.title }}"
                                                 class="label label-danger delete_ad"
                                                 data-placement="top"
-                                                data-toggle="tooltip" title="Supprimer"><i
-                                                class="fa fa-trash"></i>
+                                                data-toggle="tooltip" title="Supprimer"
+                                                {# when an ad is on pause, it cannot be deleted #}
+                                                {% if not ad.can_be_edited %}
+                                                style="background: #000"  disabled
+                                                {% endif %}
+                                        ><i class="fa fa-trash"></i>
                                         </button>
                                     </div>
-
+                                {# if the ad cannot be edited, this is also handled in update_ad views #}
+                            {% if not ad.can_be_edited %}
+                                <span class="text-info">Cette annonce ne peut être ni supprimée, ni modifiée, ni être vue par le public.
+                                    Elle est en cours d'analyse.</span>
+                            {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
