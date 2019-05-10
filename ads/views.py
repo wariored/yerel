@@ -20,7 +20,7 @@ from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
 from elasticsearch_dsl.query import Q
-from urllib.parse import quote_plus 
+from urllib.parse import quote_plus
 
 
 def categories(request):
@@ -312,7 +312,7 @@ def single_item(request, random_url):
             'ad_liked': liked,
             'ad': ad,
             'ads_similar': similar_ads,
-            'shared_ad':share_ad,
+            'shared_ad': share_ad,
             # 'signal_success':signal_succes
         }
     except ValidationError:
@@ -452,8 +452,8 @@ def like_ad(request):
 
 @login_required
 def favourite_ads(request):
-    my_fav_ads = request.user.post_likes.filter(is_active=True,is_deleted=False).order_by('-creation_date')
-    
+    my_fav_ads = request.user.post_likes.filter(is_active=True, is_deleted=False).order_by('-creation_date')
+
     if 'unlike_ad' in request.session:
         ad_deletion = request.session['unlike_ad']
         del request.session['unlike_ad']
@@ -467,26 +467,27 @@ def favourite_ads(request):
     except PageNotAnInteger:
         ads = paginator.get_page(1)
     context = {
-            'my_ads_fav': ads,
-            'unlike_ad':unlike_ad   
-        }
+        'my_ads_fav': ads,
+        'unlike_ad': unlike_ad
+    }
 
     if request.is_ajax():
         html = render_to_string('ads/favourite/favourite_section.html', context, request=request)
         return JsonResponse({'form': html})
-    
+
     return render(request, 'ads/favourite/favourite.html', context)
+
 
 @login_required
 def unlike_ad(request):
     try:
         ad = get_object_or_404(Ad, id=request.POST.get('id'))
-        
+
         ad.likes.remove(request.user)
         # request.session['ad_unlike'] = 'ok'
 
-        my_fav_ads = request.user.post_likes.filter(is_active=True,is_deleted=False).order_by('-creation_date')
-        
+        my_fav_ads = request.user.post_likes.filter(is_active=True, is_deleted=False).order_by('-creation_date')
+
         paginator = Paginator(my_fav_ads, 5)
 
         if request.is_ajax():
@@ -496,17 +497,17 @@ def unlike_ad(request):
 
         ads = paginator.get_page(page)
 
-       
         if request.is_ajax():
             context = {
-            'my_ads_fav': ads,
+                'my_ads_fav': ads,
             }
             html = render_to_string('ads/favourite/favourite_section.html', context, request=request)
             return JsonResponse({'form': html})
-   
+
     except ValidationError:
-            raise Http404
+        raise Http404
     return redirect('ads:favourite_ads')
+
 
 @login_required
 def my_ads(request):
@@ -681,21 +682,22 @@ def feature_ad(request):
         html = render_to_string('ads/single_item/feature_section.html', {'ad': ad}, request=request)
         return JsonResponse({'featured': html})
 
-def signal(request,random_url):
+
+def signal(request, random_url):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
     except Ad.DoesNotExist:
         pass
     else:
-        signal_succes = True
+        signal_success = True
         if not request.session.get('signal_ad_%s' % random_url, False):
             ad.signal += 1
             request.session['signal_ad_%s' % random_url] = True
             ad.save()
-        
+
         context = {
-            'ad':ad,
-            'signal_success':signal_succes
+            'ad': ad,
+            'signal_success': signal_success
         }
-        return render(request, 'ads/single_item/single_item.html', context)  
+        return render(request, 'ads/single_item/single_item.html', context)
