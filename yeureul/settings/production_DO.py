@@ -3,7 +3,7 @@ from .base import *
 # DEBUG = False
 BASE_URL = 'https://yerel.co/'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co', '134.209.19.227']
 
 
 # Application definition
@@ -14,7 +14,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
+        'USER': 'yereluser',
         'PASSWORD': 'postgre',
         'HOST': '127.0.0.1',
         'PORT': '5432',
@@ -24,8 +24,8 @@ DATABASES = {
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 # elasticsearch_dsl config
 ELASTICSEARCH_DSL = {
