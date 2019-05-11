@@ -1,6 +1,6 @@
 from .base import *
 
-# DEBUG = False
+DEBUG = False
 BASE_URL = 'https://yerel.co/'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co', '134.209.19.227']
