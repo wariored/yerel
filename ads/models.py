@@ -30,7 +30,7 @@ class Category(models.Model):
     icon = models.CharField(max_length=70, null=True, blank=True)
     icon_ads = models.CharField(max_length=70, null=True, blank=True)
     widget = models.CharField(max_length=20, null=True, blank=True)
-    category_type = models.CharField(max_length=10, null=True, blank=True, default='T', choices=CATEGORY_TYPE)
+    category_type = models.CharField(max_length=20, null=True, blank=True, default='T', choices=CATEGORY_TYPE)
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
                                      on_delete=models.PROTECT)
 
