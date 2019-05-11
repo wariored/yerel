@@ -14,11 +14,11 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co', '134.209.19.227']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'yereluser',
-        'PASSWORD': 'postgre',
+        'USER': get_env_variable('DB_USER'),
+        'PASSWORD': get_env_variable('DB_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
-        'NAME': 'yerel',
+        'NAME': get_env_variable('DB_NAME'),
     }
 }
 
