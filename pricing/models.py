@@ -30,13 +30,14 @@ class Account(models.Model):
         return self.end_date > timezone.now()
 
     def has_reached_limit(self):
-        Ad = apps.get_model('ads', 'Ad')
-        if not self.is_active():
-            return True
-        ads_in_the_month = Ad.objects.filter(ad_user__email=self.user.email, creation_date__range=(self.active_date,
-                                                                                                   self.end_date))
-        ads_in_the_month_number = ads_in_the_month.count()
-        if (self.type == 'N' and ads_in_the_month_number == statics_variables.MAX_NORMAL) or \
-                (self.type == 'A' and ads_in_the_month_number == statics_variables.MAX_ADVANCED):
-            return True
+        # Ad = apps.get_model('ads', 'Ad')
+        # if not self.is_active():
+        #     return True
+        # ads_in_the_month = Ad.objects.filter(ad_user__email=self.user.email, creation_date__range=(self.active_date,
+        #                                                                                            self.end_date))
+        # ads_in_the_month_number = ads_in_the_month.count()
+        # if (self.type == 'N' and ads_in_the_month_number == statics_variables.MAX_NORMAL) or \
+        #         (self.type == 'A' and ads_in_the_month_number == statics_variables.MAX_ADVANCED):
+        #     return True
+        # return False
         return False
