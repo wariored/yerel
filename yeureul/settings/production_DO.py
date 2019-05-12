@@ -5,7 +5,6 @@ BASE_URL = 'https://yerel.co/'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co', '134.209.19.227']
 
-
 # Application definition
 
 # Database
@@ -38,3 +37,4 @@ EMAIL_HOST_USER = get_env_variable('SENDGRID_USERNAME')
 EMAIL_HOST_PASSWORD = get_env_variable('SENDGRID_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "yerel@yerel.co"
