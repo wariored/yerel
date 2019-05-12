@@ -32,3 +32,9 @@ ELASTICSEARCH_DSL = {
         'hosts': 'localhost:9200'
     },
 }
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = get_env_variable('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = get_env_variable('SENDGRID_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
