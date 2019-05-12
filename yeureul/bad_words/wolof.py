@@ -1,0 +1,34 @@
+arr_bad = [
+    'doul',
+    'doul'
+    'nokh',
+    'nox',
+    'nokhe',
+    'noxe'
+    'kat',
+    'katt',
+    'nokhul',
+    'katal',
+    'kattal',
+    'cat',
+    'cattal',
+    'catal',
+    'data',
+    'leuf',
+    'leuff',
+    'lef',
+    'saff',
+    'saf'
+    'koy',
+    'koye',
+    'coy',
+    'coye',
+    'badio',
+    'ndey'
+    'ndm',
+    'ndeyam',
+    'dokhane',
+    'doxane'
+    'doxan',
+    'door',
+]
