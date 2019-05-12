@@ -141,7 +141,7 @@ def signup_verification(request):
             # send email activation to the new user
             html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
             plain_message = strip_tags(html_message)
-            email = EmailMessage('Yeureul.org Email activation', plain_message, to=[user.email])
+            email = EmailMessage('Yerel Email activation', plain_message, to=[user.email])
             email.send()
 
             return redirect('settings')
@@ -176,7 +176,7 @@ def regenerate_activation_link(request):
     url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
     html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
     plain_message = strip_tags(html_message)
-    email = EmailMessage('Yeureul.org Email activation', plain_message, to=[request.user.email])
+    email = EmailMessage('Yerel Email activation', plain_message, to=[request.user.email])
     email.send()
     request.session['activation'] = 'regenerate_activation_link'
     return redirect('settings')
@@ -196,7 +196,7 @@ def before_password_reset(request):
             url = conf_settings.BASE_URL + "account/reset_password/%s/%s" % (uid, token)
             html_message = render_to_string('mails/password_reset.html', {'user': user.username, 'link': url})
             plain_message = strip_tags(html_message)
-            email = EmailMessage('Yerel.com mot de passe oublié ', plain_message, to=[user.email])
+            email = EmailMessage('Yerel mot de passe oublié ', plain_message, to=[user.email])
             email.send()
             return render(request, 'registration/before_password_reset.html', {'success': True})
     return render(request, 'registration/before_password_reset.html')
