@@ -23,7 +23,7 @@ CATEGORY_TYPE = (
 
 class Category(models.Model):
     """
-    To store every adverstisement's category
+    To store every advertisement's category
     """
     name = models.CharField(max_length=30, null=False)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
@@ -42,7 +42,7 @@ class Category(models.Model):
 
 class AdUser(models.Model):
     """
-    User who add an Ad, might be not authenticated
+    User who add an Ad, might be not authenticated that's why we have this class
     """
     given_name = models.CharField(max_length=50)
     phone_number = models.IntegerField(null=True, blank=True)
@@ -99,6 +99,18 @@ AD_CONDITION = (
 )
 
 
+class AdManager(models.Manager):
+    # if a function in this class is changed, the corresponding function in Ad class should be changed too
+    def can_be_shown_to_public(self):
+        return super().get_queryset().filter(is_active=True, is_deleted=False, on_pause=False)
+
+    def can_be_shown_to_owner(self):
+        return super().get_queryset().filter(is_deleted=False)
+
+    def can_be_edited(self):
+        return super().get_queryset().filter(is_deleted=False, on_pause=False)
+
+
 class Ad(models.Model):
     """
     Where to store an Ad
@@ -110,7 +122,7 @@ class Ad(models.Model):
     random_url = models.UUIDField(default=uuid.uuid4, editable=False)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    on_pause = models.BooleanField(default=False)  # an ad is on pause when it's reported a lot
+    on_pause = models.BooleanField(default=False)  # an ad is on pause when it's reported many times
     subcategory = models.ForeignKey(Category, related_name='subcateg_ads', on_delete=models.PROTECT)
     location = models.ForeignKey(Location, related_name='loc_ads', on_delete=models.PROTECT)
     ad_user = models.ForeignKey(AdUser, related_name='ads', on_delete=models.CASCADE)
@@ -119,6 +131,8 @@ class Ad(models.Model):
     views_number = models.IntegerField(default=0)
     likes = models.ManyToManyField(User, blank=True, related_name='post_likes')
     signal = models.IntegerField(default=0)
+    objects = models.Manager()
+    manager_object = AdManager()
 
     def __str__(self):
         return self.title
@@ -133,6 +147,9 @@ class Ad(models.Model):
 
     def can_be_shown_to_public(self):
         return self.is_active and not self.is_deleted and not self.on_pause
+
+    def can_be_shown_to_owner(self):
+        return not self.is_deleted
 
     def can_be_edited(self):
         return not self.is_deleted and not self.on_pause

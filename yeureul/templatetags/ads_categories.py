@@ -52,7 +52,7 @@ def ads_number(id_category):
     ads_count = 0
     for subcategory in category.subcategories.all():
         # add ads' number of a subcategory to the count
-        ads_count += Ad.objects.filter(subcategory=subcategory, is_active=True, is_deleted=False).count()
+        ads_count += Ad.manager_object.can_be_shown_to_public().filter(subcategory=subcategory).count()
     return ads_count
 
 
@@ -76,5 +76,5 @@ def popular_subcategories():
 
 @register.filter
 def likes_number(user_id):
-    num = Ad.objects.filter(is_deleted=False, is_active=True, likes__id=user_id).count()
+    num = Ad.manager_object.can_be_shown_to_public().filter(likes__id=user_id).count()
     return num
