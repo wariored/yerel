@@ -122,12 +122,13 @@ def signup_verification(request):
             request.session['dict_signup_values'] = dict_signup_values
             return redirect('signup')
 
+        username = username.lower()
         username_exist = User.objects.filter(username=username).exists()
         email_exist = User.objects.filter(email=email).exists()
 
         if not (username_exist or email_exist):
             # create new user log it in
-            User.objects.create_user(username.lower(), email, password_1)
+            User.objects.create_user(username, email, password_1)
             user = authenticate(request, username=username, password=password_1)
             login(request, user)
 
