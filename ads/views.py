@@ -210,6 +210,8 @@ def update_ad(request, random_url):
         if type(random_url) == str:
             random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
+        if not ad.can_be_edited():
+            raise Http404
         categories_t = Category.objects.filter(category_type='T')
         locations = Location.objects.all()
         update_ad_error = request.session.get('update_ad_error', None)
@@ -356,13 +358,13 @@ def categories_grid(request):
     if category_id:
         try:
             selected_category = Category.objects.get(pk=category_id)
-            selected_ads = Ad.objects.filter(is_active=True, is_deleted=False,
-                                             subcategory__in=selected_category.subcategories.all()).order_by(
+            selected_ads = Ad.manager_object.can_be_shown_to_public().filter(
+                subcategory__in=selected_category.subcategories.all()).order_by(
                 '-creation_date')
         except Category.DoesNotExist:
             raise Http404
     else:
-        selected_ads = Ad.objects.filter(is_active=True, is_deleted=False).order_by('-creation_date')
+        selected_ads = Ad.manager_object.can_be_shown_to_public().order_by('-creation_date')
 
     if text_to_search:
         found_ads = []
@@ -452,11 +454,7 @@ def like_ad(request):
 
 @login_required
 def favourite_ads(request):
-    my_fav_ads = request.user.post_likes.filter(is_active=True, is_deleted=False).order_by('-creation_date')
-
-    if 'unlike_ad' in request.session:
-        ad_deletion = request.session['unlike_ad']
-        del request.session['unlike_ad']
+    my_fav_ads = Ad.manager_object.can_be_shown_to_public().filter(likes=request.user).order_by('-creation_date')
 
     paginator = Paginator(my_fav_ads, 3)
     page = request.GET.get('page')
@@ -484,9 +482,8 @@ def unlike_ad(request):
         ad = get_object_or_404(Ad, id=request.POST.get('id'))
 
         ad.likes.remove(request.user)
-        # request.session['ad_unlike'] = 'ok'
 
-        my_fav_ads = request.user.post_likes.filter(is_active=True, is_deleted=False).order_by('-creation_date')
+        my_fav_ads = Ad.manager_object.can_be_shown_to_public().filter(likes=request.user).order_by('-creation_date')
 
         paginator = Paginator(my_fav_ads, 5)
 
@@ -512,7 +509,7 @@ def unlike_ad(request):
 @login_required
 def my_ads(request):
     """
-    This function print the first 5 ads of the user with ajax request
+    This function print the first 5 (with paginator) ads of the user with ajax request
     It can handle delete request too
     """
     my_all_ads = []
@@ -522,7 +519,9 @@ def my_ads(request):
         ad_deletion = request.session['ad_deletion']
         del request.session['ad_deletion']
     try:
-        my_all_ads = request.user.adUser.ads.filter(is_deleted=False).order_by('-creation_date')
+        my_all_ads = Ad.manager_object.can_be_shown_to_owner().filter(ad_user__user=request.user).order_by(
+            '-creation_date')
+        # request.user.adUser.ads.filter(is_deleted=False).order_by('-creation_date')
     except AdUser.DoesNotExist:
         pass
 
