@@ -15,7 +15,7 @@ from yeureul.utils_functions import ads_are_similar
 from django.core.mail import EmailMessage
 
 from .forms import AdForm
-from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
+from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert, Signal
 from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
@@ -78,8 +78,8 @@ def create_post_verification(request):
                 return redirect('ads:create_post')
 
         dict_values = dict(title=title, price=price,
-                           description=description, name=name, email=email, phone_number=phone_number
-                           )
+                            description=description, name=name, email=email, phone_number=phone_number
+                            )
         if not title or len(title) > 50:
             request.session['create_post_error'] = 'title'
             request.session['dict_values'] = dict_values
@@ -682,21 +682,39 @@ def feature_ad(request):
         return JsonResponse({'featured': html})
 
 
-def signal(request, random_url):
-    try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
-    except Ad.DoesNotExist:
-        pass
-    else:
-        signal_success = True
-        if not request.session.get('signal_ad_%s' % random_url, False):
-            ad.signal += 1
-            request.session['signal_ad_%s' % random_url] = True
-            ad.save()
+# def signal(request, random_url):
+#     try:
+#         random_url = uuid.UUID(random_url)
+#         ad = Ad.objects.get(random_url=random_url)
+#     except Ad.DoesNotExist:
+#         pass
+#     else:
+#         signal_success = True
+#         if not request.session.get('signal_ad_%s' % random_url, False):
+#             ad.signal += 1
+#             request.session['signal_ad_%s' % random_url] = True
+#             ad.save()
 
-        context = {
-            'ad': ad,
-            'signal_success': signal_success
-        }
-        return render(request, 'ads/single_item/single_item.html', context)
+#         context = {
+#             'ad': ad,
+#             'signal_success': signal_success
+#         }
+#         return render(request, 'ads/single_item/single_item.html', context)
+
+def signal(request, random_url):
+    '''
+    Function that handle the signal of an add by a user 
+    '''
+    if request.method == 'POST':
+        try:
+            ad = Ad.objects.get(random_url=random_url)
+            user = request.user 
+            if not ad.signals.filter(user=user): 
+                signal = Signal.objects.create(user=user,
+                    ad=ad, type=request.POST['signal'])
+                signal.save()
+        except Ad.DoesNotExist:
+            return redirect('index')
+        
+        return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
+        

@@ -23,5 +23,5 @@ urlpatterns = [
     path('status/', views.ad_status, name="ad_status"),
     path('update/<str:random_url>/', views.update_ad, name="update_ad"),
     path('update_ad_verification/<str:random_url>/', views.update_ad_verification, name="update_ad_verification"),
-    path('signal/<random_url>', views.signal, name="signal"),
+    path('signal/<str:random_url>', views.signal, name="signal"),
 ]
