@@ -54,34 +54,35 @@ class AdUser(models.Model):
         return self.email
 
     def has_reached_ads_limit(self, request):
-        today = timezone.datetime.today()
-        ads_number = Ad.objects.filter(ad_user__email=self.email, creation_date__month=today.month,
-                                       creation_date__year=today.year).count()
-
-        if request.user.is_authenticated:
-            user = request.user
-            try:
-                ads_in_the_month = Ad.objects.filter(ad_user__email=self.email, is_active=True,
-                                                     creation_date__range=(user.account.active_date,
-                                                                           user.account.end_date))
-            except Account.DoesNotExist:
-                if ads_number == 5:
-                    return True
-            else:
-                ads_in_the_month_number = ads_in_the_month.count()
-                if user.account.is_active():
-                    if (
-                            user.account.type == 'N' and
-                            ads_in_the_month_number == statics_variables.MAX_NORMAL) or (
-                            user.account.type == 'A' and
-                            ads_in_the_month_number == statics_variables.MAX_ADVANCED):
-                        return True
-                else:
-                    return True
-        else:
-            if ads_number == statics_variables.MAX_NONE:
-                return True
-
+        # today = timezone.datetime.today()
+        # ads_number = Ad.objects.filter(ad_user__email=self.email, creation_date__month=today.month,
+        #                                creation_date__year=today.year).count()
+        #
+        # if request.user.is_authenticated:
+        #     user = request.user
+        #     try:
+        #         ads_in_the_month = Ad.objects.filter(ad_user__email=self.email, is_active=True,
+        #                                              creation_date__range=(user.account.active_date,
+        #                                                                    user.account.end_date))
+        #     except Account.DoesNotExist:
+        #         if ads_number == 5:
+        #             return True
+        #     else:
+        #         ads_in_the_month_number = ads_in_the_month.count()
+        #         if user.account.is_active():
+        #             if (
+        #                     user.account.type == 'N' and
+        #                     ads_in_the_month_number == statics_variables.MAX_NORMAL) or (
+        #                     user.account.type == 'A' and
+        #                     ads_in_the_month_number == statics_variables.MAX_ADVANCED):
+        #                 return True
+        #         else:
+        #             return True
+        # else:
+        #     if ads_number == statics_variables.MAX_NONE:
+        #         return True
+        #
+        # return False
         return False
 
 
@@ -119,6 +120,7 @@ class Ad(models.Model):
     condition = models.CharField(max_length=1, choices=AD_CONDITION, blank=True)
     description = models.TextField(max_length=2000)
     random_url = models.UUIDField(default=uuid.uuid4, editable=False)
+    random_code = models.CharField(max_length=10, blank=True, editable=False)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     on_pause = models.BooleanField(default=False)  # an ad is on pause when it's reported many times

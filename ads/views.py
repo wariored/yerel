@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import MultipleObjectsReturned, ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.core.validators import validate_email
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -13,14 +12,16 @@ from PIL import Image
 from yeureul import statics_variables
 from yeureul.utils_functions import ads_are_similar
 from django.core.mail import EmailMessage
+from django.utils.html import strip_tags
+from django.conf import settings as conf_settings
 
-from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
 from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
 from elasticsearch_dsl.query import Q
 from urllib.parse import quote_plus
+from .utils.utils_functions import unique_ad_random_code_generator
 
 
 def categories(request):
@@ -30,22 +31,29 @@ def categories(request):
                   )
 
 
-@login_required
 def create_post(request):
     categories_t = Category.objects.filter(category_type='T')
     locations = Location.objects.all().order_by('name')
     create_post_error = request.session.get('create_post_error', None)
     create_post_success = request.session.get('create_post_success', None)
     dict_values = request.session.get('dict_values', None)
+    random_code = request.session.get('random_code', '')
+    ad_deletion = request.session.get('ad_deletion', None)
+    if ad_deletion:
+        del request.session['ad_deletion']
+
     if create_post_error:
         del request.session['create_post_error']
         if create_post_error != 'has_reached_limit' and dict_values:
             del request.session['dict_values']
     elif create_post_success:
         del request.session['create_post_success']
+    if random_code != '':
+        del request.session['random_code']
     return render(request, 'ads/create_post.html',
                   dict(categories_t=categories_t, locations=locations, create_post_error=create_post_error,
-                       create_post_success=create_post_success, dict_values=dict_values
+                       create_post_success=create_post_success, dict_values=dict_values, random_code=random_code,
+                       ad_deletion=ad_deletion
                        )
                   )
 
@@ -63,6 +71,9 @@ def create_post_verification(request):
         name = request.POST.get('name', None)
         email = request.POST.get('email', None)
         phone_number = request.POST.get('phone_number', None)
+
+        if email:
+            email = email.lower()
 
         # check if user has reached ads limit
         if request.user.is_authenticated:
@@ -139,6 +150,9 @@ def create_post_verification(request):
             request.session['create_post_error'] = 'description'
             request.session['dict_values'] = dict_values
             return redirect('ads:create_post')
+
+        subcategory = Category.objects.get(pk=category)
+        location = Location.objects.get(pk=location)
         # started transaction
         sid = transaction.savepoint()
         if not request.user.is_authenticated:
@@ -162,6 +176,10 @@ def create_post_verification(request):
                 ad_user = AdUser.objects.get(email=email)
             except AdUser.DoesNotExist:
                 ad_user = AdUser.objects.create(given_name=name, phone_number=phone_number, email=email)
+            else:
+                ad_user.phone_number = phone_number
+                ad_user.given_name = name
+                ad_user.save()
         else:
             user = request.user
             given_name = user.first_name + ' ' + user.last_name
@@ -170,8 +188,7 @@ def create_post_verification(request):
             except AdUser.DoesNotExist:
                 ad_user = AdUser.objects.create(user=user, email=user.email, given_name=given_name,
                                                 phone_number=user.info.phone_number)
-        subcategory = Category.objects.get(pk=category)
-        location = Location.objects.get(pk=location)
+
         ad = Ad.objects.create(title=title, price=price, condition=condition, description=description,
                                subcategory=subcategory, location=location, ad_user=ad_user,
                                creation_date=timezone.now()
@@ -194,22 +211,55 @@ def create_post_verification(request):
             transaction.savepoint_commit(sid)
             # return the ad view
             return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
+        ad.random_code = unique_ad_random_code_generator(ad)
+        ad.save()
+        # user is not login (exits or anonymous), we send him/her a mail admin to validate, delete or edit the post
+        url = conf_settings.BASE_URL + "ads/single_item/" + ad.random_url.hex + '/' + ad.random_code + "/"
+        html_message = render_to_string('mails/ad_admin_mail.html', {'link': url})
+        plain_message = strip_tags(html_message)
+        email = EmailMessage("Yerel admin's mail for ad", plain_message, to=[ad_user.email])
+        email.send()
         # end transaction, save into DB
         transaction.savepoint_commit(sid)
         # return redirect('ads:single_item', args='')
         request.session['create_post_success'] = 'success'
+        request.session['random_code'] = ad.random_code
     return redirect('ads:create_post')
 
 
-@login_required
-def update_ad(request, random_url):
+def resend_ad_admin_mail(request, random_code):
+    try:
+        ad = Ad.objects.get(random_code=random_code)
+    except Ad.DoesNotExist:
+        raise Http404
+    ad_user = ad.ad_user
+    url = conf_settings.BASE_URL + "ads/single_item/" + ad.random_url.hex + '/' + ad.random_code + "/"
+    html_message = render_to_string('mails/ad_admin_mail.html', {'link': url})
+    plain_message = strip_tags(html_message)
+    email = EmailMessage("Yerel admin's mail for ad", plain_message, to=[ad_user.email])
+    email.send()
+    request.session['random_code'] = random_code
+    request.session['create_post_success'] = 'success'
+    return redirect('ads:create_post')
+
+
+def update_ad(request, random_url, random_code=''):
     """
     Handle the update of a ad by the aduser
     """
+    print(random_code)
     try:
         if type(random_url) == str:
             random_url = uuid.UUID(random_url)
+
         ad = Ad.objects.get(random_url=random_url)
+        if not request.user.is_authenticated:
+            if ad.random_code and ad.random_code != random_code:
+                raise Http404
+        else:
+            if ad.random_code and random_code != '':
+                raise Http404
+
         if not ad.can_be_edited():
             raise Http404
         categories_t = Category.objects.filter(category_type='T')
@@ -221,7 +271,8 @@ def update_ad(request, random_url):
             'ad': ad,
             'categories_t': categories_t,
             'locations': locations,
-            'update_ad_error': update_ad_error
+            'update_ad_error': update_ad_error,
+            'random_code': random_code
         }
     except ValidationError:
         raise Http404
@@ -229,7 +280,7 @@ def update_ad(request, random_url):
 
 
 @transaction.atomic
-def update_ad_verification(request, random_url):
+def update_ad_verification(request, random_url, random_code=''):
     if request.method == 'POST':
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
@@ -238,40 +289,75 @@ def update_ad_verification(request, random_url):
         condition = request.POST['condition']
         price = request.POST['price']
         photos = request.FILES.getlist('photos', None)
+        name = request.POST.get('name', None)
         location = request.POST['location']
         description = request.POST['description']
+        if not request.user.is_authenticated:
+            if ad.random_code and ad.random_code != random_code:
+                raise Http404
+        else:
+            if random_code != '':
+                raise Http404
+        if not ad.can_be_edited():
+            raise Http404
 
         if not price or len(price) > 30:
             request.session['update_ad_error'] = 'price'
-            return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            if request.user.is_authenticated:
+                return redirect(reverse('ads:single_item', args=(random_url,)))
+            return redirect(
+                reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
         else:
             try:
                 price = float(price)
             except ValueError:
                 request.session['update_ad_error'] = 'price'
-                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+                if request.user.is_authenticated:
+                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(
+                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             if price < 500.00:
                 request.session['update_ad_error'] = 'price'
-                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+                if request.user.is_authenticated:
+                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(
+                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
         if not description or len(description) not in range(20, 2000):
             request.session['update_ad_error'] = 'description'
-            return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+            if request.user.is_authenticated:
+                return redirect(reverse('ads:single_item', args=(random_url,)))
+            return redirect(
+                reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+
+        if name and len(name) > 50:
+            request.session['create_post_error'] = 'name'
+            return redirect('ads:create_post')
 
         if photos:
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
-                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+                if request.user.is_authenticated:
+                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(
+                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['update_ad_error'] = 'photos'
-                return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+                if request.user.is_authenticated:
+                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(
+                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             for photo in photos:
                 try:
                     Image.open(photo)
                 except:
                     request.session['create_post_error'] = 'photo_format'
-                    return redirect(reverse('ads:update_ad', args=(ad.random_url.hex,)))
+                    if request.user.is_authenticated:
+                        return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(
+                        reverse('ads:single_item',
+                                kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             images.delete()
             for photo in photos:
                 AdFile.objects.create(ad=ad, media=photo)
@@ -281,14 +367,36 @@ def update_ad_verification(request, random_url):
         ad.condition = condition
         ad.subcategory = Category.objects.get(pk=category)
         ad.location = Location.objects.get(pk=location)
+        if name:
+            ad_user = ad.ad_user
+            ad_user.given_name = name
+            ad_user.save()
         ad.save()
-        return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
+
+        if request.user.is_authenticated:
+            return redirect(reverse('ads:single_item', args=(random_url,)))
+
+        return redirect(
+            reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
 
-def single_item(request, random_url):
+def single_item(request, random_url, random_code=''):
     try:
         random_url = uuid.UUID(random_url)
         ad = Ad.objects.get(random_url=random_url)
+        if ad.is_deleted:
+            raise Http404
+        if ad.random_code and random_code:
+            if ad.random_code != random_code:
+                raise Http404
+            else:
+                if ad.can_be_edited() and not ad.is_active:
+                    ad.is_active = True
+                    ad.save()
+        if request.user.is_authenticated:
+            if ad.random_code and random_code != '':
+                raise Http404
+
         share_ad = quote_plus(ad.description)
         if not request.session.get('viewed_post_%s' % random_url, False) and ad.ad_user.user != request.user:
             ad.views_number += 1
@@ -315,7 +423,8 @@ def single_item(request, random_url):
             'ad': ad,
             'ads_similar': similar_ads,
             'shared_ad': share_ad,
-            # 'signal_success':signal_succes
+            'random_code': random_code
+            # 'signal_success':signal_success
         }
     except ValidationError:
         raise Http404
@@ -548,18 +657,20 @@ def my_ads(request):
     return render(request, 'ads/my_ads/my_ads.html', context)
 
 
-@login_required
-def delete_ad(request, ad_id=None):
+def delete_ad(request, ad_id=None, random_code=''):
     try:
         ad_to_delete = Ad.objects.get(pk=ad_id, is_deleted=False)
     except Ad.DoesNotExist:
         raise Http404
     else:
-        if request.user == ad_to_delete.ad_user.user:
+        if (request.user == ad_to_delete.ad_user.user) or (
+                ad_to_delete.random_code and ad_to_delete.random_code == random_code):
             ad_to_delete.is_deleted = True
             ad_to_delete.is_active = False
             ad_to_delete.save()
             request.session['ad_deletion'] = 'ok'
+            if random_code != '':
+                return redirect("ads:create_post")
 
     return redirect("ads:my_ads")
 

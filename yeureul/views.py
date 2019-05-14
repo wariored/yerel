@@ -59,6 +59,7 @@ def login_view(request):
         form = forms.LoginForm(data=request.POST)
         if form.is_valid():
             email_username = form.data['email_username']
+            email_username = email_username.lower()
             password = form.data['password']
             try:
                 user = User.objects.get(email=email_username)

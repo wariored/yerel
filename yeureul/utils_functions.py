@@ -1,6 +1,8 @@
 from difflib import SequenceMatcher
 from django.utils import timezone
 import os
+import random
+import string
 
 
 def similar(a, b):
@@ -23,3 +25,7 @@ def days_hence(days):
 def _delete_file(path):
     """ Deletes file from filesystem. """
     os.remove(path)
+
+
+def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
