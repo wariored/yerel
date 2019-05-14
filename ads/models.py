@@ -120,6 +120,7 @@ class Ad(models.Model):
     condition = models.CharField(max_length=1, choices=AD_CONDITION, blank=True)
     description = models.TextField(max_length=2000)
     random_url = models.UUIDField(default=uuid.uuid4, editable=False)
+    random_code = models.CharField(max_length=10, blank=True, editable=False)
     is_active = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     on_pause = models.BooleanField(default=False)  # an ad is on pause when it's reported many times
