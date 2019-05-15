@@ -32,7 +32,7 @@ def index(request):
     categories = Category.objects.filter(category_type='T')
     categories_t_1 = categories[:4]
     categories_t_2 = categories[4:8]
-    ads_count = Ad.objects.all().count()
+    ads_count = Ad.manager_object.can_be_shown_to_public().all().count()
     return render(request, 'yeureul/index.html', dict(categories_t_1=categories_t_1,
                                                       categories_t_2=categories_t_2, ads_count=ads_count))
 
