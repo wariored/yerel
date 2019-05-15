@@ -28,7 +28,7 @@ handler500 = 'yeureul.views.handler404'
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
                   path('admin/', admin.site.urls),
-                  url(r'^(?P<filename>(robots.txt)|(humans.txt))$', views.home_files, name='home_files'),
+                  url(r'^(?P<filename>(robots.txt)|(humans.txt)|(sitemap.xml))$', views.home_files, name='home_files'),
                   url(r'^.well-known/pki-validation/99797D4ABECAC61A30AB474DEC201FE2.txt$', views.cert_file, name='cerif'),
                   url(r'^$', views.index, name='index'),
                   url(r'^login/$', views.login_view, name='login'),
