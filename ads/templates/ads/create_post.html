@@ -15,8 +15,8 @@
             <div class="alert alert-success text-center">Votre annonce a été publié avec succès</div>
         {% else %}
             <div class="alert alert-success text-center">Un lien menant à votre annonce vous a été envoyé.
-                Cliquez sur ce lien pour activer l'annonce, sinon l'annonce ne sera pas publiée.<br>
-                Si vous n'avez pas reçu de mail, cliquer <a><strong>ici</strong></a>
+                Cliquez sur ce lien pour activer l'annonce et l'administrer, sinon l'annonce ne sera pas publiée.<br>
+                Si vous n'avez pas reçu de mail, cliquer <a href="{% url 'ads:resend_ad_admin_mail' random_code %}"><strong>ici</strong></a>
             </div>
         {% endif %}
     {% else %}
@@ -55,6 +55,10 @@
             <div class="alert alert-danger text-center">Vous avez atteint épuisé le nombre d'annonces offert</div>
         {% elif create_post_error == 'activation' %}
             <div class="alert alert-danger text-center">Veuillez activer votre compte svp!</div>
+        {% endif %}
+
+        {% if ad_deletion is not None %}
+            <div class="alert alert-success text-center">Votre annonce a été supprimée</div>
         {% endif %}
 
     {% endif %}

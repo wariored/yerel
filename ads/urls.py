@@ -8,7 +8,9 @@ urlpatterns = [
     path('create_post/', views.create_post, name='create_post'),
     path('create_post_verification/', views.create_post_verification, name='create_post_verification'),
     path('single_item/<str:random_url>/', views.single_item, name='single_item'),
+    path('single_item/<str:random_url>/<str:random_code>/', views.single_item, name='single_item'),
     path('single_item_update/<random_url>/', views.single_item_update, name='single_item_update'),
+    path('single_item_update/<random_url>/<str:code>', views.single_item_update, name='single_item_update'),
     path('single_item_delete/<str:random_url>/', views.single_item_delete, name='single_item_delete'),
     path('categories/categories_grid/', views.categories_grid, name='categories_grid'),
     path('ad/like/', views.like_ad, name="like_post"),
@@ -20,8 +22,19 @@ urlpatterns = [
     path('ad/feature/', views.feature_ad, name="feature_ad"),
     path('delete/', views.delete_ad, name="delete_ad"),
     path('delete/<str:ad_id>/', views.delete_ad, name="delete_ad"),
+    path('delete/<str:ad_id>/<str:random_code>/', views.delete_ad, name="delete_ad"),
     path('status/', views.ad_status, name="ad_status"),
     path('update/<str:random_url>/', views.update_ad, name="update_ad"),
+<<<<<<< HEAD
     path('update_ad_verification/<str:random_url>/', views.update_ad_verification, name="update_ad_verification"),
     path('signal/<str:random_url>', views.signal, name="signal"),
+=======
+    path('update/<str:random_url>/<str:random_code>/', views.update_ad, name="update_ad"),
+    path('update_ad_verification/<str:random_url>/', views.update_ad_verification,
+         name="update_ad_verification"),
+    path('update_ad_verification/<str:random_url>/<str:random_code>/', views.update_ad_verification,
+         name="update_ad_verification"),
+    path('signal/<random_url>', views.signal, name="signal"),
+    path('resend_ad_admin_mail/<str:random_code>', views.resend_ad_admin_mail, name="resend_ad_admin_mail"),
+>>>>>>> 39b39e7c1b10f5a0472dd9be7405643f91d3889c
 ]
