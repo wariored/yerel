@@ -3,12 +3,13 @@
 
 # TEAM
 
-    Cheikh Tidjane Konteye -- Backend Developer and Machine Learning Enthusiast  -- cheikh@cheikhkonteye.com -- http://cheikhkonteye.com
+    Cheikh Tidjane Konteye -- Backend Developer and Head of the team  -- cheikh@cheikhkonteye.com -- http://cheikhkonteye.com
     Papa Momar Nokho -- Full Stack Developer  --  papamomarnokho@gmail.com
     Cheikh Sadibou Diouf -- Full Stack Developer  --  dioufcs97@gmail.com
-    Mor Kairé -- Full Stack Developer  --  kairemor@gmail.com
+    Mor Kaire -- Full Stack Developer  --  kairemor@gmail.com
     Oulymata Seck -- Full Stack Developer  --
-    Ndèye Maty Diaw -- Full Stack Developer  --
+    Ndeye Maty Diaw -- Full Stack Developer  --
+    Aliou Sy -- Full Stack Developer --
 
 
 # THANKS
@@ -19,4 +20,4 @@
 
     HTML5, CSS3
     JQuery, Bootstrap 3
-    Django
+    Django, ElasticSearch
