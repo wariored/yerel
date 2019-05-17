@@ -45,7 +45,8 @@
 
 
                                 {% for selected_subcategory in selected_subcategories %}
-                                    <span>{{ selected_subcategory.name }} <a data-value="{{ selected_subcategory.id }}" class="uncheck_subcategory"
+                                    <span>{{ selected_subcategory.name }} <a data-value="{{ selected_subcategory.id }}"
+                                                                             class="uncheck_subcategory"
                                                                              style="cursor: pointer;"><i
                                             class="fa fa-close"></i></a></span>
 
@@ -59,7 +60,8 @@
                                <li><a class="layout-action active" title="" data-placement="top" data-toggle="tooltip" href="category-grid.html" data-original-title="Grid layout"><i class="fa fa-th"></i></a></li> -->
                             <li class="dropdown">
                                 <a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                                        class="fa fa-filter"></i> Filtrer par prix <b {% if price_order_type == 'low' %} class="fa fa-caret-up" {% else %} class="caret"{% endif %}></b></a>
+                                        class="fa fa-filter"></i> Filtrer par prix <b {% if price_order_type == 'low' %}
+                                    class="fa fa-caret-up" {% else %} class="caret"{% endif %}></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a data-value="low" class="price_order" style="cursor: pointer;">Prix
                                         Croissant</a></li>
@@ -247,21 +249,21 @@
 
                                         {% endif %}
                                         <div class="item-img-grid">
-                                            {% if ad.img.exists %}
-                                                <img alt=""
-                                                     src="{{ ad.img.first.media.url }}"
-                                                     class="img-responsive img-center ad_img">
-                                            {% else %}
-                                                <img alt=""
-                                                     src="{% static 'internals/img/none_ad.png' %}"
-                                                     class="img-responsive img-center ad_img">
-                                            {% endif %}
-                                            <div class="item-title">
-                                                <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                            <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                                {% if ad.img.exists %}
+                                                    <img alt=""
+                                                         src="{{ ad.img.first.media.url }}"
+                                                         class="img-responsive img-center ad_img">
+                                                {% else %}
+                                                    <img alt=""
+                                                         src="{% static 'internals/img/none_ad.png' %}"
+                                                         class="img-responsive img-center ad_img">
+                                                {% endif %}
+                                                <div class="item-title">
                                                     <h4>{{ ad.title }}</h4>
-                                                </a>
-                                                <h3>{{ ad.price }} FCFA</h3>
-                                            </div>
+                                                    <h3>{{ ad.price }} FCFA</h3>
+                                                </div>
+                                            </a>
                                         </div>
                                         <div class="item-meta">
                                             <ul>
