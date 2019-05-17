@@ -124,6 +124,7 @@ def signup_verification(request):
             return redirect('signup')
 
         username = username.lower()
+        email = email.lower()
         username_exist = User.objects.filter(username=username).exists()
         email_exist = User.objects.filter(email=email).exists()
 
@@ -146,7 +147,7 @@ def signup_verification(request):
             email = EmailMessage('Yerel Email activation', plain_message, to=[user.email])
             email.send()
 
-            # check if adUser exist:
+            # check if adUser exist. If it exists override its info:
             try:
                 ad_user = AdUser.objects.get(email=user.email)
             except AdUser.DoesNotExist:
@@ -154,6 +155,7 @@ def signup_verification(request):
             else:
                 ad_user.given_name = ""
                 ad_user.phone_number = user.info.phone_number
+                ad_user.email = user.email
                 ad_user.user = user
                 ad_user.save()
 

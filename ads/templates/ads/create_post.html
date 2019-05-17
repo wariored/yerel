@@ -17,7 +17,7 @@
             <div class="alert alert-success text-center">Un lien menant à votre annonce vous a été envoyé.
                 Cliquez sur ce lien pour activer l'annonce et l'administrer, sinon l'annonce ne sera pas publiée.<br>
                 Si vous n'avez pas reçu de mail, cliquer <a
-                        href="{% url 'ads:resend_ad_admin_mail' random_code %}"><strong>ici</strong></a>
+                        href="{% url 'ads:resend_ad_admin_mail' random_code %}"><strong class="text-danger">ici</strong></a>
             </div>
         {% endif %}
     {% else %}
