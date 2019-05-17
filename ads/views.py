@@ -182,6 +182,14 @@ def create_post_verification(request):
                 ad_user.save()
         else:
             user = request.user
+            if not user.first_name or not user.last_name:
+                request.session['create_post_error'] = 'name'
+                request.session['dict_values'] = dict_values
+                return redirect('ads:create_post')
+            if not user.info.phone_number:
+                request.session['create_post_error'] = 'phone_number'
+                request.session['dict_values'] = dict_values
+                return redirect('ads:create_post')
             given_name = user.first_name + ' ' + user.last_name
             try:
                 ad_user = AdUser.objects.get(email=user.email)

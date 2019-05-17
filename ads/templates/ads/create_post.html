@@ -16,7 +16,8 @@
         {% else %}
             <div class="alert alert-success text-center">Un lien menant à votre annonce vous a été envoyé.
                 Cliquez sur ce lien pour activer l'annonce et l'administrer, sinon l'annonce ne sera pas publiée.<br>
-                Si vous n'avez pas reçu de mail, cliquer <a href="{% url 'ads:resend_ad_admin_mail' random_code %}"><strong>ici</strong></a>
+                Si vous n'avez pas reçu de mail, cliquer <a
+                        href="{% url 'ads:resend_ad_admin_mail' random_code %}"><strong>ici</strong></a>
             </div>
         {% endif %}
     {% else %}
@@ -44,11 +45,18 @@
             </div>
         {% elif create_post_error == 'name' %}
             <div class="alert alert-danger text-center">Le nom est obligatoire et ne doit pas dépasser 50 caractères
+                {% if user.is_authenticated %}
+                    Veuillez aller dans les paramètres pour remplir cela
+                {% endif %}
             </div>
         {% elif create_post_error == 'email' %}
             <div class="alert alert-danger text-center">L'email ne semble pas bon</div>
         {% elif create_post_error == 'phone_number' %}
-            <div class="alert alert-danger text-center">Le numéro doit être un nombre</div>
+            <div class="alert alert-danger text-center">Le numéro doit être un nombre.
+                {% if user.is_authenticated %}
+                    Veuillez aller dans les paramètres pour remplir cela
+                {% endif %}
+            </div>
         {% elif create_post_error == 'photo_format' %}
             <div class="alert alert-danger text-center">Vous ne devez selectionner que des photos</div>
         {% elif create_post_error == 'has_reached_limit' %}
