@@ -229,7 +229,7 @@
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
                             <div class="widget-body text-center">
-                                {% if ad.ad_user.user.info.avatar is not None %}
+                                {% if ad.ad_user.user.info.avatar.exists %}
                                     <img class="user-dp" alt="User Image" src="{{ ad.ad_user.user.info.avatar.url }}">
                                 {% else %}
                                     <img class="user-dp" alt="User Image"
