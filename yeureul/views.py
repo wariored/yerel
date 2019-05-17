@@ -146,6 +146,17 @@ def signup_verification(request):
             email = EmailMessage('Yerel Email activation', plain_message, to=[user.email])
             email.send()
 
+            # check if adUser exist:
+            try:
+                ad_user = AdUser.objects.get(email=user.email)
+            except AdUser.DoesNotExist:
+                pass
+            else:
+                ad_user.given_name = ""
+                ad_user.phone_number = user.info.phone_number
+                ad_user.user = user
+                ad_user.save()
+
             return redirect('settings')
         else:
             # if we are here, it's because user does exist
@@ -294,8 +305,16 @@ def update_profile(request):
         old_password = request.POST.get('old_password', None)
         password_1 = request.POST.get('password_1', None)
         password_2 = request.POST.get('password_2', None)
+
         user = User.objects.get(username__exact=request.user.username)
         user_info = UserInfo.objects.get(user=user)
+
+        ad_user = None
+        try:
+            ad_user = user.adUser
+        except AdUser.DoesNotExist:
+            pass
+
         if old_password:
             if request.user.check_password(old_password):
                 if password_1:
@@ -313,6 +332,8 @@ def update_profile(request):
         else:
             user.first_name = first_name
             user.last_name = last_name
+            if ad_user:
+                ad_user.given_name = first_name + " " + last_name
         try:
             int(phone_number)
         except:
@@ -320,6 +341,8 @@ def update_profile(request):
                 request.session['update_profile_error'] = 'phone_number'
         else:
             user_info.phone_number = phone_number
+            if ad_user:
+                ad_user.phone_number = phone_number
         user_info.address = address
 
         if avatar:
@@ -335,13 +358,8 @@ def update_profile(request):
         if not request.session.get('update_profile_error'):
             user_info.save()
             user.save()
-            try:
-                user_ads = user.adUser
-            except AdUser.DoesNotExist:
-                pass
-            else:
-                user_ads.given_name = user.first_name + " " + user.last_name
-                user_ads.save()
+            if ad_user:
+                ad_user.save()
             request.session['update_profile_success'] = True
 
     return redirect('settings')
