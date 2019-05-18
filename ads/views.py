@@ -416,7 +416,7 @@ def single_item(request, random_url, random_code=''):
         else:
             liked = False
         similar_ads = list()
-        all_ads = Ad.objects.all().exclude(pk=ad.pk).order_by('-update_date')
+        all_ads = Ad.manager_object.can_be_shown_to_public().exclude(pk=ad.pk).order_by('-update_date')
         for add in all_ads:
             if ads_are_similar(add.description, ad.description):
                 similar_ads.append(add)
