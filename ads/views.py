@@ -475,7 +475,8 @@ def categories_grid(request):
     filter_by_price = None
     selected_location = None
 
-    text_to_search = text_to_search.strip()
+    if text_to_search:
+        text_to_search = text_to_search.strip()
 
     if category_id:
         try:
