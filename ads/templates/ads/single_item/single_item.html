@@ -239,7 +239,7 @@
                                 <!-- <span class="user-status user-offline"></span> -->
                                 <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
                                 <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
-                                    {% if ad.ad_user.user.info.address %}
+                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None'   %}
                                         <strong>{{ ad.ad_user.user.info.address }}</strong>
                                     {% else %}
                                         <strong>non donné</strong>
