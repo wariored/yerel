@@ -22,3 +22,13 @@ def replace_query_param(url, attr, val):
 @register.simple_tag
 def define_variable(val=None):
     return val
+
+
+@register.simple_tag
+def file_url(obj):
+    url_path = None
+    try:
+        url_path = obj.url
+    except:
+        pass
+    return url_path
