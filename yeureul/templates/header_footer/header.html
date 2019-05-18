@@ -80,7 +80,7 @@
                         <li class="dropdown">
                             <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown">
 
-                                {% if user.info.avatar.exists %}
+                                {% if user.info.avatar.name %}
                                     <img src="{{ user.info.avatar.url }}" alt="User Image" class="user-dp">
                                     {{ user.username }}
                                 {% else %}
