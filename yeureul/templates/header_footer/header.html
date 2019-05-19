@@ -32,7 +32,7 @@
                 {#                <li><a href="{% url 'pricing:pricing' %}">Tarifs</a></li>#}
                 <li><a href="{% url 'faq' %}">FAQ</a></li>
                 <li><a href="{% url 'contact' %}">Contact</a></li>
-{#                <li class="dropdown">#}
+                {#                <li class="dropdown">#}
                 {#                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">Blog <b#}
                 {#                            class="caret"></b></a>#}
                 {#                    <ul class="dropdown-menu">#}
@@ -53,14 +53,14 @@
                                 annonce</a>
                         </li>
                         <li>
-                            <a href="privacy.html"><i class="fa fa-fw fa-angle-right"></i> Privacy Policy</a>
+                            <a href="{% url 'privacy' %}"><i class="fa fa-fw fa-angle-right"></i> Confidentialité</a>
                         </li>
-                        <li>
-                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler chez Nous</a>
-                        </li>
-                        <li>
-                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>
-                        </li>
+                        {#                        <li>#}
+                        {#                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler chez Nous</a>#}
+                        {#                        </li>#}
+                        {#                        <li>#}
+                        {#                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>#}
+                        {#                        </li>#}
                         <li>
                             <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Nos partenaires</a>
                         </li>

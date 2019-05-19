@@ -40,6 +40,7 @@ urlpatterns = [
                        views.account_reset_password, name='user_reset_password_link'),
                   url(r'^logout/$', views.logout_view, name='logout'),
                   url(r'^contact/$', views.contact, name='contact'),
+                  url(r'^privacy/$', views.privacy, name='privacy'),
                   url(r'^contact_verification/$', views.contact_verification, name='contact_verification'),
                   url(r'^account/settings/$', views.settings, name='settings'),
                   url(r'^account/settings/update_profile/$', views.update_profile, name='update_profile'),
