@@ -275,12 +275,21 @@
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
                             <div class="widget-body text-center">
-                                <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
+                                {% if ad.ad_user.user.info.avatar.name %}
+                                    <img class="user-dp" alt="User Image" src="{{ ad.ad_user.user.info.avatar.url }}">
+                                {% else %}
+                                    <img class="user-dp" alt="User Image"
+                                         src="{% static 'externals/images/user60.png' %}">
+                                {% endif %}
                                 <span class="user-status user-offline"></span>
                                 <!-- <span class="user-status user-offline"></span> -->
                                 <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
                                 <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
-                                    <strong>non donné</strong><br>
+                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None'   %}
+                                        <strong>{{ ad.ad_user.user.info.address }}</strong>
+                                    {% else %}
+                                        <strong>non donné</strong>
+                                    {% endif %}<br>
                                     <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
                                         {% language 'fr' %}
                                             {{ ad.ad_user.user.date_joined|date:"SHORT_DATE_FORMAT" }} {% endlanguage %}</strong>
@@ -290,15 +299,18 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="profile-action-btns text-center">
-                                            <a href="#" data-toggle="tooltip" data-placement="top"
-                                               title="{{ ad.ad_user.phone_number }}" class="btn btn-primary btn-lg"><i
+                                            <a href="https://api.whatsapp.com/send?phone=221{{ ad.ad_user.phone_number }}"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="{{ ad.ad_user.phone_number }}" target="_blank"
+                                               class="btn btn-primary btn-lg"><i
                                                     class="fa fa-whatsapp"></i></a>
-                                            <a href="#" data-toggle="tooltip" data-placement="top"
-                                               title="Envoyer Message"
+                                            <a href="mailto:{{ ad.ad_user.email }}" target="_blank"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="{{ ad.ad_user.email }}"
                                                class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
-                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"
-                                               title="Chat en ligne"
-                                               class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>
+                                            {#                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"#}
+                                            {#                                               title="Chat en ligne"#}
+                                            {#                                               class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>#}
                                         </div>
                                     </div>
                                 </div>
@@ -306,7 +318,7 @@
                         {% else %}
                             <div class="widget-body text-center">
                                 <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">
-{#                                <span class="user-status user-online"></span>#}
+                                {#                                <span class="user-status user-online"></span>#}
                                 <!-- <span class="user-status user-offline"></span> -->
                                 <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
                             </div>
@@ -314,9 +326,14 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="profile-action-btns text-center">
-                                            <a href="#" data-toggle="tooltip" data-placement="top"
+                                            <a href="https://api.whatsapp.com/send?phone=221{{ ad.ad_user.phone_number }}"
+                                               target="_blank" data-toggle="tooltip" data-placement="top"
                                                title="{{ ad.ad_user.phone_number }}"
                                                class="btn btn-primary btn-lg"><i class="fa fa-whatsapp"></i></a>
+                                            <a href="mailto:{{ ad.ad_user.email }}" target="_blank"
+                                               data-toggle="tooltip" data-placement="top"
+                                               title="{{ ad.ad_user.email }}"
+                                               class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
                                         </div>
                                     </div>
                                 </div>

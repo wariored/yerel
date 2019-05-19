@@ -1,5 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
 
 <!-- Cookies consent -->
@@ -28,13 +29,22 @@
 
 <!-- End cookies consent -->
 
+=======
+<html lang="fr">
+>>>>>>> 15b0123d7c7cb46e6cf0f8d99ae9b7b1ffa15798
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Yërël annonces | Publier ou rechercher une annonce</title>
+    <meta property="og:image" content="https://yerel.co/static/internals/img/1500X500_LARGE_og.png">
+    <meta property="og:title" content="Yerel"/>
+    <meta property="og:description" content="Site de petites annonces totalement gratuit.">
+    <meta property="og:type" content="article"/>
+    <meta property="og:locale" content="fr_FR"/>
+    <meta property="og:locale:alternate" content="es_ES"/>
+    <meta name="description" content="Site de petites annonces totalement gratuit. Pas besoin de compte.">
+    <meta name="author" content="cheikh@cheikhkonteye.com">
+    <title>Yerel annonces | Publier ou rechercher des annonces</title>
 
     <!-- Favicon Icon -->
     <link rel="apple-touch-icon" sizes="76x76" href="{% static 'externals/images/apple-icon.png' %}">
@@ -54,6 +64,32 @@
     <link href="{% static 'externals/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{% static 'internals/css/general.css' %}">
     {% block stylesheets %}{% endblock stylesheets %}
+    <!-- Cookies consent -->
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'internals/css/cookiesconsent.min.css' %}"/>
+    <script src="{% static 'internals/js/cookiesconsent.min.js' %}"></script>
+    <script>
+        window.addEventListener("load", function () {
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#000"
+                    },
+                    "button": {
+                        "background": "#f1d600"
+                    },
+                },
+                "content": {
+                    "message": "Ce site utilise des cookies pour vous offrir le meilleur service. En poursuivant votre navigation, " +
+                        "vous acceptez l’utilisation des cookies.",
+                    "dismiss": "J'accepte",
+                    "link": "En savoir plus",
+                }
+            })
+        });
+    </script>
+
+    <!-- End cookies consent -->
 </head>
 
 <body>

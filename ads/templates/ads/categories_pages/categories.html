@@ -42,8 +42,10 @@
                             <div class="widget-body">
                                 <ul class="trends">
                                     {% for subcategory in category.subcategories.all|slice:'5' %}
-                                        <li><a href="#">{{ subcategory.name }} <span
-                                                class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                        <li>
+                                            <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
+                                                <span
+                                                        class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                     <li>&ensp;</li>
@@ -62,21 +64,23 @@
                                     <div class="item">
                                         <div class="item-ads-grid {{ category.icon_ads }}">
                                             <div class="item-img-grid">
-                                                {% if ad.img.exists %}
-                                                    <img alt=""
-                                                         src="{{ ad.img.first.media.url }}"
-                                                         class="img-responsive img-center ad_img">
-                                                {% else %}
-                                                    <img alt=""
-                                                         src="{% static 'internals/img/none_ad.png' %}"
-                                                         class="img-responsive img-center ad_img">
-                                                {% endif %}
-                                                <div class="item-title">
-                                                    <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                                <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                                    {% if ad.img.exists %}
+                                                        <img alt=""
+                                                             src="{{ ad.img.first.media.url }}"
+                                                             class="img-responsive img-center ad_img">
+                                                    {% else %}
+                                                        <img alt=""
+                                                             src="{% static 'internals/img/none_ad.png' %}"
+                                                             class="img-responsive img-center ad_img">
+                                                    {% endif %}
+                                                    <div class="item-title">
+
                                                         <h4>{{ ad.title }}</h4>
-                                                    </a>
-                                                    <h3>{{ ad.price }} FCFA</h3>
-                                                </div>
+
+                                                        <h3>{{ ad.price }} FCFA</h3>
+                                                    </div>
+                                                </a>
                                             </div>
                                             <div class="item-meta">
                                                 <ul>

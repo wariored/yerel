@@ -14,6 +14,9 @@ from yeureul.utils_functions import ads_are_similar
 from django.core.mail import EmailMessage
 from django.utils.html import strip_tags
 from django.conf import settings as conf_settings
+import operator
+from functools import reduce
+from itertools import chain
 
 from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert, Signal
@@ -183,6 +186,14 @@ def create_post_verification(request):
                 ad_user.save()
         else:
             user = request.user
+            if not user.first_name or not user.last_name:
+                request.session['create_post_error'] = 'name'
+                request.session['dict_values'] = dict_values
+                return redirect('ads:create_post')
+            if not user.info.phone_number:
+                request.session['create_post_error'] = 'phone_number'
+                request.session['dict_values'] = dict_values
+                return redirect('ads:create_post')
             given_name = user.first_name + ' ' + user.last_name
             try:
                 ad_user = AdUser.objects.get(email=user.email)
@@ -409,7 +420,7 @@ def single_item(request, random_url, random_code=''):
         else:
             liked = False
         similar_ads = list()
-        all_ads = Ad.objects.all().exclude(pk=ad.pk).order_by('-update_date')
+        all_ads = Ad.manager_object.can_be_shown_to_public().exclude(pk=ad.pk).order_by('-update_date')
         for add in all_ads:
             if ads_are_similar(add.description, ad.description):
                 similar_ads.append(add)
@@ -465,6 +476,8 @@ def categories_grid(request):
     filter_by_price = None
     selected_location = None
 
+    text_to_search = text_to_search.strip()
+
     if category_id:
         try:
             selected_category = Category.objects.get(pk=category_id)
@@ -487,6 +500,14 @@ def categories_grid(request):
             found_ads.append(ad.id)
 
         selected_ads = selected_ads.filter(id__in=found_ads)
+        split_text = text_to_search.split(' ')
+        for word in split_text:
+            found_ads_title_by_split = Ad.manager_object.can_be_shown_to_public().filter(title__contains=word)
+            found_ads_description_by_split = Ad.manager_object.can_be_shown_to_public().filter(
+                description__contains=word)
+            selected_ads = selected_ads | found_ads_title_by_split | found_ads_description_by_split
+
+        selected_ads = selected_ads.distinct()
 
     if selected_condition:
         selected_ads = selected_ads.filter(condition=selected_condition)

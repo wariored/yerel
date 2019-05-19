@@ -7,10 +7,10 @@
         <div class="container">
             <div class="row">
                 <div class="main-search-box text-center">
-                    <h1 class="intro-title">Publier ou Rechercher quelque chose en ligne</h1>
+                    <h1 class="intro-title">Yërël, Site d'annonces en ligne</h1>
                     <p class="sub-title">Publiez et recherchez tout, des voitures d'occasion aux téléphones portables et
                         ordinateurs,
-                        ou recherchez des biens, des emplois et plus encore <br>
+                        ou recherchez des biens, des emplois et plus encore. <br>
                         <span class="text-capitalize text-warning">C'est totalement gratuit et vous pouvez ne pas avoir un compte.</span>
                     </p>
                     {% include 'static_content/search_form.html' %}
@@ -20,8 +20,8 @@
                     {% popular_subcategories as populars %}
                     {% for p in populars %}
                         <a href="{% url 'ads:categories_grid' %}?category={{ p.sup_category.id }}&subcategories={{ p.id }}">
-                        <i class=""></i>{{ p.name }}
-                    </a>
+                            <i class=""></i>{{ p.name }}
+                        </a>
 
                     {% endfor %}
                 </div>
@@ -61,21 +61,23 @@
                                     {% endif %}
 
                                     <div class="item-img-grid">
-                                        {% if ad.img.exists %}
-                                            <img alt=""
-                                                 src="{{ ad.img.first.media.url }}"
-                                                 class="img-responsive img-center ad_img">
-                                        {% else %}
-                                            <img alt=""
-                                                 src="{% static 'internals/img/none_ad.png' %}"
-                                                 class="img-responsive img-center ad_img">
-                                        {% endif %}
-                                        <div class="item-title">
-                                            <a href="{% url 'ads:single_item' ad.random_url.hex  %}">
+                                        <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                            {% if ad.img.exists %}
+                                                <img alt=""
+                                                     src="{{ ad.img.first.media.url }}"
+                                                     class="img-responsive img-center ad_img">
+                                            {% else %}
+                                                <img alt=""
+                                                     src="{% static 'internals/img/none_ad.png' %}"
+                                                     class="img-responsive img-center ad_img">
+                                            {% endif %}
+                                            <div class="item-title">
+
                                                 <h4>{{ ad.title }}</h4>
-                                            </a>
-                                            <h3>{{ ad.price }} FCFA</h3>
-                                        </div>
+
+                                                <h3>{{ ad.price }} FCFA</h3>
+                                            </div>
+                                        </a>
                                     </div>
                                     <div class="item-meta">
                                         <ul>
@@ -84,8 +86,10 @@
                                                     {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span>
                                             </li>
                                             <li class="item-cat"><i class="fa fa-glass"></i> <a
-                                                    href="{% url 'ads:categories_grid' %}?category={{ ad.subcategory.sup_category.id }}">{{ ad.subcategory.sup_category.name }}</a> , <a
-                                                    href="{% url 'ads:categories_grid' %}?category={{ ad.subcategory.sup_category.id }}&subcategories={{ ad.subcategory.id }}">{{ ad.subcategory.name }}</a></li>
+                                                    href="{% url 'ads:categories_grid' %}?category={{ ad.subcategory.sup_category.id }}">{{ ad.subcategory.sup_category.name }}</a>
+                                                , <a
+                                                        href="{% url 'ads:categories_grid' %}?category={{ ad.subcategory.sup_category.id }}&subcategories={{ ad.subcategory.id }}">{{ ad.subcategory.name }}</a>
+                                            </li>
                                             <li class="item-location"><a href="#"><i
                                                     class="fa fa-map-marker"></i>
                                                 {{ ad.location.name }} </a></li>
@@ -118,8 +122,10 @@
                                 <ul class="trends">
 
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }} <span
-                                                class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                        <li>
+                                            <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
+                                                <span
+                                                        class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -139,8 +145,10 @@
                             <div class="widget-body">
                                 <ul class="trends">
                                     {% for subcategory in category.subcategories.all|slice:":5" %}
-                                        <li><a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }} <span
-                                                class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                        <li>
+                                            <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
+                                                <span
+                                                        class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
                                         </li>
                                     {% endfor %}
                                 </ul>
