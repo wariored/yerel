@@ -389,7 +389,6 @@
     <!-- End Category List -->
 {% endblock %}
 {% block javascripts %}
-<<<<<<< HEAD
 <script>
     function toggleMenu() {
         $('#signal-add').modal('toggle')
@@ -425,39 +424,6 @@
                     alert("Une erreur est survenue");
                     console.log(rs.responseText)
                 }
-=======
-    <script>
-        /* Ajax request to send the like request without reloading all the page
-              when visitor click in the like button
-            */
-
-        setTimeout(() => {
-            $('.signal_alert').hide()
-        }, 3000)
-        $(document).ready(function (e) {
-            $(document).on('click', "#like", function (e) {
-                e.preventDefault();
-                var pk = $(this).data('value');
-                var like_section = $('#like_section');
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "ads:like_post" %}',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    data: {
-                        'id': pk
-                    },
-                    dataType: 'json',
-                    success: function (response) {
-                        like_section.html(response['form'])
-                    },
-                    error: function (rs, e) {
-                        alert("Une erreur est survenue");
-                        console.log(rs.responseText)
-                    }
-                });
->>>>>>> 39b39e7c1b10f5a0472dd9be7405643f91d3889c
             });
             $(document).on('click', '#featured', function (e) {
                 var feature_section = $('#feature_section');
@@ -490,5 +456,6 @@
                 });
             });
         });
+    })
     </script>
 {% endblock %}
