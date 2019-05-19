@@ -377,6 +377,10 @@ def contact(request):
     return render(request, 'yeureul/contact_us.html', {'contact': contact_error, 'list_values': list_values})
 
 
+def privacy(request):
+    return render(request, 'yeureul/privacy.html')
+
+
 @transaction.atomic
 def contact_verification(request):
     if request.method == "POST":
