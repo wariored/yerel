@@ -25,10 +25,8 @@ urlpatterns = [
     path('delete/<str:ad_id>/<str:random_code>/', views.delete_ad, name="delete_ad"),
     path('status/', views.ad_status, name="ad_status"),
     path('update/<str:random_url>/', views.update_ad, name="update_ad"),
-<<<<<<< HEAD
     path('update_ad_verification/<str:random_url>/', views.update_ad_verification, name="update_ad_verification"),
     path('signal/<str:random_url>', views.signal, name="signal"),
-=======
     path('update/<str:random_url>/<str:random_code>/', views.update_ad, name="update_ad"),
     path('update_ad_verification/<str:random_url>/', views.update_ad_verification,
          name="update_ad_verification"),
@@ -36,5 +34,4 @@ urlpatterns = [
          name="update_ad_verification"),
     path('signal/<random_url>', views.signal, name="signal"),
     path('resend_ad_admin_mail/<str:random_code>', views.resend_ad_admin_mail, name="resend_ad_admin_mail"),
->>>>>>> 39b39e7c1b10f5a0472dd9be7405643f91d3889c
 ]

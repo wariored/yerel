@@ -202,8 +202,7 @@
                             </div>
                         </div>
                     </div>
-<<<<<<< HEAD
-                </div>
+                
 
 
                 {% if user.is_authenticated %}
@@ -271,32 +270,8 @@
                 <div class="price-widget short-widget">
                     <strong style="word-wrap: break-word">{{ ad.price }}</strong>
                     <i>F</i>
-=======
-
-                    {% if not signal_success %}
-                        {% if user.is_authenticated %}
-                            {% if not user == ad.ad_user.user %}
-                                <div class="text-right mt-4 ">
-                                    <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
-                                        Signaler cette annonce <i class="fa fa-exclamation-triangle text-right"></i>
-                                    </a>
-                                </div>
-                            {% endif %}
-                        {% else %}
-                            <div class="text-right mt-4 ">
-                                <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
-                                    Signaler cette annonce <i class="fa fa-exclamation-triangle text-right"></i>
-                                </a>
-                            </div>
-                        {% endif %}
-                    {% endif %}
->>>>>>> 39b39e7c1b10f5a0472dd9be7405643f91d3889c
                 </div>
-                <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="price-widget short-widget">
-                        <strong style="word-wrap: break-word">{{ ad.price }}</strong>
-                        <i>F</i>
-                    </div>
+                
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
                             <div class="widget-body text-center">

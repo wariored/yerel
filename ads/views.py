@@ -15,12 +15,8 @@ from django.core.mail import EmailMessage
 from django.utils.html import strip_tags
 from django.conf import settings as conf_settings
 
-<<<<<<< HEAD
 from .forms import AdForm
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert, Signal
-=======
-from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
->>>>>>> 39b39e7c1b10f5a0472dd9be7405643f91d3889c
 from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
