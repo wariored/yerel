@@ -1,10 +1,9 @@
 from .base import *
 
-# DEBUG = False
+DEBUG = False
 BASE_URL = 'https://yerel.co/'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co', '134.209.19.227']
-
 
 # Application definition
 
@@ -14,18 +13,17 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yerel.co', '134.209.19.227']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'yereluser',
-        'PASSWORD': 'postgre',
+        'USER': get_env_variable('DB_USER'),
+        'PASSWORD': get_env_variable('DB_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '5432',
-        'NAME': 'yerel',
+        'NAME': get_env_variable('DB_NAME'),
     }
 }
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 # elasticsearch_dsl config
 ELASTICSEARCH_DSL = {
@@ -33,3 +31,10 @@ ELASTICSEARCH_DSL = {
         'hosts': 'localhost:9200'
     },
 }
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = get_env_variable('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = get_env_variable('SENDGRID_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "yerel@yerel.co"

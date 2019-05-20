@@ -42,6 +42,10 @@ def home_files(request, filename):
     return render(request, filename, content_type="text/plain")
 
 
+def cert_file(request):
+    return render(request, "99797D4ABECAC61A30AB474DEC201FE2.txt", content_type="text/plain")
+
+
 def login_view(request):
     """Login a user"""
     # no need to login if user is already authenticated
