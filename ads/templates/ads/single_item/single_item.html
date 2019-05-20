@@ -34,9 +34,13 @@
     <!-- End Categories Page Search-->
 
     <!-- Single Detail -->
-    {% if signal_success == True %}
-        <div class="alert-success text text-center signal_alert">
-            <p>Annonce signalee</p>
+    {% if ad_signal == 'ok' %}
+        <div class="alert alert-success text text-center signal_alert">
+            Annonce signalée.
+        </div>
+    {% elif ad_signal == 'already_signaled' %}
+        <div class="alert alert-info text text-center signal_alert">
+            Une erreur est survenue. Soit vous avez déja signalée cette annonce ou soit c'est une erreur système.
         </div>
     {% endif %}
     <section class="single-detail">
@@ -202,76 +206,75 @@
                             </div>
                         </div>
                     </div>
-                
+
+                    {% if not user == ad.ad_user.user %}
+                        <div class="text-right mt-4 ">
+                            <button onclick="toggleMenu()" class="btn btn-danger">
+                                Signaler <i class="fa fa-exclamation-triangle text-right"></i>
+                            </button>
+                        </div>
+                    {% endif %}
 
 
-                {% if user.is_authenticated %}
-                {% if not user == ad.ad_user.user %}
-                <div class="text-right mt-4 ">
-                    <button onclick="toggleMenu()" class="btn btn-danger">
-                        Signaler <i class="fa fa-exclamation-triangle text-right"></i>
-                    </button>
-                </div>
-                {% endif %}
-                {% endif %}
-
-
-                <div class="modal fade" id="signal-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
+                    <div class="modal fade" id="signal-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
                                 <form method='POST' action="{% url 'ads:signal' ad.random_url.hex %}"
-                                    class="form-horizontal form">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="signal1" class="col-sm-8 col-md-8">Annonce inappropriee</label>
-                                            <input type="radio" name="signal" value="AI" class="form-inline"
-                                                id="signal1" />
-                                        </div>
-                                    </div>
+                                      class="form-horizontal form">
+                                    <div class="modal-body">
 
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="signal2" class="col-sm-8 col-md-8">Annonce avec du contenu
-                                                abusif</label>
-                                            <input type="radio" name="signal" value="AA" class="form-inline"
-                                                id="signal2" />
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label for="signal1" class="col-sm-8 col-md-8">Annonce
+                                                    inappropriee</label>
+                                                <input type="radio" name="signal" value="AI" class="form-inline"
+                                                       id="signal1"/>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <label for="signal3" class="col-sm-8 col-md-8">Autre choses</label>
-                                            <input type="radio" name="signal" value="AC" class="form-inline"
-                                                id="signal3" />
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label for="signal2" class="col-sm-8 col-md-8">Annonce avec du contenu
+                                                    abusif</label>
+                                                <input type="radio" name="signal" value="AA" class="form-inline"
+                                                       id="signal2"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label for="signal3" class="col-sm-8 col-md-8">Autre choses</label>
+                                                <input type="radio" name="signal" value="AC" class="form-inline"
+                                                       id="signal3"/>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                            Annuler
+                                        </button>
+                                        <input id="limpar-campos" type="submit" class="btn btn-primary"
+                                               value="Signaler">
+                                    </div>
+                                </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">
-                                    Annuler
-                                </button>
-                                <input id="limpar-campos" type="submit" class="btn btn-primary" value="Signaler">
-                            </div>
-                            </form>
                         </div>
                     </div>
-                </div>
-                <br>
+                    <br>
 
-            </div>
-            <div class="col-lg-4 col-md-6 col-sm-6">
-                <div class="price-widget short-widget">
-                    <strong style="word-wrap: break-word">{{ ad.price }}</strong>
-                    <i>F</i>
                 </div>
-                
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="price-widget short-widget">
+                        <strong style="word-wrap: break-word">{{ ad.price }}</strong>
+                        <i>F</i>
+                    </div>
+
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
                             <div class="widget-body text-center">
@@ -285,7 +288,7 @@
                                 <!-- <span class="user-status user-offline"></span> -->
                                 <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
                                 <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
-                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None'   %}
+                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None' %}
                                         <strong>{{ ad.ad_user.user.info.address }}</strong>
                                     {% else %}
                                         <strong>non donné</strong>
@@ -406,73 +409,73 @@
     <!-- End Category List -->
 {% endblock %}
 {% block javascripts %}
-<script>
-    function toggleMenu() {
-        $('#signal-add').modal('toggle')
-    }
+    <script>
+        function toggleMenu() {
+            $('#signal-add').modal('toggle')
+        }
 
-    setTimeout(() => {
-        $('.signal_alert').hide()
-    }, 3000)
+        setTimeout(() => {
+            $('.signal_alert').hide()
+        }, 7000)
 
-    /* Ajax request to send the like request without reloading all the page
-     *when visitor click in the like button
-     */
+        /* Ajax request to send the like request without reloading all the page
+         *when visitor click in the like button
+         */
 
-    $(document).ready(function (e) {
-        $(document).on('click', "#like", function (e) {
-            e.preventDefault();
-            var pk = $(this).data('value');
-            var like_section = $('#like_section');
-            $.ajax({
-                type: 'POST',
-                url: '{% url "ads:like_post" %}',
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                data: {
-                    'id': pk
-                },
-                dataType: 'json',
-                success: function (response) {
-                    like_section.html(response['form'])
-                },
-                error: function (rs, e) {
-                    alert("Une erreur est survenue");
-                    console.log(rs.responseText)
-                }
-            });
-            $(document).on('click', '#featured', function (e) {
-                var feature_section = $('#feature_section');
-                var id = $('#ad_id').val();
-                var feature_alert = $("#feature_alert");
+        $(document).ready(function (e) {
+            $(document).on('click', "#like", function (e) {
+                e.preventDefault();
+                var pk = $(this).data('value');
+                var like_section = $('#like_section');
                 $.ajax({
                     type: 'POST',
-                    url: '{% url "ads:feature_ad" %}',
+                    url: '{% url "ads:like_post" %}',
                     headers: {
-                        'X-CSRFToken': "{{ csrf_token }}"
+                        'X-CSRFToken': '{{ csrf_token }}'
                     },
                     data: {
-                        'id': id
+                        'id': pk
                     },
                     dataType: 'json',
                     success: function (response) {
-                        feature_section.html(response['featured']);
-                        console.log('ok');
-                        feature_alert.html("La mise en vedette a été modifiée");
-                        feature_alert.addClass('alert alert-info');
-                        //feature_alert.addClass("alert alert-info");
-                        feature_alert.fadeTo(2000, 500).slideUp(500, function () {
-                            feature_alert.slideUp(500);
-                        });
+                        like_section.html(response['form'])
                     },
                     error: function (rs, e) {
                         alert("Une erreur est survenue");
-                        console.log(rs.responseText);
+                        console.log(rs.responseText)
                     }
                 });
+                $(document).on('click', '#featured', function (e) {
+                    var feature_section = $('#feature_section');
+                    var id = $('#ad_id').val();
+                    var feature_alert = $("#feature_alert");
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "ads:feature_ad" %}',
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        },
+                        data: {
+                            'id': id
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            feature_section.html(response['featured']);
+                            console.log('ok');
+                            feature_alert.html("La mise en vedette a été modifiée");
+                            feature_alert.addClass('alert alert-info');
+                            //feature_alert.addClass("alert alert-info");
+                            feature_alert.fadeTo(2000, 500).slideUp(500, function () {
+                                feature_alert.slideUp(500);
+                            });
+                        },
+                        error: function (rs, e) {
+                            alert("Une erreur est survenue");
+                            console.log(rs.responseText);
+                        }
+                    });
+                });
             });
-        });
-    })
+        })
     </script>
 {% endblock %}

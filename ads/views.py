@@ -93,8 +93,8 @@ def create_post_verification(request):
                 return redirect('ads:create_post')
 
         dict_values = dict(title=title, price=price,
-                            description=description, name=name, email=email, phone_number=phone_number
-                            )
+                           description=description, name=name, email=email, phone_number=phone_number
+                           )
         if not title or len(title) > 50:
             request.session['create_post_error'] = 'title'
             request.session['dict_values'] = dict_values
@@ -427,7 +427,10 @@ def single_item(request, random_url, random_code=''):
                 if len(similar_ads) == 6:
                     break
 
-        # signal_succes = False 
+        # signal_succes = False
+        ad_signal = request.session.get('ad_signal', None)
+        if ad_signal:
+            del request.session['ad_signal']
         count = ad.likes.count()
         context = {
             'like_count': count,
@@ -435,8 +438,8 @@ def single_item(request, random_url, random_code=''):
             'ad': ad,
             'ads_similar': similar_ads,
             'shared_ad': share_ad,
-            'random_code': random_code
-            # 'signal_success':signal_success
+            'random_code': random_code,
+            'ad_signal': ad_signal
         }
     except ValidationError:
         raise Http404
@@ -816,39 +819,36 @@ def feature_ad(request):
         return JsonResponse({'featured': html})
 
 
-# def signal(request, random_url):
-#     try:
-#         random_url = uuid.UUID(random_url)
-#         ad = Ad.objects.get(random_url=random_url)
-#     except Ad.DoesNotExist:
-#         pass
-#     else:
-#         signal_success = True
-#         if not request.session.get('signal_ad_%s' % random_url, False):
-#             ad.signal += 1
-#             request.session['signal_ad_%s' % random_url] = True
-#             ad.save()
-
-#         context = {
-#             'ad': ad,
-#             'signal_success': signal_success
-#         }
-#         return render(request, 'ads/single_item/single_item.html', context)
-
 def signal(request, random_url):
-    '''
+    """
     Function that handle the signal of an add by a user 
-    '''
+    """
     if request.method == 'POST':
+        signal_type = request.POST['signal']
         try:
             ad = Ad.objects.get(random_url=random_url)
-            user = request.user 
-            if not ad.signals.filter(user=user): 
-                signal = Signal.objects.create(user=user,
-                    ad=ad, type=request.POST['signal'])
-                signal.save()
         except Ad.DoesNotExist:
-            return redirect('index')
-        
-        return redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
-        
+            return Http404
+        response = redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
+        cookie_id = "signal_ad_%s" % ad.id
+        success = False
+        if request.user.is_authenticated:
+            signal_ad = ad.signals.filter(user=request.user)
+            if not signal_ad and cookie_id not in request.COOKIES:
+                Signal.objects.create(user=request.user, ad=ad, type=signal_type)
+                response.set_cookie(cookie_id, ad.id)
+                success = True
+        else:
+            if cookie_id not in request.COOKIES:
+                Signal.objects.create(ad=ad, type=signal_type)
+                response.set_cookie(cookie_id, ad.id)
+                success = True
+
+        if success:
+            request.session['ad_signal'] = 'ok'
+            if ad.signals.count() >= 3:
+                ad.on_pause = True
+                ad.save()
+        else:
+            request.session['ad_signal'] = 'already_signaled'
+        return response
