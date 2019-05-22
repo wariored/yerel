@@ -18,7 +18,8 @@ import operator
 from functools import reduce
 from itertools import chain
 
-from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert
+from .forms import AdForm
+from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert, Signal
 from ads.documents import AdDocument
 import uuid
 from django.core.paginator import Paginator
@@ -77,6 +78,8 @@ def create_post_verification(request):
 
         if email:
             email = email.lower()
+        if price == '':
+            price = 0
 
         # check if user has reached ads limit
         if request.user.is_authenticated:
@@ -113,18 +116,15 @@ def create_post_verification(request):
             request.session['create_post_error'] = 'condition'
             request.session['dict_values'] = dict_values
             return redirect('ads:create_post')
-        if not price or len(price) > 30:
+        if len(str(price)) > 20:
             request.session['create_post_error'] = 'price'
             request.session['dict_values'] = dict_values
             return redirect('ads:create_post')
         else:
             try:
                 price = float(price)
+                price = abs(price)
             except ValueError:
-                request.session['create_post_error'] = 'price'
-                request.session['dict_values'] = dict_values
-                return redirect('ads:create_post')
-            if price < 500.00:
                 request.session['create_post_error'] = 'price'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
@@ -258,7 +258,6 @@ def update_ad(request, random_url, random_code=''):
     """
     Handle the update of a ad by the aduser
     """
-    print(random_code)
     try:
         if type(random_url) == str:
             random_url = uuid.UUID(random_url)
@@ -312,34 +311,32 @@ def update_ad_verification(request, random_url, random_code=''):
         if not ad.can_be_edited():
             raise Http404
 
-        if not price or len(price) > 30:
+        if price == '':
+            price = 0
+
+        if len(str(price)) > 20:
             request.session['update_ad_error'] = 'price'
             if request.user.is_authenticated:
-                return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(reverse('ads:update_ad', args=(random_url,)))
             return redirect(
-                reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
         else:
             try:
                 price = float(price)
+                price = abs(price)
             except ValueError:
                 request.session['update_ad_error'] = 'price'
                 if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(reverse('ads:update_ad', args=(random_url,)))
                 return redirect(
-                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
-            if price < 500.00:
-                request.session['update_ad_error'] = 'price'
-                if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
-                return redirect(
-                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                    reverse('ads:up', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
         if not description or len(description) not in range(20, 2000):
             request.session['update_ad_error'] = 'description'
             if request.user.is_authenticated:
-                return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(reverse('ads:update_ad', args=(random_url,)))
             return redirect(
-                reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
         if name and len(name) > 50:
             request.session['create_post_error'] = 'name'
@@ -349,25 +346,25 @@ def update_ad_verification(request, random_url, random_code=''):
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
                 if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(reverse('ads:update_ad', args=(random_url,)))
                 return redirect(
                     reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['update_ad_error'] = 'photos'
                 if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(reverse('ads:update_ad', args=(random_url,)))
                 return redirect(
-                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                    reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             for photo in photos:
                 try:
                     Image.open(photo)
                 except:
                     request.session['create_post_error'] = 'photo_format'
                     if request.user.is_authenticated:
-                        return redirect(reverse('ads:single_item', args=(random_url,)))
+                        return redirect(reverse('ads:update_ad', args=(random_url,)))
                     return redirect(
-                        reverse('ads:single_item',
+                        reverse('ads:update_ad',
                                 kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             images.delete()
             for photo in photos:
@@ -426,7 +423,10 @@ def single_item(request, random_url, random_code=''):
                 if len(similar_ads) == 6:
                     break
 
-        # signal_succes = False 
+        # signal_succes = False
+        ad_signal = request.session.get('ad_signal', None)
+        if ad_signal:
+            del request.session['ad_signal']
         count = ad.likes.count()
         context = {
             'like_count': count,
@@ -434,8 +434,8 @@ def single_item(request, random_url, random_code=''):
             'ad': ad,
             'ads_similar': similar_ads,
             'shared_ad': share_ad,
-            'random_code': random_code
-            # 'signal_success':signal_success
+            'random_code': random_code,
+            'ad_signal': ad_signal
         }
     except ValidationError:
         raise Http404
@@ -816,20 +816,35 @@ def feature_ad(request):
 
 
 def signal(request, random_url):
-    try:
-        random_url = uuid.UUID(random_url)
-        ad = Ad.objects.get(random_url=random_url)
-    except Ad.DoesNotExist:
-        pass
-    else:
-        signal_success = True
-        if not request.session.get('signal_ad_%s' % random_url, False):
-            ad.signal += 1
-            request.session['signal_ad_%s' % random_url] = True
-            ad.save()
+    """
+    Function that handle the signal of an add by a user 
+    """
+    if request.method == 'POST':
+        signal_type = request.POST['signal']
+        try:
+            ad = Ad.objects.get(random_url=random_url)
+        except Ad.DoesNotExist:
+            return Http404
+        response = redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
+        cookie_id = "signal_ad_%s" % ad.id
+        success = False
+        if request.user.is_authenticated:
+            signal_ad = ad.signals.filter(user=request.user)
+            if not signal_ad and cookie_id not in request.COOKIES:
+                Signal.objects.create(user=request.user, ad=ad, type=signal_type)
+                response.set_cookie(cookie_id, ad.id)
+                success = True
+        else:
+            if cookie_id not in request.COOKIES:
+                Signal.objects.create(ad=ad, type=signal_type)
+                response.set_cookie(cookie_id, ad.id)
+                success = True
 
-        context = {
-            'ad': ad,
-            'signal_success': signal_success
-        }
-        return render(request, 'ads/single_item/single_item.html', context)
+        if success:
+            request.session['ad_signal'] = 'ok'
+            if ad.signals.count() >= 3:
+                ad.on_pause = True
+                ad.save()
+        else:
+            request.session['ad_signal'] = 'already_signaled'
+        return response

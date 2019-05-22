@@ -41,12 +41,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'yeureul',
     'ads.apps.AdsConfig',
     'pricing.apps.PricingConfig',
     'widget_tweaks',
     'django_elasticsearch_dsl',
-    'django_cleanup'
+    'django_cleanup',
+
 ]
 
 MIDDLEWARE = [

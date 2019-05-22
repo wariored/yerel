@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load i18n %}
+{% load i18n humanize %}
 {% block content %}
     <!-- Categories Page Search-->
     <section class="categories-page-search">
@@ -34,9 +34,13 @@
     <!-- End Categories Page Search-->
 
     <!-- Single Detail -->
-    {% if signal_success == True %}
-        <div class="alert-success text text-center signal_alert">
-            <p>Annonce signalee</p>
+    {% if ad_signal == 'ok' %}
+        <div class="alert alert-success text text-center signal_alert">
+            Annonce signalée.
+        </div>
+    {% elif ad_signal == 'already_signaled' %}
+        <div class="alert alert-info text text-center signal_alert">
+            Une erreur est survenue. Soit vous avez déja signalée cette annonce ou soit c'est une erreur système.
         </div>
     {% endif %}
     <section class="single-detail">
@@ -94,7 +98,7 @@
                                         <div class="item-meta">
                                             <ul>
                                                 <li class="item-date"><i class="fa fa-clock-o"></i>{% language 'fr' %}
-                                                    {{ ad.creation_date }} {% endlanguage %}--
+                                                    {{ ad.creation_date }} {% endlanguage %}
                                                 </li>
                                                 <li class="item-cat"><a
                                                         href="categories2.html">{{ ad.subcategory.sup_category.name }}</a>
@@ -203,29 +207,76 @@
                         </div>
                     </div>
 
-                    {% if not signal_success %}
-                        {% if user.is_authenticated %}
-                            {% if not user == ad.ad_user.user %}
-                                <div class="text-right mt-4 ">
-                                    <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
-                                        Signaler cette annonce <i class="fa fa-exclamation-triangle text-right"></i>
-                                    </a>
-                                </div>
-                            {% endif %}
-                        {% else %}
-                            <div class="text-right mt-4 ">
-                                <a href="{% url 'ads:signal' ad.random_url.hex %}" class="btn btn-danger">
-                                    Signaler cette annonce <i class="fa fa-exclamation-triangle text-right"></i>
-                                </a>
-                            </div>
-                        {% endif %}
+                    {% if not user == ad.ad_user.user %}
+                        <div class="text-right mt-4 ">
+                            <button onclick="toggleMenu()" class="btn btn-danger">
+                                Signaler <i class="fa fa-exclamation-triangle text-right"></i>
+                            </button>
+                        </div>
                     {% endif %}
+
+
+                    <div class="modal fade" id="signal-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method='POST' action="{% url 'ads:signal' ad.random_url.hex %}"
+                                      class="form-horizontal form">
+                                    <div class="modal-body">
+
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label for="signal1" class="col-sm-8 col-md-8">Annonce
+                                                    inappropriee</label>
+                                                <input type="radio" name="signal" value="AI" class="form-inline"
+                                                       id="signal1"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label for="signal2" class="col-sm-8 col-md-8">Annonce avec du contenu
+                                                    abusif</label>
+                                                <input type="radio" name="signal" value="AA" class="form-inline"
+                                                       id="signal2"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label for="signal3" class="col-sm-8 col-md-8">Autre choses</label>
+                                                <input type="radio" name="signal" value="AC" class="form-inline"
+                                                       id="signal3"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                                            Annuler
+                                        </button>
+                                        <input id="limpar-campos" type="submit" class="btn btn-primary"
+                                               value="Signaler">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="price-widget short-widget">
-                        <strong style="word-wrap: break-word">{{ ad.price }}</strong>
-                        <i>F</i>
-                    </div>
+                    {% if ad.price != 0.0 %}
+                        <div class="price-widget short-widget">
+                            <strong style="word-wrap: break-word">
+                                {% language 'fr' %}{{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}</strong>
+                            <i>F</i>
+                        </div>
+                    {% endif %}
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
                             <div class="widget-body text-center">
@@ -239,7 +290,7 @@
                                 <!-- <span class="user-status user-offline"></span> -->
                                 <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
                                 <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
-                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None'   %}
+                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None' %}
                                         <strong>{{ ad.ad_user.user.info.address }}</strong>
                                     {% else %}
                                         <strong>non donné</strong>
@@ -317,7 +368,12 @@
                                             </div>
                                             <div class="similar-ad-right">
                                                 <h4>{{ ad.title }}</h4>
-                                                <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -
+                                                <p>
+                                                    {% if ad.price != 0.0 %}
+                                                        <i class="fa fa-franc"></i>{% language 'fr' %}
+                                                        {{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                        <i>F</i>
+                                                    {% endif %}-
                                                     {% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
                                                         {{ ad.location.name }} </p>{% endif %}
                                             </div>
@@ -361,13 +417,18 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-        /* Ajax request to send the like request without reloading all the page
-              when visitor click in the like button
-            */
+        function toggleMenu() {
+            $('#signal-add').modal('toggle')
+        }
 
         setTimeout(() => {
             $('.signal_alert').hide()
-        }, 3000)
+        }, 7000)
+
+        /* Ajax request to send the like request without reloading all the page
+         *when visitor click in the like button
+         */
+
         $(document).ready(function (e) {
             $(document).on('click', "#like", function (e) {
                 e.preventDefault();
@@ -391,37 +452,37 @@
                         console.log(rs.responseText)
                     }
                 });
-            });
-            $(document).on('click', '#featured', function (e) {
-                var feature_section = $('#feature_section');
-                var id = $('#ad_id').val();
-                var feature_alert = $("#feature_alert");
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "ads:feature_ad" %}',
-                    headers: {
-                        'X-CSRFToken': "{{ csrf_token }}"
-                    },
-                    data: {
-                        'id': id
-                    },
-                    dataType: 'json',
-                    success: function (response) {
-                        feature_section.html(response['featured']);
-                        console.log('ok');
-                        feature_alert.html("La mise en vedette a été modifiée");
-                        feature_alert.addClass('alert alert-info');
-                        //feature_alert.addClass("alert alert-info");
-                        feature_alert.fadeTo(2000, 500).slideUp(500, function () {
-                            feature_alert.slideUp(500);
-                        });
-                    },
-                    error: function (rs, e) {
-                        alert("Une erreur est survenue");
-                        console.log(rs.responseText);
-                    }
+                $(document).on('click', '#featured', function (e) {
+                    var feature_section = $('#feature_section');
+                    var id = $('#ad_id').val();
+                    var feature_alert = $("#feature_alert");
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url "ads:feature_ad" %}',
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}"
+                        },
+                        data: {
+                            'id': id
+                        },
+                        dataType: 'json',
+                        success: function (response) {
+                            feature_section.html(response['featured']);
+                            console.log('ok');
+                            feature_alert.html("La mise en vedette a été modifiée");
+                            feature_alert.addClass('alert alert-info');
+                            //feature_alert.addClass("alert alert-info");
+                            feature_alert.fadeTo(2000, 500).slideUp(500, function () {
+                                feature_alert.slideUp(500);
+                            });
+                        },
+                        error: function (rs, e) {
+                            alert("Une erreur est survenue");
+                            console.log(rs.responseText);
+                        }
+                    });
                 });
             });
-        });
+        })
     </script>
 {% endblock %}

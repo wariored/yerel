@@ -1,5 +1,5 @@
 {% extends 'registration/account/base_account.html' %}
-{% load staticfiles i18n %}
+{% load staticfiles i18n humanize %}
 {% load trending_ads %}
 
 {% block account_pagination %}
@@ -176,7 +176,12 @@
                             {% endif %}
                             <div class="similar-ad-right">
                                 <h4>{{ ad.title }}</h4>
-                                <p style="font-size: 11px;"> {{ ad.price }} F- <i
+                                <p style="font-size: 11px;">
+                                    {% if ad.price != 0.0 %}
+                                        {% language 'fr' %}
+                                            {{ ad.price|floatformat:"-1"|intcomma }}
+                                        {% endlanguage %} F-
+                                    {% endif %}<i
                                         class="fa fa-map-marker"></i> {{ ad.location.name }} </p>
                             </div>
                             <div class="clearfix"></div>
