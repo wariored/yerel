@@ -75,7 +75,12 @@
 
                                                 <h4>{{ ad.title }}</h4>
                                                 {% if ad.price != 0.0 %}
-                                                    <h3>{{ ad.price|floatformat:"-1"|intcomma }} FCFA</h3>
+                                                    <h3>
+                                                        {% language 'fr' %}
+                                                            {{ ad.price|floatformat:"-1"|intcomma }}
+                                                        {% endlanguage %}
+                                                        FCFA
+                                                    </h3>
                                                 {% endif %}
                                             </div>
                                         </a>
