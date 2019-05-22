@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n humanize %}
 <div id="my_ads_section" class="container">
     <div class="row">
         <div class="col-sm-9">
@@ -28,7 +28,11 @@
                                         </ul>
                                     </div>
                                 </td>
-                                <td><strong>{{ ad.price }}<i>F</i></strong></td>
+                                <td><strong>
+                                    {% if ad.price != 0.0 %}
+                                        {% language 'fr' %}{{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %} <i>F</i>
+                                    {% endif %}
+                                    </strong></td>
                                 <td> {% if ad.is_active %} Active {% else %} Inactive {% endif %}</td>
                                 <td>
                                     <div class="action">
@@ -65,11 +69,11 @@
                                         ><i class="fa fa-trash"></i>
                                         </button>
                                     </div>
-                                {# if the ad cannot be edited, this is also handled in update_ad views #}
-                            {% if not ad.can_be_edited %}
-                                <span class="text-info">Cette annonce ne peut être ni supprimée, ni modifiée, ni être vue par le public.
+                                    {# if the ad cannot be edited, this is also handled in update_ad views #}
+                                    {% if not ad.can_be_edited %}
+                                        <span class="text-info">Cette annonce ne peut être ni supprimée, ni modifiée, ni être vue par le public.
                                     Elle est en cours d'analyse.</span>
-                            {% endif %}
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
