@@ -535,9 +535,9 @@ def categories_grid(request):
         selected_ads = selected_ads.filter(id__in=found_ads)
         split_text = text_to_search.split(' ')
         for word in split_text:
-            found_ads_title_by_split = Ad.manager_object.can_be_shown_to_public().filter(title__contains=word)
+            found_ads_title_by_split = Ad.manager_object.can_be_shown_to_public().filter(title__icontains=word)
             found_ads_description_by_split = Ad.manager_object.can_be_shown_to_public().filter(
-                description__contains=word)
+                description__icontains=word)
             selected_ads = selected_ads | found_ads_title_by_split | found_ads_description_by_split
 
         selected_ads = selected_ads.distinct()
