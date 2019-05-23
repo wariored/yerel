@@ -17,7 +17,7 @@
 
             {% for category in categories_t %}
                 <optgroup label="{{ category.name }}">
-                    {% for subcategory in category.subcategories.all %}
+                    {% for subcategory in category.subcategories.all|dictsort:"degree" %}
                         <option {% if selected_subcategory == subcategory %} selected="selected"{% endif %}
                                                                              value="{{ subcategory.id }}">{{ subcategory.name }}</option>
                     {% endfor %}

@@ -127,7 +127,7 @@
                             <div class="widget-body">
                                 <ul class="trends">
 
-                                    {% for subcategory in category.subcategories.all|slice:":5" %}
+                                    {% for subcategory in category.subcategories.all|slice:":6"|dictsort:"degree" %}
                                         <li>
                                             <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
                                                 <span
@@ -150,7 +150,7 @@
                             </div>
                             <div class="widget-body">
                                 <ul class="trends">
-                                    {% for subcategory in category.subcategories.all|slice:":5" %}
+                                    {% for subcategory in category.subcategories.all|slice:":6"|dictsort:"degree" %}
                                         <li>
                                             <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
                                                 <span

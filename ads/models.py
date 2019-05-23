@@ -34,6 +34,7 @@ class Category(models.Model):
         max_length=20, null=True, blank=True, default='T', choices=CATEGORY_TYPE)
     sup_category = models.ForeignKey('self', related_name='subcategories', null=True, blank=True,
                                      on_delete=models.PROTECT)
+    degree = models.IntegerField(default=0)
 
     # owner = models.ForeignKey('registration.User', related_name='categories', on_delete=models.PROTECT)
 

@@ -109,7 +109,7 @@
                             </div>
                             <div class="widget-body">
                                 <ul class="trends">
-                                    {% for subcategory in selected_category.subcategories.all %}
+                                    {% for subcategory in selected_category.subcategories.all|dictsort:"degree" %}
                                         <li>
                                             <div class="checkbox checkbox-primary">
                                                 <input name="subcategories" value="{{ subcategory.id }}"
