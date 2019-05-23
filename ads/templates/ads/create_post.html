@@ -1,4 +1,5 @@
 {% extends 'registration/base_authentication.html' %}
+{% load static %}
 {% block authentication_title %}
     Publier votre annonce
 {% endblock authentication_title %}
@@ -68,6 +69,9 @@
         {% endif %}
 
     {% endif %}
+    <p id="submit_error" class="alert alert-danger text-center">
+        Veuillez remplir correctement tous les champs SVP
+    </p>
 
     <!-- Create Post -->
     <section class="create-post">
@@ -77,12 +81,13 @@
                     <div class="login-panel widget margin-bottom-none">
                         <div class="login-body">
                             <form method="POST" action="{% url 'ads:create_post_verification' %}"
-                                  enctype="multipart/form-data">
+                                  enctype="multipart/form-data" id="ad_form">
                                 <div class="form-group">
                                     {% csrf_token %}
                                     <label class="control-label">Titre de l'annonce <span
-                                            class="required">*</span></label>
-                                    <input value="{{ dict_values.title }}" name="title" type="text"
+                                            class="required">*</span></label><br>
+                                            <span class="text text-danger" id="title_error_msg" ></span>
+                                    <input value="{{ dict_values.title }}" name="title" type="text" id="form_title"
                                            placeholder="exemple: Apple iPhone SE 2017" class="form-control border-form">
                                 </div>
                                 <div class="form-group">
@@ -117,8 +122,8 @@
                                     <label class="control-label">Prix </label>
                                     <div class="input-group">
                                         <span class="input-group-addon">FCFA</span>
-                                        <input value="{{ dict_values.price }}" name="price" type="text"
-                                               placeholder="exemple: 9999" class="form-control border-form">
+                                        <input value="{{ dict_values.price }}" name="price" type="number" id="form_price"
+                                               placeholder="exemple: 9999." class="form-control border-form">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -134,27 +139,31 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">Description <span class="required">*</span></label>
-                                    <textarea name="description"
+                                    <label class="control-label">Description <span class="required">*</span></label><br>
+                                    <span class="text text-danger" id="desc_error_msg" ></span>
+                                    <textarea name="description" id="form_desc"
                                               placeholder="Inclure la marque, le modèle, l'âge et tous les accessoires inclus."
                                               class="form-control border-form">{{ dict_values.description }}</textarea>
                                 </div>
                                 {% if not user.is_authenticated %}
                                     <div class="form-group">
-                                        <label class="control-label">Votre Nom <span class="required">*</span></label>
-                                        <input value="{{ dict_values.name }}" name="name" type="text"
+                                        <label class="control-label">Votre Nom <span class="required">*</span></label><br>
+                                        <span class="text text-danger" id="name_error_msg" ></span>
+                                        <input value="{{ dict_values.name }}" name="name" type="text" id="form_name"
                                                placeholder="exemple: Adama Faye" class="form-control border-form">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Votre adresse mail <span class="required">*</span></label>
-                                        <input value="{{ dict_values.email }}" name="email" type="text"
+                                        <label class="control-label">Votre adresse mail <span class="required">*</span></label><br>
+                                        <span class="text text-danger" id="email_error_msg" ></span>
+                                        <input value="{{ dict_values.email }}" name="email" type="text" id="form_email"
                                                placeholder="exemple: adama@gmail.com" class="form-control border-form">
                                     </div>
                                     <div class="form-group">
-                                        <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
+                                        <label class="control-label">Numéro de téléphone <span class="required">*</span></label><br>
+                                        <span class="text text-danger" id="phone_error_msg" ></span>
                                         <div class="input-group">
                                             <span class="input-group-addon">+221</span>
-                                            <input value="{{ dict_values.phone_number }}" name="phone_number"
+                                            <input value="{{ dict_values.phone_number }}" name="phone_number" id="form_phone"
                                                    type="text" placeholder="exemple: 123456789"
                                                    class="form-control border-form">
                                         </div>
@@ -177,3 +186,9 @@
     </section>
     <!-- End Create Post -->
 {% endblock %}
+
+
+{% block javascripts %}
+    <script src="{% static 'internals/js/ads/create_ad.js' %}"></script>
+{% endblock %}
+    

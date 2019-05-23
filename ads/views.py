@@ -14,11 +14,7 @@ from yeureul.utils_functions import ads_are_similar
 from django.core.mail import EmailMessage
 from django.utils.html import strip_tags
 from django.conf import settings as conf_settings
-import operator
-from functools import reduce
-from itertools import chain
-
-from .forms import AdForm
+from django.contrib.auth.models import User
 from .models import Ad, AdFile, AdUser, Category, Location, HistoricalFeatured, AdFeatured, Alert, Signal
 from ads.documents import AdDocument
 import uuid
@@ -169,6 +165,11 @@ def create_post_verification(request):
                 request.session['create_post_error'] = 'email'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
+
+            if len(phone_number) != 9:
+                request.session['create_post_error'] = 'phone_number'
+                request.session['dict_values'] = dict_values
+                return redirect('ads:create_post')
             try:
                 int(phone_number)
             except ValueError:
@@ -299,6 +300,7 @@ def update_ad_verification(request, random_url, random_code=''):
         condition = request.POST['condition']
         price = request.POST['price']
         photos = request.FILES.getlist('photos', None)
+        phone_number = request.POST.get('phone_number', None)
         name = request.POST.get('name', None)
         location = request.POST['location']
         description = request.POST['description']
@@ -340,7 +342,20 @@ def update_ad_verification(request, random_url, random_code=''):
 
         if name and len(name) > 50:
             request.session['create_post_error'] = 'name'
-            return redirect('ads:create_post')
+            return redirect(
+                reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+
+        if phone_number:
+            if len(phone_number) != 9:
+                request.session['create_post_error'] = 'phone_number'
+                return redirect(
+                    reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+            try:
+                int(phone_number)
+            except ValueError:
+                request.session['create_post_error'] = 'phone_number'
+                return redirect(
+                    reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
         if photos:
             if len(photos) > statics_variables.MAX_PHOTOS:
@@ -378,7 +393,25 @@ def update_ad_verification(request, random_url, random_code=''):
         if name:
             ad_user = ad.ad_user
             ad_user.given_name = name
+            if phone_number:
+                ad_user.phone_number = phone_number
             ad_user.save()
+            try:
+                user = ad_user.user
+            except User.DoesNotExist:
+                pass
+            else:
+                split_name = ad_user.given_name.split(' ')
+                if len(split_name) != 1:
+                    user.last_name = split_name[-1]
+                    user.first_name = " ".join(split_name[:-1])
+                else:
+                    user.first_name = ad_user.given_name
+                if phone_number:
+                    user_info = user.info
+                    user_info.phone_number = phone_number
+                    user_info.save()
+                user.save()
         ad.save()
 
         if request.user.is_authenticated:
