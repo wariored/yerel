@@ -209,64 +209,66 @@
 
                     {% if not user == ad.ad_user.user %}
                         <div class="text-right mt-4 ">
-                            <button onclick="toggleMenu()" class="btn btn-danger">
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
                                 Signaler <i class="fa fa-exclamation-triangle text-right"></i>
                             </button>
                         </div>
+                          
                     {% endif %}
-
-
-                    <div class="modal fade" id="signal-add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                      <!-- Modal -->
+                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <form method='POST' action="{% url 'ads:signal' ad.random_url.hex %}"
-                                      class="form-horizontal form">
-                                    <div class="modal-body">
-
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label for="signal1" class="col-sm-8 col-md-8">Annonce
-                                                    inappropriee</label>
-                                                <input type="radio" name="signal" value="AI" class="form-inline"
-                                                       id="signal1"/>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label for="signal2" class="col-sm-8 col-md-8">Annonce avec du contenu
-                                                    abusif</label>
-                                                <input type="radio" name="signal" value="AA" class="form-inline"
-                                                       id="signal2"/>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="row">
-                                                <label for="signal3" class="col-sm-8 col-md-8">Autre choses</label>
-                                                <input type="radio" name="signal" value="AC" class="form-inline"
-                                                       id="signal3"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">
-                                            Annuler
-                                        </button>
-                                        <input id="limpar-campos" type="submit" class="btn btn-primary"
-                                               value="Signaler">
-                                    </div>
-                                </form>
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Signaler cette annonce de numero : {{ ad.pk }}</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
                             </div>
+                            <div class="modal-body">
+                                <form method='POST' action="{% url 'ads:signal' ad.random_url.hex %}"
+                                class="form-horizontal form">
+                              <div class="modal-body">
+
+                                  {% csrf_token %}
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="signal1" class="col-sm-8 col-md-8">Annonce
+                                              inappropriee</label>
+                                          <input type="radio" name="signal" value="AI" class="form-inline"
+                                                 id="signal1"/>
+                                      </div>
+                                  </div>
+
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="signal2" class="col-sm-8 col-md-8">Annonce avec du contenu
+                                              abusif</label>
+                                          <input type="radio" name="signal" value="AA" class="form-inline"
+                                                 id="signal2"/>
+                                      </div>
+                                  </div>
+
+                                  <div class="form-group">
+                                      <div class="row">
+                                          <label for="signal3" class="col-sm-8 col-md-8">Autre choses</label>
+                                          <input type="radio" name="signal" value="AC" class="form-inline"
+                                                 id="signal3"/>
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-default" data-dismiss="modal">
+                                      Annuler
+                                  </button>
+                                  <input id="limpar-campos" type="submit" class="btn btn-primary"
+                                         value="Signaler">
+                              </div>
+                          </form>
+                          </div>
                         </div>
-                    </div>
-                    <br>
+                      </div>
 
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
@@ -410,10 +412,7 @@
 {% endblock %}
 {% block javascripts %}
     <script>
-        function toggleMenu() {
-            $('#signal-add').modal('toggle')
-        }
-
+        
         setTimeout(() => {
             $('.signal_alert').hide()
         }, 7000)
