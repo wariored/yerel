@@ -118,7 +118,7 @@ class Ad(models.Model):
     Where to store an Ad
     """
     title = models.CharField(max_length=50)
-    price = models.FloatField(max_length=30, validators=[MinValueValidator(500)])
+    price = models.FloatField(max_length=30, default=0)
     condition = models.CharField(max_length=1, choices=AD_CONDITION, blank=True)
     description = models.TextField(max_length=2000)
     random_url = models.UUIDField(default=uuid.uuid4, editable=False)

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles ads_categories featured_ads timesince_ads %}
-{% load i18n %}
+{% load i18n humanize %}
 {% block content %}
     <!-- Categories Page Search-->
     <section class="categories-page-search">
@@ -77,8 +77,11 @@
                                                     <div class="item-title">
 
                                                         <h4>{{ ad.title }}</h4>
-
-                                                        <h3>{{ ad.price }} FCFA</h3>
+                                                        {% if ad.price != 0.0 %}
+                                                            <h3>{% language 'fr' %}
+                                                                {{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                                FCFA</h3>
+                                                        {% endif %}
                                                     </div>
                                                 </a>
                                             </div>

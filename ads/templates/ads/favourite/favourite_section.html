@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n humanize %}
 <section id="my_fav_section" class="favourite-ads">
     <div class="container">
         <div class="row">
@@ -10,65 +10,73 @@
                     <div class="widget-body">
                         <table class="table table-design">
                             <tbody>
-                                {% for ad in my_ads_fav %}
+                            {% for ad in my_ads_fav %}
                                 <tr>
                                     <td><img src="{{ ad.img.first.media.url }}" class="thumb-img img-responsive"
-                                            alt=""></td>
+                                             alt=""></td>
                                     <td>
-                                        <div class="my-item-title"><a target="_blank" href="{% url 'ads:single_item' ad.random_url.hex %}"><strong>{{ ad.title }}</strong></a></div>
+                                        <div class="my-item-title"><a target="_blank"
+                                                                      href="{% url 'ads:single_item' ad.random_url.hex %}"><strong>{{ ad.title }}</strong></a>
+                                        </div>
                                         <div class="item-meta">
                                             <ul>
                                                 <li class="item-date"><i class="fa fa-clock-o"></i>{% language 'fr' %}
                                                     {{ ad.creation_date }} {% endlanguage %}</li>
                                                 <li class="item-location"><a href="#"><i class="fa fa-map-marker"></i>
                                                     {{ ad.location.name }}</a></li>
-                                                <li class="item-type"><i class="fa fa-bookmark"></i>  {{ ad.get_condition_display }}</li>
+                                                <li class="item-type"><i
+                                                        class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
                                             </ul>
                                         </div>
                                     </td>
-                                    <td><strong>{{ ad.price }} F</strong></td>
+                                    <td><strong>
+                                        {% if ad.price != 0.0 %}
+                                            {% language 'fr' %}{{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %} F
+                                        {% endif %}
+                                        </strong></td>
                                     <td>
                                         <div class="action">
                                             <a data-value="{{ ad.id }}" class="btn btn-danger unlike">Ne plus aimer</a>
-                                            <a class="btn btn-info" href="{% url 'ads:single_item' ad.random_url.hex %}">Voir +</a>
+                                            <a class="btn btn-info"
+                                               href="{% url 'ads:single_item' ad.random_url.hex %}">Voir +</a>
                                         </div>
                                     </td>
                                 </tr>
-                                {% endfor %}
+                            {% endfor %}
                             </tbody>
                         </table>
                         <div class="text-center">
-                                <form method="POST"></form>
-                                {% csrf_token %}
-                                {% if my_ads_fav.has_other_pages %}
-                                    <ul class="pagination pagination-sm">
-                                        {% if my_ads_fav.has_previous %}
-                                            <li><a class="paginate" id="" data-value='{{ my_ads_fav.previous_page_number }}'
-                                                    href="?page={{ my_ads_fav.previous_page_number }}">«</a></li>
-                                        {% else %}
-                                            <li style="display:none"><a></a></li>
+                            <form method="POST"></form>
+                            {% csrf_token %}
+                            {% if my_ads_fav.has_other_pages %}
+                                <ul class="pagination pagination-sm">
+                                    {% if my_ads_fav.has_previous %}
+                                        <li><a class="paginate" id="" data-value='{{ my_ads_fav.previous_page_number }}'
+                                               href="?page={{ my_ads_fav.previous_page_number }}">«</a></li>
+                                    {% else %}
+                                        <li style="display:none"><a></a></li>
+                                    {% endif %}
+
+                                    {% for num in my_ads_fav.paginator.page_range %}
+                                        {% if my_ads_fav.number == num %}
+                                            <li class="active"><a class="paginate" data-value="{{ num }}"
+                                                                  href="?page={{ num }}">{{ num }}</a></li>
+                                        {% elif num > my_ads_fav.number|add:'-3' and num < my_ads_fav.number|add:'3' %}
+                                            <li><a class="paginate" data-value="{{ num }}"
+                                                   href="?page={{ num }}"> {{ num }}</a></li>
                                         {% endif %}
-        
-                                        {% for num in my_ads_fav.paginator.page_range %}
-                                            {% if my_ads_fav.number == num %}
-                                                <li class="active"><a class="paginate" data-value="{{ num }}"
-                                                                        href="?page={{ num }}">{{ num }}</a></li>
-                                            {% elif num > my_ads_fav.number|add:'-3' and num < my_ads_fav.number|add:'3' %}
-                                                <li><a class="paginate" data-value="{{ num }}"
-                                                        href="?page={{ num }}"> {{ num }}</a></li>
-                                            {% endif %}
-                                        {% endfor %}
-        
-                                        {% if my_ads_fav.has_next %}
-                                            <li><a class="paginate" data-value="{{ my_ads_fav.next_page_number }}"
-                                                    href="?page={{ my_ads_fav.next_page_number }}">»</a>
-                                            <li>
-                                                {% else %}
-                                            <li style="display:none"><a></a></li>
-                                        {% endif %}
-                                    </ul><br>
-                                    Page {{ my_ads_fav.number }} sur {{ my_ads_fav.paginator.num_pages }}
-                                {% endif %}
+                                    {% endfor %}
+
+                                    {% if my_ads_fav.has_next %}
+                                        <li><a class="paginate" data-value="{{ my_ads_fav.next_page_number }}"
+                                               href="?page={{ my_ads_fav.next_page_number }}">»</a>
+                                        <li>
+                                            {% else %}
+                                        <li style="display:none"><a></a></li>
+                                    {% endif %}
+                                </ul><br>
+                                Page {{ my_ads_fav.number }} sur {{ my_ads_fav.paginator.num_pages }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

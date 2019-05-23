@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles trending_ads timesince_ads %}
-{% load i18n ads_categories %}
+{% load i18n ads_categories humanize %}
 {% block content %}
     <!-- Search Box -->
     <section class="search-box">
@@ -74,8 +74,14 @@
                                             <div class="item-title">
 
                                                 <h4>{{ ad.title }}</h4>
-
-                                                <h3>{{ ad.price }} FCFA</h3>
+                                                {% if ad.price != 0.0 %}
+                                                    <h3>
+                                                        {% language 'fr' %}
+                                                            {{ ad.price|floatformat:"-1"|intcomma }}
+                                                        {% endlanguage %}
+                                                        FCFA
+                                                    </h3>
+                                                {% endif %}
                                             </div>
                                         </a>
                                     </div>

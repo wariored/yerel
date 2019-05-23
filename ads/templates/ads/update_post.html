@@ -13,9 +13,7 @@
 
 {% block authentication_content %}
     {% if update_ad_error == 'price' %}
-        <div class="alert alert-danger text-center">Le prix doit être un nombre supérieur ou égal à 500 et ne doit pas
-            être
-            supérieur à 30 chiffres
+        <div class="alert alert-danger text-center">Le prix doit être un nombre positif
         </div>
     {% elif update_ad_error == 'photos' %}
         <div class="alert alert-danger text-center">Vous avez droit à 5 photos et la taille de chacune ne doit pas
@@ -89,7 +87,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label">Prix <span class="required">*</span></label>
+                                    <label class="control-label">Prix </label>
                                     <div class="input-group">
                                         <span class="input-group-addon">FCFA</span>
                                         <input value="{{ ad.price }}" name="price" type="text"

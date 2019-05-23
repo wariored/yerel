@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
+{% load staticfiles humanize %}
 {% load i18n ads_categories trending_ads timesince_ads %}
 {% load useful_in_global %}
 {% block content %}
@@ -214,7 +214,10 @@
                                             {% endif %}
                                             <div class="similar-ad-right">
                                                 <h4>{{ trending_ad.title|truncatechars:'20' }}</h4>
-                                                <p style="font-size: 11px;"> {{ trending_ad.price }} F- <i
+                                                <p style="font-size: 11px;">
+                                                    {% if trending_ad.price != 0.0 %}
+                                                        {% language 'fr' %}{{ trending_ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}F -
+                                                    {% endif %} <i
                                                         class="fa fa-map-marker"></i> {{ trending_ad.location.name }}
                                                 </p>
                                             </div>
@@ -261,7 +264,11 @@
                                                 {% endif %}
                                                 <div class="item-title">
                                                     <h4>{{ ad.title }}</h4>
-                                                    <h3>{{ ad.price }} FCFA</h3>
+                                                    {% if ad.price != 0.0 %}
+                                                        <h3>{% language 'fr' %}
+                                                            {{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                            FCFA</h3>
+                                                    {% endif %}
                                                 </div>
                                             </a>
                                         </div>

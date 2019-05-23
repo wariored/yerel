@@ -78,6 +78,8 @@ def create_post_verification(request):
 
         if email:
             email = email.lower()
+        if price == '':
+            price = 0
 
         # check if user has reached ads limit
         if request.user.is_authenticated:
@@ -114,18 +116,15 @@ def create_post_verification(request):
             request.session['create_post_error'] = 'condition'
             request.session['dict_values'] = dict_values
             return redirect('ads:create_post')
-        if not price or len(price) > 30:
+        if len(str(price)) > 20:
             request.session['create_post_error'] = 'price'
             request.session['dict_values'] = dict_values
             return redirect('ads:create_post')
         else:
             try:
                 price = float(price)
+                price = abs(price)
             except ValueError:
-                request.session['create_post_error'] = 'price'
-                request.session['dict_values'] = dict_values
-                return redirect('ads:create_post')
-            if price < 500.00:
                 request.session['create_post_error'] = 'price'
                 request.session['dict_values'] = dict_values
                 return redirect('ads:create_post')
@@ -259,7 +258,6 @@ def update_ad(request, random_url, random_code=''):
     """
     Handle the update of a ad by the aduser
     """
-    print(random_code)
     try:
         if type(random_url) == str:
             random_url = uuid.UUID(random_url)
@@ -313,34 +311,32 @@ def update_ad_verification(request, random_url, random_code=''):
         if not ad.can_be_edited():
             raise Http404
 
-        if not price or len(price) > 30:
+        if price == '':
+            price = 0
+
+        if len(str(price)) > 20:
             request.session['update_ad_error'] = 'price'
             if request.user.is_authenticated:
-                return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(reverse('ads:update_ad', args=(random_url,)))
             return redirect(
-                reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
         else:
             try:
                 price = float(price)
+                price = abs(price)
             except ValueError:
                 request.session['update_ad_error'] = 'price'
                 if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(reverse('ads:update_ad', args=(random_url,)))
                 return redirect(
-                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
-            if price < 500.00:
-                request.session['update_ad_error'] = 'price'
-                if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
-                return redirect(
-                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                    reverse('ads:up', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
         if not description or len(description) not in range(20, 2000):
             request.session['update_ad_error'] = 'description'
             if request.user.is_authenticated:
-                return redirect(reverse('ads:single_item', args=(random_url,)))
+                return redirect(reverse('ads:update_ad', args=(random_url,)))
             return redirect(
-                reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
 
         if name and len(name) > 50:
             request.session['create_post_error'] = 'name'
@@ -350,25 +346,25 @@ def update_ad_verification(request, random_url, random_code=''):
             if len(photos) > statics_variables.MAX_PHOTOS:
                 request.session['update_ad_error'] = 'photos'
                 if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(reverse('ads:update_ad', args=(random_url,)))
                 return redirect(
                     reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             check_photos = ['error' for p in photos if p.size > int(statics_variables.MAX_SIZE)]
             if 'error' in check_photos:
                 request.session['update_ad_error'] = 'photos'
                 if request.user.is_authenticated:
-                    return redirect(reverse('ads:single_item', args=(random_url,)))
+                    return redirect(reverse('ads:update_ad', args=(random_url,)))
                 return redirect(
-                    reverse('ads:single_item', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
+                    reverse('ads:update_ad', kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             for photo in photos:
                 try:
                     Image.open(photo)
                 except:
                     request.session['create_post_error'] = 'photo_format'
                     if request.user.is_authenticated:
-                        return redirect(reverse('ads:single_item', args=(random_url,)))
+                        return redirect(reverse('ads:update_ad', args=(random_url,)))
                     return redirect(
-                        reverse('ads:single_item',
+                        reverse('ads:update_ad',
                                 kwargs={'random_url': ad.random_url.hex, 'random_code': random_code}))
             images.delete()
             for photo in photos:

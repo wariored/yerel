@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% load i18n %}
+{% load i18n humanize %}
 {% block content %}
     <!-- Categories Page Search-->
     <section class="categories-page-search">
@@ -98,7 +98,7 @@
                                         <div class="item-meta">
                                             <ul>
                                                 <li class="item-date"><i class="fa fa-clock-o"></i>{% language 'fr' %}
-                                                    {{ ad.creation_date }} {% endlanguage %}--
+                                                    {{ ad.creation_date }} {% endlanguage %}
                                                 </li>
                                                 <li class="item-cat"><a
                                                         href="categories2.html">{{ ad.subcategory.sup_category.name }}</a>
@@ -272,11 +272,13 @@
 
                 </div>
                 <div class="col-lg-4 col-md-6 col-sm-6">
-                    <div class="price-widget short-widget">
-                        <strong style="word-wrap: break-word">{{ ad.price }}</strong>
-                        <i>F</i>
-                    </div>
-
+                    {% if ad.price != 0.0 %}
+                        <div class="price-widget short-widget">
+                            <strong style="word-wrap: break-word">
+                                {% language 'fr' %}{{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}</strong>
+                            <i>F</i>
+                        </div>
+                    {% endif %}
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
                             <div class="widget-body text-center">
@@ -368,7 +370,12 @@
                                             </div>
                                             <div class="similar-ad-right">
                                                 <h4>{{ ad.title }}</h4>
-                                                <p><i class="fa fa-franc"></i> {{ ad.price }}<i>F</i> -
+                                                <p>
+                                                    {% if ad.price != 0.0 %}
+                                                        <i class="fa fa-franc"></i>{% language 'fr' %}
+                                                        {{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                        <i>F</i>
+                                                    {% endif %}-
                                                     {% if ad.ad_user.user %}<i class="fa fa-map-marker"></i>
                                                         {{ ad.location.name }} </p>{% endif %}
                                             </div>
