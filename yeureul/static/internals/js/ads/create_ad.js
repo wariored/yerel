@@ -67,7 +67,7 @@ $(function () {
     function check_title() {
         let pattern = /^[a-zA-Z0-9\s]{2,50}$/;
         let title = form_title.val();
-        if (title.length >= 2 && pattern.test(title)) {
+        if (title.length >= 2 && title.length <= 50) {
             title_error_msg.hide();
             form_title.css("border-bottom", border_bottom_success);
         }
@@ -96,7 +96,7 @@ $(function () {
     function check_name() {
         let pattern = /^[a-zA-Z\s]{2,50}$/;
         let name = form_name.val();
-        if (pattern.test(name)) {
+        if (name.length >= 2 && name.length <= 50) {
             name_error_msg.hide();
             form_name.css("border-bottom", border_bottom_success);
         }
@@ -111,7 +111,7 @@ $(function () {
     function check_desc() {
         let pattern = /^[a-zA-Z0-9\s]{20,2000}$/;
         let desc = form_desc.val();
-        if (pattern.test(desc)) {
+        if (desc.length >= 20 && desc.length <= 2000) {
             desc_error_msg.hide();
             form_desc.css("border-bottom", border_bottom_success);
         }
