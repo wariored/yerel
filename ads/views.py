@@ -396,11 +396,8 @@ def update_ad_verification(request, random_url, random_code=''):
             if phone_number:
                 ad_user.phone_number = phone_number
             ad_user.save()
-            try:
-                user = ad_user.user
-            except User.DoesNotExist:
-                pass
-            else:
+            user = ad_user.user
+            if user:
                 split_name = ad_user.given_name.split(' ')
                 if len(split_name) != 1:
                     user.last_name = split_name[-1]
