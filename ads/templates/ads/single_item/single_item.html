@@ -64,10 +64,11 @@
             <div class="row">
                 {% if ad.can_be_edited %}
                     {% if ad.ad_user.user == user %}
-                        <div class="single_buttons col-sm-2">
+                        <div class="single_buttons col-sm-2 mb-2">
                             <a href="{% url 'ads:update_ad' ad.random_url.hex %}" class="btn btn-default">Modifier
                                 l'annonce</a>
                         </div>
+                        <br>
                     {% elif random_code != '' and random_code == ad.random_code %}
                         <div class="single_buttons col-sm-2">
                             <a href="{% url 'ads:update_ad' ad.random_url.hex random_code %}" class="btn btn-default">Modifier
