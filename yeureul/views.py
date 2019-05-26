@@ -356,7 +356,7 @@ def update_profile(request):
                 try:
                     path = user_info.avatar.path
                     _delete_file(path)
-                except ValueError:
+                except (ValueError, FileNotFoundError):
                     pass
                 user_info.avatar = avatar
             else:

@@ -3,6 +3,9 @@ from django.utils import timezone
 import os
 import random
 import string
+from io import BytesIO
+from PIL import Image
+from django.core.files import File
 
 
 def similar(a, b):
@@ -29,3 +32,14 @@ def _delete_file(path):
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+
+def compress_image(image):
+    im = Image.open(image)
+    # create a BytesIO object
+    im_io = BytesIO()
+    # save image to BytesIO object
+    im.save(im_io, 'JPEG', quality=20)
+    # create a django-friendly Files object
+    new_image = File(im_io, name=image.name)
+    return new_image
