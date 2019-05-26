@@ -28,9 +28,9 @@
 <!-- End Breadcumb -->
 <!-- Settings -->
 <section class="settings">
-    <div class="container">
+    <div class="container ">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3 mb-2 ">
                 <div class="widget profile-widget margin-bottom-none">
                     <div class="widget-body">
                         <div class="avatar">
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{% url 'close_account' %}" class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Supprimer le compte</a>
+                <a href="{% url 'close_account' %}" class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Supprimer le compte</a><br>
             </div>
             
             {% block account_content %}

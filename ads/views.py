@@ -850,12 +850,14 @@ def signal(request, random_url):
     Function that handle the signal of an add by a user 
     """
     if request.method == 'POST':
-        signal_type = request.POST['signal']
+        signal_type = request.POST.get('signal')
         try:
             ad = Ad.objects.get(random_url=random_url)
         except Ad.DoesNotExist:
             return Http404
         response = redirect(reverse('ads:single_item', args=(ad.random_url.hex,)))
+        if not signal_type or signal_type == '':
+            return response
         cookie_id = "signal_ad_%s" % ad.id
         success = False
         if request.user.is_authenticated:
