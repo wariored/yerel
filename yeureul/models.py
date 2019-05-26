@@ -5,6 +5,8 @@ from django.utils import timezone
 import uuid
 import os
 
+from .utils_functions import *
+
 
 def get_file_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -30,6 +32,14 @@ class UserInfo(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def save(self, *args, **kwargs):
+        # call the compress function
+        new_image = compress_image(self.avatar)
+        # set self.image to new_image
+        self.avatar = new_image
+        # save
+        super().save(*args, **kwargs)
 
 
 KEY_TYPE = (

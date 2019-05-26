@@ -1,7 +1,7 @@
 # Here are all variables which we might need in more than one file/app
 
 # max size of a photos
-MAX_SIZE = "2621440"
+MAX_SIZE = "8388608"
 # max number of photos allowed for an ad
 MAX_PHOTOS = 5
 # max number of ads by account
