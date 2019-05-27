@@ -34,10 +34,14 @@ class UserInfo(models.Model):
         return self.user.username
 
     def save(self, *args, **kwargs):
-        # call the compress function
-        new_image = compress_image(self.avatar)
-        # set self.image to new_image
-        self.avatar = new_image
+        try:
+            # call the compress function
+            new_image = compress_image(self.avatar)
+        except ValueError:
+            pass
+        else:
+            # set self.image to new_image
+            self.avatar = new_image
         # save
         super().save(*args, **kwargs)
 
