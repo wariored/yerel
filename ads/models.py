@@ -168,10 +168,14 @@ class AdFile(models.Model):
         return self.ad.title + '_' + str(self.id)
 
     def save(self, *args, **kwargs):
-        # call the compress function
-        new_image = utils_functions.compress_image(self.media)
-        # set self.image to new_image
-        self.media = new_image
+        try:
+            # call the compress function
+            new_image = utils_functions.compress_image(self.media)
+            # set self.image to new_image
+        except ValueError:
+            pass
+        else:
+            self.media = new_image
         # save
         super().save(*args, **kwargs)
 
