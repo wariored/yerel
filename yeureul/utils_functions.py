@@ -39,7 +39,7 @@ def compress_image(image):
     # create a BytesIO object
     im_io = BytesIO()
     # save image to BytesIO object
-    im.save(im_io, 'JPEG', quality=30)
+    im.save(im_io, 'JPEG', quality=20)
     # create a django-friendly Files object
     new_image = File(im_io, name=image.name)
     return new_image
