@@ -1,6 +1,7 @@
 from django import template
 from urllib.parse import urlparse, urlunparse
 from django.http import QueryDict
+from ads.models import Ad
 
 register = template.Library()
 
@@ -22,3 +23,9 @@ def replace_query_param(url, attr, val):
 @register.simple_tag
 def define_variable(val=None):
     return val
+
+
+@register.filter
+def count_ads_in_subcategory(subcategory_id):
+    count = Ad.manager_object.can_be_shown_to_public().filter(subcategory__id=subcategory_id).count()
+    return count

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles trending_ads timesince_ads %}
-{% load i18n ads_categories humanize %}
+{% load i18n ads_categories humanize useful_in_global %}
 {% block content %}
     <!-- Search Box -->
     <section class="search-box">
@@ -131,7 +131,7 @@
                                         <li>
                                             <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
                                                 <span
-                                                        class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                                        class="item-numbers">{{ subcategory.id|count_ads_in_subcategory }}</span></a>
                                         </li>
                                     {% endfor %}
                                 </ul>
@@ -154,7 +154,7 @@
                                         <li>
                                             <a href="{% url 'ads:categories_grid' %}?category={{ category.id }}&subcategories={{ subcategory.id }}">{{ subcategory.name }}
                                                 <span
-                                                        class="item-numbers">{{ subcategory.subcateg_ads.count }}</span></a>
+                                                        class="item-numbers">{{ subcategory.id|count_ads_in_subcategory }}</span></a>
                                         </li>
                                     {% endfor %}
                                 </ul>
