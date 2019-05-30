@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load staticfiles ads_categories %}
+{% load staticfiles ads_categories useful_in_global %}
 {% block content %}
 <!-- Breadcumb -->
 <section class="profile-breadcumb">
@@ -53,7 +53,7 @@
                         </div>
                         <div class="list-group">
                             <a class="list-group-item" href="{% url 'ads:my_ads' %}">
-                                <span class="label label-info">{{ user.adUser.ads.count }}</span>
+                                <span class="label label-info">{{ user.adUser.id|count_ads_for_adUser }}</span>
                                 <i class="fa fa-fw fa-pencil"></i> Mes annonces
                             </a>
                             <a class="list-group-item" href="{% url 'ads:favourite_ads' %}">

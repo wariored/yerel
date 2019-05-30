@@ -680,7 +680,7 @@ def my_ads(request):
         ad_deletion = request.session['ad_deletion']
         del request.session['ad_deletion']
     try:
-        my_all_ads = Ad.manager_object.can_be_shown_to_owner().filter(ad_user__user=request.user).order_by(
+        my_all_ads = Ad.manager_object.can_be_shown_to_owner().filter(ad_user__user__username=request.user.username).order_by(
             '-creation_date')
         # request.user.adUser.ads.filter(is_deleted=False).order_by('-creation_date')
     except AdUser.DoesNotExist:
