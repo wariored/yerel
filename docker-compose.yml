@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  web:
+    build: ./web
+    command: gunicorn yeureul.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+    - ./web/:/usr/src/app/
+    ports:
+    - 8000:8000
+    env_file:
+      - ./web/.env
+    # environment:
+    # - DEBUG=1
+    # - SECRET_KEY=foo
+    depends_on:
+    - db
