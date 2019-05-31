@@ -143,7 +143,7 @@ def signup_verification(request):
             url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
 
             # add user in UserInfo table
-            UserInfo.objects.create(user=user, creation_date=timezone.now(), activated_account=False)
+            user_info = UserInfo.objects.create(user=user, creation_date=timezone.now(), activated_account=False)
 
             # send email activation to the new user
             html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
@@ -157,11 +157,10 @@ def signup_verification(request):
             except AdUser.DoesNotExist:
                 pass
             else:
-                ad_user.given_name = ""
-                ad_user.phone_number = user.info.phone_number
-                ad_user.email = user.email
                 ad_user.user = user
                 ad_user.save()
+                user_info.phone_number = ad_user.phone_number
+                user_info.save()
 
             return redirect('settings')
         else:
