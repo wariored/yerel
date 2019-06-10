@@ -60,12 +60,15 @@
                 chiffres
             </div>
         {% endif %}
+        <p id="submit_error" class="alert alert-danger text-center">
+            Veuillez remplir correctement tous les champs SVP
+        </p>
         <div class="widget my-profile margin-bottom-none">
             <div class="widget-header">
                 <h1>Mom Compte</h1>
             </div>
             <div class="widget-body">
-                <form method="POST" action="{% url 'update_profile' %}" enctype='multipart/form-data'>
+                <form method="POST" action="{% url 'update_profile' %}" enctype='multipart/form-data' id="settings">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-sm-6">
@@ -87,30 +90,39 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label">Prénom <span class="required">*</span></label>
-                                <input name="first_name" class="form-control border-form" type="text"
+                                <br><span class="text-danger" id="fname_error_msg"></span>
+                                <input name="first_name" class="form-control border-form" type="text" id="form_fname"
                                        value="{{ user.first_name }}">
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label">Nom <span class="required">*</span></label>
-                                <input name="last_name" class="form-control border-form" type="text"
+                                <br><span class="text-danger" id="lname_error_msg"></span>
+                                <input name="last_name" class="form-control border-form" type="text" id="form_lname"
                                        value="{{ user.last_name }}">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
+                        <br><span class="text-danger" id="phone_error_msg"></span>
                         <div class="input-group">
                             <span class="input-group-addon">+221</span>
-                            <input name="phone_number" type="text" class="form-control border-form"
+                            <input name="phone_number" type="text" class="form-control border-form" id="form_phone"
                                    value="{{ user.info.phone_number }}">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label">Adresse </label>
-                        <input name="address" class="form-control border-form" type="text"
+                        <br><span class="text-danger" id="address_error_msg"></span>
+                        {% if user.info.address %}
+                            <input name="address" class="form-control border-form" type="text" id="form_address"
                                value="{{ user.info.address }}">
+                        {% else %}
+                            <input name="address" class="form-control border-form" type="text" id="form_address">
+                        {% endif %}
+                            
                     </div>
                     <div class="form-group">
                         <label for="avatar" class="control-label">Avatar</label>
@@ -121,21 +133,24 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label">Mot de passe</label>
-                                <input name='old_password' class="form-control border-form" type="password"
+                                <br><span class="text-danger" id="old_password_error_msg"></span>
+                                <input name='old_password' class="form-control border-form" type="password" id="form_old_password"
                                        placeholder="Entrer mot de passe">
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label">Nouveau mot de passe</label>
-                                <input name='password_1' class="form-control border-form" type="password"
+                                <br><span class="text-danger" id="password_error_msg"></span>
+                                <input name='password_1' class="form-control border-form" type="password" id="form_password"
                                        placeholder="Entrer mot de passe">
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label class="control-label">Confirmer nouveau mot de passe </label>
-                                <input name="password_2" class="form-control border-form" type="password"
+                                <br><span class="text-danger" id="password_confirm_error_msg"></span>
+                                <input name="password_2" class="form-control border-form" type="password" id="form_password_confirm"
                                        placeholder="Entrer mot de passe">
                             </div>
                         </div>
@@ -194,3 +209,7 @@
     </div>
 
 {% endblock account_content %}
+
+{% block javascripts %}
+    <script src="{% static 'internals/js/registration/settings.js' %}"></script>
+{% endblock %}
