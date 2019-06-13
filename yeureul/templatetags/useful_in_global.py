@@ -30,7 +30,11 @@ def count_ads_in_subcategory(subcategory_id):
     count = Ad.manager_object.can_be_shown_to_public().filter(subcategory__id=subcategory_id).count()
     return count
 
+
 @register.filter
 def count_ads_for_adUser(ad_user_id):
-    count = Ad.manager_object.can_be_shown_to_owner().filter(ad_user__id=ad_user_id).count()
+    if ad_user_id == '':
+        count = 0
+    else:
+        count = Ad.manager_object.can_be_shown_to_owner().filter(ad_user__id=ad_user_id).count()
     return count

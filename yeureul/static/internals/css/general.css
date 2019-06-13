@@ -42,43 +42,44 @@ a.disabled {
 
 }
 
+
 @media only screen and (min-width: 320px) {
-    .ad_img {
+    /*.ad_img {
         height: 280px;
-    }
+    }*/
 
 }
 
 /* Extra Small Devices, Phones */
 @media only screen and (min-width: 480px) {
-    .ad_img {
+    /*.ad_img {
         height: 260px;
 
-    }
+    }*/
 
 }
 
 /* Small Devices, Tablets */
 @media only screen and (min-width: 768px) {
-    .ad_img {
+    /*.ad_img {
 
-    }
+    }*/
 
 }
 
 /* Medium Devices, Desktops */
 @media only screen and (min-width: 992px) {
-    .ad_img {
+    /*.ad_img {
         height: 120px;
 
-    }
+    }*/
 
 }
 
 /* Large Devices, Wide Screens */
 @media only screen and (min-width: 1200px) {
-    .ad_img {
+    /*.ad_img {
         height: 270px;
-    }
+    }*/
 
 }
