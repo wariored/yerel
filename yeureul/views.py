@@ -4,23 +4,19 @@ from django.conf import settings as conf_settings
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.core.validators import validate_email
 from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.encoding import force_bytes
-from django.utils.encoding import force_text
 from django.utils.html import strip_tags
-from django.utils.http import urlsafe_base64_encode
 
 from ads.models import Category
 from . import forms
 from .models import UserInfo, UserKey, ContactMessage
 from ads.models import AdUser, Ad
-from . import statics_variables
+from . import statics_variables, utils_functions
 
 
 def handler404(request, exception):
@@ -139,7 +135,7 @@ def signup_verification(request):
             login(request, user)
 
             # generate a token with the user as key, key_type="A" is for account Activation
-            uid, token = uid_token_generator(user, key_type="A")
+            uid, token = utils_functions.uid_token_generator(user, key_type="A")
             url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
 
             # add user in UserInfo table
@@ -175,7 +171,7 @@ def signup_verification(request):
 
 def account_validation(request, uidb64=None, token=None):
     user_key = get_object_or_404(UserKey, key_type="A", token=token)
-    check_token = uid_token_decoder(uidb64, token, key_type="A")
+    check_token = utils_functions.uid_token_decoder(uidb64, token, key_type="A")
     if check_token:
         user_key.user.info.activated_account = True
         user_key.user.info.save()
@@ -190,7 +186,7 @@ def account_validation(request, uidb64=None, token=None):
 def regenerate_activation_link(request):
     if request.user.info.activated_account:
         return redirect('settings')
-    uid, token = uid_token_generator(request.user, key_type="A")
+    uid, token = utils_functions.uid_token_generator(request.user, key_type="A")
     url = conf_settings.BASE_URL + "account/validate/%s/%s" % (uid, token)
     html_message = render_to_string('mails/account_activation.html', {'user': request.user, 'link': url})
     plain_message = strip_tags(html_message)
@@ -210,7 +206,7 @@ def before_password_reset(request):
         except User.DoesNotExist:
             return render(request, 'registration/before_password_reset.html', {'not_exist': True, 'email': email})
         else:
-            uid, token = uid_token_generator(user, key_type="P")
+            uid, token = utils_functions.uid_token_generator(user, key_type="P")
             url = conf_settings.BASE_URL + "account/reset_password/%s/%s" % (uid, token)
             html_message = render_to_string('mails/password_reset.html', {'user': user.username, 'link': url})
             plain_message = strip_tags(html_message)
@@ -223,7 +219,7 @@ def before_password_reset(request):
 def account_reset_password(request, uidb64=None, token=None):
     user_key = get_object_or_404(UserKey, key_type="P", token=token)
     user = User.objects.get(pk=user_key.user.id)
-    check_token = uid_token_decoder(uidb64=uidb64, token=token, key_type="P")
+    check_token = utils_functions.uid_token_decoder(uidb64=uidb64, token=token, key_type="P")
     if check_token:
         request.session['token'] = True
         request.session['user_id'] = user.id
@@ -354,7 +350,7 @@ def update_profile(request):
             if avatar.size < int(statics_variables.MAX_SIZE):
                 try:
                     path = user_info.avatar.path
-                    _delete_file(path)
+                    utils_functions._delete_file(path)
                 except (ValueError, FileNotFoundError):
                     pass
                 user_info.avatar = avatar
@@ -439,38 +435,4 @@ def faq(request):
     return render(request, 'yeureul/faq.html')
 
 
-def uid_token_generator(user, key_type):
-    uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
-    token = default_token_generator.make_token(user)
-    key_to_update, key_created = UserKey.objects.get_or_create(user=user, key_type=key_type)
-    if not key_created:  # do not forget to make a constraint for only 2 entries in UserKey
-        key_to_update.key_expires = timezone.now() + timezone.timedelta(days=1)
-        key_to_update.token = token
-        key_to_update.save()
-    else:
-        key_to_update.token = token
-        key_to_update.save()
-    return uid, token
 
-
-def uid_token_decoder(uidb64, token, key_type):
-    if uidb64 is not None and token is not None:
-        from django.utils.http import urlsafe_base64_decode
-        uid = force_text(urlsafe_base64_decode(uidb64).decode())
-        try:
-            from django.contrib.auth import get_user_model
-            from django.contrib.auth.tokens import default_token_generator
-            user_model = get_user_model()
-            user = user_model.objects.get(pk=uid)
-            user_key = UserKey.objects.get(user=user, key_type=key_type, token=token)
-            if user_key.key_expires < timezone.now():
-                return False
-            return default_token_generator.check_token(user, token)
-        except (User.DoesNotExist, UserKey.DoesNotExist):
-            pass
-    return False
-
-
-def _delete_file(path):
-    """ Deletes file from filesystem. """
-    os.remove(path)

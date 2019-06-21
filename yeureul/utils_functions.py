@@ -6,6 +6,12 @@ import string
 from io import BytesIO
 from PIL import Image
 from django.core.files import File
+from django.utils.encoding import force_bytes
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.models import User
+from .models import UserKey
 
 
 def similar(a, b):
@@ -43,3 +49,35 @@ def compress_image(image):
     # create a django-friendly Files object
     new_image = File(im_io, name=image.name)
     return new_image
+
+
+def uid_token_generator(user, key_type):
+    uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
+    token = default_token_generator.make_token(user)
+    key_to_update, key_created = UserKey.objects.get_or_create(user=user, key_type=key_type)
+    if not key_created:  # do not forget to make a constraint for only 2 entries in UserKey
+        key_to_update.key_expires = timezone.now() + timezone.timedelta(days=1)
+        key_to_update.token = token
+        key_to_update.save()
+    else:
+        key_to_update.token = token
+        key_to_update.save()
+    return uid, token
+
+
+def uid_token_decoder(uidb64, token, key_type):
+    if uidb64 is not None and token is not None:
+        from django.utils.http import urlsafe_base64_decode
+        uid = force_text(urlsafe_base64_decode(uidb64).decode())
+        try:
+            from django.contrib.auth import get_user_model
+            from django.contrib.auth.tokens import default_token_generator
+            user_model = get_user_model()
+            user = user_model.objects.get(pk=uid)
+            user_key = UserKey.objects.get(user=user, key_type=key_type, token=token)
+            if user_key.key_expires < timezone.now():
+                return False
+            return default_token_generator.check_token(user, token)
+        except (User.DoesNotExist, UserKey.DoesNotExist):
+            pass
+    return False

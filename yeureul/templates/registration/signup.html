@@ -96,63 +96,7 @@
         </div>
     </section>
     <!-- End Login -->
-    <!-- Privacy Policy Modal -->
-    <div id="privacyPolicyModal" class="modal fade" role="dialog" data-backdrop="static">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Termes et conditions d'utilisation</h4>
-                </div>
-                <div class="modal-body">
-                    <p>
-                    <p>En vous inscrivant sur Yerel, vous acceptez les termes et conditions suivantes: </p>
-                    <strong>1-</strong> En naviguant sur notre site, l’internaute reconnaît avoir pris connaissance de notre
-                    politique de confidentialité. Voir <a href="{% url 'privacy' %}">ici</a>.<br>
-                    <strong>2-</strong> Vous confirmez que vous êtes agé(e) de plus de 16 ans au moment de l'inscription. <br>
-                    <strong>3-</strong> Cookies: <br>
-                    En vue d’améliorer notre site, nous utilisons Google Analytics qui est un outil « d'analyse
-                    d'audience Internet permettant aux propriétaires de sites Web et d'applications de mieux
-                    comprendre le comportement de leurs utilisateurs. Cet outil peut utiliser des cookies pour
-                    collecter des informations et générer des rapports sur les statistiques d'utilisation d'un site
-                    Web sans que les utilisateurs individuels soient identifiés personnellement par Google.
-                    Outre la génération de rapports sur les statistiques d'utilisation d'un site Web, Google
-                    Analytics permet également, en association avec certains des cookies publicitaires décrits
-                    ci-dessus, d'afficher des annonces plus pertinentes sur les sites Google (tels que la recherche
-                    Google) et sur le Web. »
-                    <a href="https://www.google.fr/intl/fr/policies/technologies/types/" target="_blank">https://www.google.fr/intl/fr/policies/technologies/types/</a>.
-                    <br>
-                    Nous utilisons également les cookies nécessaires à l’amélioration de votre navigation sur notre
-                    site tenant compte exclusivement de votre navigateur. <br>
-                    <strong>4-</strong> Propriété intellectuelle : <br>
-                    Le site web a été réalisé par <strong>Nista Technologies</strong>. Il est la propriété de
-                    l’association et ne peut faire l’objet de reproduction.
-                    <br>
-                    <strong>5-</strong> Photographies et contenu : <br>
-                    Les photographies, vidéos, textes et illustrations publiés sur le site sont propriété de
-                    Yerel ou ont fait l’objet de cession de droits.
-                    Ils ne peuvent faire l’objet d’aucune réutilisation.
-                    <br>
-                    <strong>6-</strong> Liens hypertextes : <br>
-                    Le site <strong>https://yerel.co</strong>(ou l'application Yerel) peut contenir des liens hypertextes renvoyant à des
-                    pages ou des sites
-                    dont le contenu ne peut engager en rien Yerel. <br>
-                    Les liens hypertextes renvoyant vers notre site sont les bienvenus lorsqu’ils émanent de sites
-                    respectant la législation en vigueur.
-
-
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <!-- End Privacy Policy Modal -->
+    {% include 'registration/account/privacy_policy_modal.html' %}
 {% endblock authentication_content %}
 {% block javascripts %}
     <script src="{% static 'internals/js/registration/signup.js' %}"></script>

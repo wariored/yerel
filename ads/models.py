@@ -6,6 +6,7 @@ import uuid
 import os
 from pricing.models import Account
 from yeureul import statics_variables, utils_functions
+from showrooms.models import Showroom
 
 
 def get_file_path(instance, filename):

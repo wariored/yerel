@@ -1,0 +1,92 @@
+{% extends 'base_showrooms.html' %}
+{% load staticfiles widget_tweaks %}
+{% block showrooms_pagination %}
+    <li>Inscription</li>
+{% endblock %}
+{% block showrooms_content %}
+
+    <!-- Login -->
+    <section class="login">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-sm-offset-4">
+                    <div class="login-panel widget">
+                        <div class="login-body">
+                            <form method="POST" action="/showrooms/registration/?next={{ redirect_to }}"
+                                  id="login_form">
+                                {% csrf_token %}
+
+                                <div class="form-group">
+                                    <label class="control-label">Email <span
+                                            class="required">*</span></label>
+                                    {% render_field form.email class="form-control" placeholder=form.email.label %}
+                                    {% for error in form.email.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                    <span class="text-danger" id="email_error_msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Nom de la boutique <span
+                                            class="required">*</span></label>
+                                    {% render_field form.showroom_name class="form-control" placeholder=form.showroom_name.label %}
+                                    {% for error in form.showroom_name.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                    <span class="text-danger" id="showroom_name_error_msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">{{ form.password.label }} <span
+                                            class="required">*</span></label>
+                                    {% render_field form.password class="form-control" placeholder=form.password.label %}
+                                    {% for error in form.password.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                    <span class="text-danger" id="password_error_msg"></span>
+                                </div>
+
+                                <div class="login-footer">
+                                    <div class="checkbox checkbox-primary pull-left">
+                                        {% render_field form.terms id='checkbox_terms' %}
+                                        <label for="checkbox_terms">
+                                            J'accepte les termes et conditions
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-block btn-lg btn-primary">Créer boutique</button>
+                                </div>
+                                <p class="text-center pull-right"><a href="{% url 'signup' %}"> Particulier?
+                                </a></p>
+                                <div class="clearfix"></div>
+                            </form>
+                        </div>
+                        <div class="login-with-sites">
+                            <!--
+                            <button class="btn-facebook login-icons btn-lg btn-block"> <i class="fa fa-facebook"></i> Se connecter
+                                avec Facebook</button>
+                            <button class="btn-google login-icons btn-lg btn-block"> <i class="fa fa-google"></i> Se connecter avec Google
+                            </button>
+                            -->
+                        </div>
+
+                    </div>
+                    <p class="text-center margin-bottom-none">Déja un compte? <a href="{% url 'login' %}"><strong>Se connecter</strong></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'registration/account/privacy_policy_modal.html' %}
+{% endblock %}
+{% block javascripts %}
+    <script>
+        var checkbox_terms = $("#checkbox_terms");
+        checkbox_terms.on('click', function () {
+            if (checkbox_terms.is(':checked')) {
+                $("#privacyPolicyModal").modal('toggle');
+            }
+        });
+    </script>
+{% endblock %}

@@ -26,10 +26,12 @@ handler500 = 'yeureul.views.handler404'
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
+
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   url(r'^(?P<filename>(robots.txt)|(humans.txt))$', views.home_files, name='home_files'),
-                  url(r'^.well-known/pki-validation/99797D4ABECAC61A30AB474DEC201FE2.txt$', views.cert_file, name='cerif'),
+                  url(r'^.well-known/pki-validation/99797D4ABECAC61A30AB474DEC201FE2.txt$', views.cert_file,
+                      name='cerif'),
                   url(r'^$', views.index, name='index'),
                   url(r'^login/$', views.login_view, name='login'),
                   url(r'^signup/$', views.signup_view, name='signup'),
@@ -57,4 +59,5 @@ urlpatterns = [
                   path('pricing/', include('pricing.urls')),
                   path('index/', views.index, name='main-view'),
                   url(r'^faq/$', views.faq, name='faq'),
+                  path('showrooms/', include('showrooms.urls')),
               ] + static(conf_settings.MEDIA_URL, document_root=conf_settings.MEDIA_ROOT)
