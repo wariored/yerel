@@ -76,7 +76,7 @@
                 <form method="POST" {% if user.showrooms %} action="{% url 'settings' %}" {% else %}
                       action="{% url 'update_profile' %}" {% endif %} enctype='multipart/form-data'>
                     {% csrf_token %}
-                    {% if user.showrooms %}
+                    {% if user.showrooms.first %}
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">

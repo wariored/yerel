@@ -39,7 +39,7 @@
                                     <i class="fa fa-camera"></i>
                                 </a>
                                 {% if user.info.avatar.name or user.showrooms.first.avatar.name %}
-                                    {% if user.showrooms.first.avatar.name %}
+                                    {% if user.showrooms.first.avatar %}
                                         <img src="{{ user.showrooms.first.avatar.url }}" alt="User Image"
                                              class="profile-dp">
                                     {% else %}
@@ -51,7 +51,7 @@
                                 {% endif %}
                             </div>
                             <div class="profile-info">
-                                {% if user.showrooms %}
+                                {% if user.showrooms.first.name %}
                                     <h2 class="seller-name">{{ user.showrooms.first.name|truncatechars:"20" }}</h2>
                                 {% else %}
                                     <h2 class="seller-name">{{ user.username }}</h2>
