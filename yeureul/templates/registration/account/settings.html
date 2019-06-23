@@ -5,7 +5,7 @@
 {% block account_pagination %}
     <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
     <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-    {% if user.showrooms %}
+    {% if user.showrooms.all.exists %}
         <li>Ma Boutique</li>
     {% else %}
         <li>Mon compte</li>
@@ -66,14 +66,14 @@
         {% endif %}
         <div class="widget my-profile margin-bottom-none">
             <div class="widget-header">
-                {% if user.showrooms %}
+                {% if user.showrooms.all.exists %}
                     <h1>Ma Boutique</h1>
                 {% else %}
                     <h1>Mon Compte</h1>
                 {% endif %}
             </div>
             <div class="widget-body">
-                <form method="POST" {% if user.showrooms %} action="{% url 'settings' %}" {% else %}
+                <form method="POST" {% if user.showrooms.all.exists %} action="{% url 'settings' %}" {% else %}
                       action="{% url 'update_profile' %}" {% endif %} enctype='multipart/form-data'>
                     {% csrf_token %}
                     {% if user.showrooms.first %}
