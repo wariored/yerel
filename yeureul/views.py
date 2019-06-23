@@ -281,7 +281,7 @@ def settings(request):
         del request.session['activation']
         return render(request, 'registration/account/settings.html', {'activation': activation})
 
-    if request.user.showrooms:
+    if request.user.showrooms.all().exists():
         has_reached_ads_limit = ''
         showroom = Showroom.objects.filter(user=request.user).first()
         if request.method == 'POST':
