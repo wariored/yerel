@@ -287,47 +287,99 @@
                     {% endif %}
                     <div class="widget user-widget">
                         {% if ad.ad_user.user %}
-                            <div class="widget-body text-center">
-                                {% if ad.ad_user.user.info.avatar.name %}
-                                    <img class="user-dp" alt="User Image" src="{{ ad.ad_user.user.info.avatar.url }}">
-                                {% else %}
-                                    <img class="user-dp" alt="User Image"
-                                         src="{% static 'externals/images/user60.png' %}">
-                                {% endif %}
-                                <span class="user-status user-offline"></span>
-                                <!-- <span class="user-status user-offline"></span> -->
-                                <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
-                                <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
-                                    {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None' %}
-                                        <strong>{{ ad.ad_user.user.info.address }}</strong>
+                            {% if ad.ad_user.user.showrooms.first %}
+                                <div class="widget-body text-center">
+                                    {% if ad.ad_user.user.showrooms.first.avatar.name %}
+                                        <img class="user-dp" alt="User Image"
+                                             src="{{ ad.ad_user.user.showrooms.first.avatar.url }}">
                                     {% else %}
-                                        <strong>non donné</strong>
-                                    {% endif %}<br>
-                                    <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
-                                        {% language 'fr' %}
-                                            {{ ad.ad_user.user.date_joined|date:"SHORT_DATE_FORMAT" }} {% endlanguage %}</strong>
-                                </p>
-                            </div>
-                            <div class="widget-footer">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="profile-action-btns text-center">
-                                            <a href="https://api.whatsapp.com/send?phone=221{{ ad.ad_user.phone_number }}"
-                                               data-toggle="tooltip" data-placement="top"
-                                               title="{{ ad.ad_user.phone_number }}" target="_blank"
-                                               class="btn btn-primary btn-lg"><i
-                                                    class="fa fa-whatsapp"></i></a>
-                                            <a href="mailto:{{ ad.ad_user.email }}" target="_blank"
-                                               data-toggle="tooltip" data-placement="top"
-                                               title="{{ ad.ad_user.email }}"
-                                               class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
-                                            {#                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"#}
-                                            {#                                               title="Chat en ligne"#}
-                                            {#                                               class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>#}
+                                        <img class="user-dp" alt="User Image"
+                                             src="{% static 'externals/images/user60.png' %}">
+                                    {% endif %}
+                                    <span class="user-status user-offline"></span>
+                                    <!-- <span class="user-status user-offline"></span> -->
+                                    <h2 class="seller-name"><a href="{% url 'showrooms:single_showroom' ad.ad_user.user.showrooms.first.id  %}">{{ ad.ad_user.user.showrooms.first.name }}</a></h2>
+                                    <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
+                                        {% if ad.ad_user.user.showrooms.first.address and ad.ad_user.user.showrooms.first.address is not None and ad.ad_user.user.showrooms.first.address != 'None' %}
+                                            <strong>{{ ad.ad_user.user.showrooms.first.address }}</strong>
+                                        {% else %}
+                                            <strong>non donné</strong>
+                                        {% endif %}<br>
+                                        <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
+                                            {% language 'fr' %}
+                                                {{ ad.ad_user.user.date_joined|date:"SHORT_DATE_FORMAT" }} {% endlanguage %}</strong>
+                                        <br><i class="fa fa-phone"></i> Numéro 1 : <strong>{{ ad.ad_user.user.showrooms.first.phone_number_1 }}</strong>
+                                        {% if ad.ad_user.user.showrooms.first.phone_number_2 %}
+                                            <br><i class="fa fa-phone"></i> Numéro 2 : <strong>{{ ad.ad_user.user.showrooms.first.phone_number_2 }}</strong>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="widget-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="profile-action-btns text-center">
+                                                <a href="https://api.whatsapp.com/send?phone=221{{ ad.ad_user.user.showrooms.first.phone_number_1 }}"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="{{ ad.ad_user.user.showrooms.first.phone_number_1 }}" target="_blank"
+                                                   class="btn btn-primary btn-lg"><i
+                                                        class="fa fa-whatsapp"></i></a>
+                                                <a href="mailto:{{ ad.ad_user.user.showrooms.first.email }}" target="_blank"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="{{ ad.ad_user.user.showrooms.first.email }}"
+                                                   class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
+                                                {#                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"#}
+                                                {#                                               title="Chat en ligne"#}
+                                                {#                                               class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>#}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            {% else %}
+
+
+                                <div class="widget-body text-center">
+                                    {% if ad.ad_user.user.info.avatar.name %}
+                                        <img class="user-dp" alt="User Image"
+                                             src="{{ ad.ad_user.user.info.avatar.url }}">
+                                    {% else %}
+                                        <img class="user-dp" alt="User Image"
+                                             src="{% static 'externals/images/user60.png' %}">
+                                    {% endif %}
+                                    <span class="user-status user-offline"></span>
+                                    <!-- <span class="user-status user-offline"></span> -->
+                                    <h2 class="seller-name">{{ ad.ad_user.given_name }}</h2>
+                                    <p class="seller-detail"><i class="fa fa-map-marker"></i> Emplacement:
+                                        {% if ad.ad_user.user.info.address and ad.ad_user.user.info.address is not None and ad.ad_user.user.info.address != 'None' %}
+                                            <strong>{{ ad.ad_user.user.info.address }}</strong>
+                                        {% else %}
+                                            <strong>non donné</strong>
+                                        {% endif %}<br>
+                                        <i class="fa fa-clock-o"></i> Nous a rejoint : <strong>
+                                            {% language 'fr' %}
+                                                {{ ad.ad_user.user.date_joined|date:"SHORT_DATE_FORMAT" }} {% endlanguage %}</strong>
+                                    </p>
+                                </div>
+                                <div class="widget-footer">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="profile-action-btns text-center">
+                                                <a href="https://api.whatsapp.com/send?phone=221{{ ad.ad_user.phone_number }}"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="{{ ad.ad_user.phone_number }}" target="_blank"
+                                                   class="btn btn-primary btn-lg"><i
+                                                        class="fa fa-whatsapp"></i></a>
+                                                <a href="mailto:{{ ad.ad_user.email }}" target="_blank"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="{{ ad.ad_user.email }}"
+                                                   class="btn btn-primary btn-lg"><i class="fa fa-envelope-o"></i></a>
+                                                {#                                            <a data-toggle="collapse" data-parent="#accordion" href="#popup"#}
+                                                {#                                               title="Chat en ligne"#}
+                                                {#                                               class="btn btn-primary btn-lg"><i class="fa fa-comment-o"></i></a>#}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                         {% else %}
                             <div class="widget-body text-center">
                                 <img class="user-dp" alt="User Image" src="{% static 'externals/images/user60.png' %}">

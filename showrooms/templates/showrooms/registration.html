@@ -3,6 +3,7 @@
 {% block showrooms_pagination %}
     <li>Inscription</li>
 {% endblock %}
+{% block showroom_search %} {% endblock %}
 {% block showrooms_content %}
 
     <!-- Login -->
@@ -23,6 +24,10 @@
                                     {% for error in form.email.errors %}
                                         <div class="text-danger">{{ error }}</div>
                                     {% endfor %}
+                                    {% if error_message == 'email' %}
+                                        <div class="text-danger">Le mail existe déja</div>
+                                    {% endif %}
+
                                     <span class="text-danger" id="email_error_msg"></span>
                                 </div>
                                 <div class="form-group">
@@ -32,6 +37,9 @@
                                     {% for error in form.showroom_name.errors %}
                                         <div class="text-danger">{{ error }}</div>
                                     {% endfor %}
+                                    {% if error_message == 'name' %}
+                                        <div class="text-danger">Une boutique du même nom existe déja</div>
+                                    {% endif %}
                                     <span class="text-danger" id="showroom_name_error_msg"></span>
                                 </div>
                                 <div class="form-group">
@@ -71,7 +79,8 @@
                         </div>
 
                     </div>
-                    <p class="text-center margin-bottom-none">Déja un compte? <a href="{% url 'login' %}"><strong>Se connecter</strong></a>
+                    <p class="text-center margin-bottom-none">Déja un compte? <a href="{% url 'login' %}"><strong>Se
+                        connecter</strong></a>
                     </p>
                 </div>
             </div>

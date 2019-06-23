@@ -1,0 +1,482 @@
+{% extends 'base_showrooms.html' %}
+{% load humanize i18n staticfiles useful_in_global  timesince_ads %}
+{% load trending_ads ads_categories ads_counter_showroom %}
+{% block showrooms_pagination %}
+    <li>{{ showroom.name }}</li>
+{% endblock %}
+{% block showroom_search %}
+    <div class="row showroom_search_area">
+        <div class="main-search-box text-center">
+            <form action="{% url 'showrooms:single_showroom' showroom.id %}" method="GET">
+                <div class="col-md-4 col-sm-4">
+                    <input name="text_to_find" placeholder="Rechercher une boutique"
+                           class="form-control input-lg search-form showroom_search_input"
+                           type="text" {% if text_to_search %} value="{{ text_to_search }}"{% endif %}>
+                </div>
+                <div class="col-md-3 col-sm-3 search-input">
+                    <select name="subcategories" class="form-control input-lg search-form">
+                        <option value="all_categories">Toutes les
+                            categories
+                        </option>
+
+                        {% for category in categories_t %}
+                            <optgroup label="{{ category.name }}">
+                                {% for subcategory in category.subcategories.all|dictsort:"degree" %}
+                                    <option {% if selected_subcategory == subcategory %} selected="selected"{% endif %}
+                                                                                         value="{{ subcategory.id }}">{{ subcategory.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endfor %}
+                        {#            <option value="other_categories"> Autres</option>#}
+                    </select>
+                </div>
+                <div class="col-md-3 col-sm-3 search-input">
+                    <select name="location" class="form-control input-lg search-form">
+                        <option selected="selected" value="all_locations">Tous les lieux</option>
+                        {% for location in all_locations %}
+                            <option {% if selected_location == location %} selected="selected" {% endif %}
+                                                                           value="{{ location.id }}">{{ location.name }}</option>
+                        {% endfor %}
+                        {#            <option {% if selected_location.name == 'Autres' %}selected="selected"{% endif %} value="other_locations">Autres Lieux</option>#}
+                    </select>
+                </div>
+                <div class="col-md-2 col-sm-2 search-input">
+                    <button class="btn btn-primary btn-lg simple-btn btn-block showroom_search_button">
+                        <i class="fa fa-search"></i> Rechercher
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block showrooms_content %}
+    <!-- Category Grid -->
+    <section class="category-grid">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="listing-actions clearfix row">
+                        <div class="tags col-md-6 text-left">
+                            {% if selected_subcategories %}
+
+
+                                {% for selected_subcategory in selected_subcategories %}
+                                    <span>{{ selected_subcategory.name }} <a data-value="{{ selected_subcategory.id }}"
+                                                                             class="uncheck_subcategory"
+                                                                             style="cursor: pointer;"><i
+                                            class="fa fa-close"></i></a></span>
+
+                                {% endfor %}
+                                <span>Tout Effacer <a style="cursor: pointer;" class="uncheck_subcategories"><i
+                                        class="fa fa-close"></i></a></span>
+                            {% endif %}
+                        </div>
+                        <ul class="listing-actions-nav col-md-6 text-right">
+                            <!--<li><a class="layout-action" title="" data-placement="top" data-toggle="tooltip" href="category-list.html" data-original-title="List layout"><i class="fa fa-bars"></i></a></li>
+                               <li><a class="layout-action active" title="" data-placement="top" data-toggle="tooltip" href="category-grid.html" data-original-title="Grid layout"><i class="fa fa-th"></i></a></li> -->
+                            <li class="dropdown">
+                                <a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-filter"></i> Filtrer par prix <b {% if price_order_type == 'low' %}
+                                    class="fa fa-caret-up" {% else %} class="caret"{% endif %}></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a data-value="low" class="price_order" style="cursor: pointer;">Prix
+                                        Croissant</a></li>
+                                    <li><a data-value="high" class="price_order" style="cursor: pointer;">Prix
+                                        Décroissant</a></li>
+                                </ul>
+                            </li>
+                            <!--
+                            <li class="dropdown">
+                                <a aria-expanded="false" href="#" class="dropdown-toggle" data-toggle="dropdown"><i
+                                        class="fa fa-filter"></i> Tous Type <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">Nouveau</a></li>
+                                    <li><a href="#">Utilisé</a></li>
+                                </ul>
+                            </li>
+                            -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-4">
+                    <div class="listing-filters">
+                        <div class="widget listing-filter-block filter-categories">
+                            <div class="widget-header">
+                                <h1>Categories</h1>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="trends">
+                                    {% for category in categories_t %}
+                                        <li>
+                                            <a href="{% url 'showrooms:single_showroom' showroom.id %}?category={{ category.id }}">
+                                                <i class="{{ category.icon }}"></i>
+                                                <p>{{ category.name }}
+                                                    <small>{{ category.id|ads_number_category_showroom:showroom.user.id }} {{ category.id|ads_number_category_showroom:showroom.user.id|pluralize:" Annonce, Annonces" }} </small>
+                                                </p>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget listing-filter-block">
+                            <div class="widget-header">
+                                <h1>{{ selected_category.name }}</h1>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="trends">
+                                    {% for subcategory in selected_category.subcategories.all|dictsort:"degree" %}
+                                        <li>
+                                            <div class="checkbox checkbox-primary">
+                                                <input name="subcategories" value="{{ subcategory.id }}"
+                                                       id="checkbox{{ subcategory.id }}" type="checkbox"
+                                                        {% if subcategory in selected_subcategories %}
+                                                       checked="checked"
+                                                        {% endif %}
+                                                >
+                                                <label for="checkbox{{ subcategory.id }}">
+                                                    {{ subcategory.name }}
+                                                </label>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget listing-filter-block">
+                            <div class="widget-header">
+                                <h1>Condition </h1>
+                            </div>
+                            <div class="widget-body">
+                                <ul class="trends">
+                                    <li>
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="inlineRadio1" value="N" name="radioInline"
+                                                    {% if selected_condition == "N" %}
+                                                   checked="checked"
+                                                    {% endif %}
+                                            >
+                                            <label for="inlineRadio1"> Nouvelle </label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="radio radio-primary radio-inline">
+                                            <input type="radio" id="inlineRadio2" value="U" name="radioInline"
+                                                    {% if selected_condition == "U" %}
+                                                   checked="checked"
+                                                    {% endif %}
+                                            >
+                                            <label for="inlineRadio2"> Utilisée </label>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="widget listing-filter-block">
+                            <div class="widget-header">
+                                <h1> Prix</h1>
+                            </div>
+                            <div class="widget-body">
+                                <div class="range-widget">
+                                    <div class="form-group">
+                                        <div class="range-inputs row">
+                                            <div id="price_error" class="text-center text-danger"
+                                                 style="display: none;"></div>
+                                            <div class="col-md-6"><input id="min_price" class="form-control border-form"
+                                                                         type="text"
+                                                                         placeholder="De"
+                                                    {% if  filter_by_price %}
+                                                                         value="{{ filter_by_price.min }}"
+                                                    {% endif %}>
+                                            </div>
+                                            <div class="col-md-6"><input id="max_price" class="form-control border-form"
+                                                                         type="text"
+                                                                         placeholder="À"
+                                                    {% if  filter_by_price %}
+                                                                         value="{{ filter_by_price.max }}"
+                                                    {% endif %}>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button id="price" class="btn btn-primary btn-block"><i
+                                                class="fa fa-search"></i> Rechercher
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget listing-filter-block margin-bottom-none">
+                            <div class="widget-header">
+                                <h1>Tendances </h1>
+                            </div>
+                            {% trending_ads_list as trending_ads %}
+                            <div class="widget-body">
+                                {% for trending_ad in trending_ads|slice:'5' %}
+                                    <div class="similar-ads">
+                                        <a href="{% url 'ads:single_item' trending_ad.random_url.hex %}">
+                                            {% if trending_ad.img.exists %}
+                                                <div class="similar-ad-left">
+                                                    <img class="img-responsive img-center"
+                                                         src="{{ trending_ad.img.first.media.url }}"
+                                                         alt="tendance_{{ trending_ad.id }}">
+                                                </div>
+                                            {% else %}
+                                                <div class="similar-ad-left">
+                                                    <img class="img-responsive img-center"
+                                                         src="{% static 'internals/img/none_ad.png' %}"
+                                                         alt="tendance_{{ trending_ad.id }}">
+                                                </div>
+                                            {% endif %}
+                                            <div class="similar-ad-right">
+                                                <h4>{{ trending_ad.title|truncatechars:'20' }}</h4>
+                                                <p style="font-size: 11px;">
+                                                    {% if trending_ad.price != 0.0 %}
+                                                        {% language 'fr' %}
+                                                            {{ trending_ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                        F -
+                                                    {% endif %} <i
+                                                        class="fa fa-map-marker"></i> {{ trending_ad.location.name }}
+                                                </p>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-8">
+                    <div class="row">
+                        {% for ad in selected_ads %}
+                            <div class="col-lg-4">
+                                <div class="item">
+                                    <div class="item-ads-grid {{ category.icon_ads }}">
+                                        {% if ad.views_number >= 100 %}
+                                            <div class="item-badge-grid featured-ads">
+                                                <a href="#">TOP</a>
+                                            </div>
+
+                                        {% elif ad.ad_user.user.account.is_active and ad.ad_user.user.account.type|is_in:"P,A" %}
+                                            <div class="item-badge-grid btn-primary">
+                                                <a href="#"> Premium</a>
+                                            </div>
+
+                                        {% elif ad.is_featured and ad.views_number >= 10 %}
+                                            <div class="item-badge-grid premium-ads">
+                                                <a href="#">HOT</a>
+                                            </div>
+
+                                        {% endif %}
+                                        <div class="item-img-grid">
+                                            <a href="{% url 'ads:single_item' ad.random_url.hex %}">
+                                                {% if ad.img.exists %}
+                                                    <img alt=""
+                                                         src="{{ ad.img.first.media.url }}"
+                                                         class="img-responsive img-center ad_img">
+                                                {% else %}
+                                                    <img alt=""
+                                                         src="{% static 'internals/img/none_ad.png' %}"
+                                                         class="img-responsive img-center ad_img">
+                                                {% endif %}
+                                                <div class="showroom-title">
+                                                    <h4>{{ ad.title }}</h4>
+                                                    {% if ad.price != 0.0 %}
+                                                        <h3>{% language 'fr' %}
+                                                            {{ ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                            FCFA</h3>
+                                                    {% endif %}
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="item-meta">
+                                            <ul>
+                                                <li class="item-date"><i class="fa fa-clock-o"></i>
+                                                    <span class="text-info">{% language 'fr' %}
+                                                        {{ ad.creation_date|timesince_creation }} {% endlanguage %}</span>
+                                                </li>
+                                                <li class="item-cat"><i class="fa fa-glass"></i> <a
+                                                        href="#">{{ ad.subcategory.sup_category.name }}</a> , <a
+                                                        href="#">{{ ad.subcategory.name }}</a></li>
+                                                <li class="item-location"><a href="#"><i
+                                                        class="fa fa-map-marker"></i>
+                                                    {{ ad.location.name }} </a></li>
+                                                <li class="item-type"><i
+                                                        class="fa fa-bookmark"></i> {{ ad.get_condition_display }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="text-center">
+                        {% if selected_ads.has_other_pages %}
+                            <ul class="pagination pagination-sm">
+                                {% if selected_ads.has_previous %}
+                                    {% replace_query_param request.get_full_path 'page' selected_ads.previous_page_number as path %}
+                                    <li><a class="paginate" id="" data-value='{{ selected_ads.previous_page_number }}'
+                                           href="{{ path }}">«</a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled"><a href="#">«</a></li>
+                                {% endif %}
+
+                                {% for num in selected_ads.paginator.page_range %}
+                                    {% if selected_ads.number == num %}
+                                        {% replace_query_param request.get_full_path 'page' num as path %}
+                                        <li class="active"><a class="paginate" data-value="{{ num }}"
+                                                              href="{{ path }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num > selected_ads.number|add:'-3' and num < selected_ads.number|add:'3' %}
+                                        {% replace_query_param request.get_full_path 'page' num as path %}
+                                        <li><a class="paginate" data-value="{{ num }}"
+                                               href="{{ path }}"> {{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if selected_ads.has_next %}
+                                    {% replace_query_param request.get_full_path 'page' selected_ads.next_page_number as path %}
+                                    <li><a class="paginate" data-value="{{ selected_ads.next_page_number }}"
+                                           href="{{ path }}">»</a>
+                                    <li>
+                                        {% else %}
+                                    <li class="disabled"><a href="#">»</a></li>
+                                {% endif %}
+                            </ul><br>
+                            Page {{ selected_ads.number }} sur {{ selected_ads.paginator.num_pages }}
+                        {% endif %}
+                    </div>
+                    {#                    <div class="text-center">#}
+                    {#                        <a class="btn btn-primary btn-load-more btn-lg" href="#"> CHARGER PLUS D'ANNONCES... </a>#}
+                    {#                    </div>#}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Category Grid -->
+{% endblock %}
+{% block javascripts %}
+    <script>
+        $(document).ready(function () {
+            $(document).on('change', "input[name=radioInline]", function () {
+                var input_val = $(this).val();
+                var url = "{{ request.get_full_path }}";
+                url = replaceUrlParam(url, 'condition', input_val);
+                url = replaceUrlParam(url, 'page', 1);
+                url = url.replace(/amp;/g, '');
+                setTimeout(function () {
+                    window.location.replace(url);
+
+                }, 1000);
+
+
+            });
+            $(document).on('change', "input[name=subcategories]", function () {
+                //var subcateg_val = $(this).val();
+                var list = [];
+                $("input:checkbox[name=subcategories]:checked").each(function () {
+                    list.push($(this).val());
+                });
+                var url = "{{ request.get_full_path }}";
+                url = replaceUrlParam(url, 'subcategories', list);
+                url = replaceUrlParam(url, 'page', 1);
+                url = url.replace(/amp;/g, '');
+                setTimeout(function () {
+                    window.location.replace(url);
+
+                }, 1000);
+
+            });
+            $(document).on('click', "#price", function () {
+                //var subcateg_val = $(this).val();
+                var price_error = $("#price_error");
+                price_error.hide();
+                var min_price = $("#min_price").val();
+                var max_price = $("#max_price").val();
+                var error = false;
+                if (isNaN(min_price) || isNaN(max_price)) {
+                    price_error.show();
+                    price_error.html("Veuillez entrer des nombres")
+                    error = true;
+                }
+                else {
+                    if (min_price && max_price) {
+                        min_price = parseFloat(min_price);
+                        max_price = parseFloat(max_price);
+                        if (min_price > max_price) {
+                            price_error.show();
+                            price_error.html("Le max doit être supérieur au min ");
+                            error = true;
+                        }
+                    }
+                }
+                if (!error) {
+                    var url = "{{ request.get_full_path }}";
+                    var min_max_price = String(min_price) + "," + String(max_price);
+                    url = replaceUrlParam(url, 'min_max_price', min_max_price);
+                    url = replaceUrlParam(url, 'page', 1);
+                    url = url.replace(/amp;/g, '');
+
+                    window.location.replace(url);
+                }
+
+            });
+            $(document).on('click', ".uncheck_subcategories", function () {
+                $("input:checkbox[name=subcategories]:checked").each(function () {
+                    $(this).attr("checked", false);
+                });
+                var url = "{{ request.get_full_path }}";
+                url = replaceUrlParam(url, 'subcategories', '');
+                url = replaceUrlParam(url, 'page', 1);
+                url = url.replace(/amp;/g, '');
+                setTimeout(function () {
+                    window.location.replace(url);
+
+                }, 1000);
+            });
+            $(document).on('click', ".uncheck_subcategory", function () {
+                var subcategory_id = $(this).data('value');
+                var list = [];
+                $("input:checkbox[name=subcategories]:checked").each(function () {
+                    if (subcategory_id != $(this).val())
+                        list.push($(this).val());
+                });
+                var url = "{{ request.get_full_path }}";
+                url = replaceUrlParam(url, 'subcategories', list);
+                url = replaceUrlParam(url, 'page', 1);
+                url = url.replace(/amp;/g, '');
+                setTimeout(function () {
+                    window.location.replace(url);
+
+                }, 1000);
+            });
+            $(document).on('click', ".price_order", function () {
+                var order_type = $(this).data('value');
+                var url = "{{ request.get_full_path }}";
+                url = replaceUrlParam(url, 'price_order', order_type);
+                url = replaceUrlParam(url, 'page', 1);
+                url = url.replace(/amp;/g, '');
+                setTimeout(function () {
+                    window.location.replace(url);
+
+                }, 1000);
+            });
+
+            function replaceUrlParam(url, paramName, paramValue) {
+                if (paramValue == null) {
+                    paramValue = '';
+                }
+                var pattern = new RegExp('\\b(' + paramName + '=).*?(&|#|$)');
+                if (url.search(pattern) >= 0) {
+                    return url.replace(pattern, '$1' + paramValue + '$2');
+                }
+                url = url.replace(/[?#]$/, '');
+                return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
+            }
+        });
+    </script>
+
+{% endblock %}

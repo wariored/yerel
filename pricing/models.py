@@ -22,7 +22,6 @@ class Account(models.Model):
     token = models.CharField(max_length=255)
     user = models.OneToOneField(User, related_name='account', on_delete=models.PROTECT)
 
-
     def clean(self):
         pass
 

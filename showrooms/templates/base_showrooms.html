@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <!-- Breadcumb -->
-    <section class="breadcumb_area">
+    <section>
         <div class="container">
             <div class="row">
                 <div class="col-xs-12 text-center">
@@ -9,7 +9,7 @@
                         <div class="page_title">
                             <h3>
                                 {% block showrooms_title %}
-                                    Showroooms
+                                    Showrooms
                                 {% endblock showrooms_title %}
                             </h3>
                         </div>
@@ -19,6 +19,19 @@
                                 <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
                                 {% block showrooms_pagination %}
                                 {% endblock showrooms_pagination %}
+                                <!-- Search Box -->
+                                {% block showroom_search %}
+                                    <section>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="main-search-box text-center">
+                                                    {% include 'showrooms/search_form.html' %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                {% endblock %}
+                                <!-- End Search Box -->
                             </ul>
                         </div>
                     </div>

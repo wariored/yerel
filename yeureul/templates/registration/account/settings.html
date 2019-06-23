@@ -1,11 +1,15 @@
 {% extends 'registration/account/base_account.html' %}
 {% load staticfiles i18n humanize %}
-{% load trending_ads %}
+{% load trending_ads widget_tweaks %}
 
 {% block account_pagination %}
     <li><a href="{% url 'index' %}"><i class="fa fa-home"></i> Accueil</a></li>
     <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
-    <li>Mon compte</li>
+    {% if user.showrooms %}
+        <li>Ma Boutique</li>
+    {% else %}
+        <li>Mon compte</li>
+    {% endif %}
     <li><i class="fa fa-angle-right" aria-hidden="true"></i></li>
     <li>Paramètres</li>
 {% endblock account_pagination %}
@@ -62,84 +66,188 @@
         {% endif %}
         <div class="widget my-profile margin-bottom-none">
             <div class="widget-header">
-                <h1>Mom Compte</h1>
+                {% if user.showrooms %}
+                    <h1>Ma Boutique</h1>
+                {% else %}
+                    <h1>Mon Compte</h1>
+                {% endif %}
             </div>
             <div class="widget-body">
-                <form method="POST" action="{% url 'update_profile' %}" enctype='multipart/form-data'>
+                <form method="POST" {% if user.showrooms %} action="{% url 'settings' %}" {% else %}
+                      action="{% url 'update_profile' %}" {% endif %} enctype='multipart/form-data'>
                     {% csrf_token %}
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Nom d'utilisateur <span class="required">*</span></label>
-                                <input class="form-control border-form" type="text" value="{{ user.username }}"
-                                       placeholder="John Doe" disabled="">
+                    {% if user.showrooms %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Nom de la boutique <span
+                                            class="required">*</span></label>
+                                    {% render_field form.name class="form-control" placeholder=form.name.label %}
+                                    {% for error in form.name.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Adresse </label>
+                                    {% render_field form.address class="form-control" placeholder=form.address.label %}
+                                    {% for error in form.address.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Adresse Email <span class="required">*</span></label>
-                                <input class="form-control border-form" type="email" value="{{ user.email }}"
-                                       disabled="">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Numéro de téléphone 1 <span
+                                            class="required">*</span></label>
+                                    {% render_field form.phone_number_1 class="form-control" placeholder=form.phone_number_1.label %}
+                                    {% for error in form.phone_number_1.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Numéro de téléphone 2 </label>
+                                    {% render_field form.phone_number_2 class="form-control" placeholder=form.phone_number_2.label %}
+                                    {% for error in form.phone_number_2.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Prénom <span class="required">*</span></label>
-                                <input name="first_name" class="form-control border-form" type="text"
-                                       value="{{ user.first_name }}">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Site web </label>
+                                    {% render_field form.website class="form-control" placeholder=form.website.label %}
+                                    {% for error in form.website.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% if request.user.showrooms.first.is_premium or request.user.showrooms.first.is_sponsored %}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Slogan </label>
+                                        {% render_field form.slogan class="form-control" placeholder=form.slogan.label %}
+                                        {% for error in form.slogan.errors %}
+                                            <div class="text-danger">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label class="control-label">Logo </label>
+                                    {% render_field form.avatar class="form-control filestyle" placeholder=form.avatar.label %}
+                                    {% for error in form.avatar.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Nom <span class="required">*</span></label>
-                                <input name="last_name" class="form-control border-form" type="text"
-                                       value="{{ user.last_name }}">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Ancien mot de passe </label>
+                                    {% render_field form.old_password class="form-control" placeholder=form.old_password.label %}
+                                    {% for error in form.old_password.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Nouveau Mot de passe </label>
+                                    {% render_field form.new_password class="form-control" placeholder=form.new_password.label %}
+                                    {% for error in form.new_password.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-addon">+221</span>
-                            <input name="phone_number" type="text" class="form-control border-form"
-                                   value="{{ user.info.phone_number }}">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Adresse </label>
-                        <input name="address" class="form-control border-form" type="text"
-                               value="{{ user.info.address }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="avatar" class="control-label">Avatar</label>
-                        <input id="avatar" name="avatar" type="file" class="filestyle">
-                        <span class="help-block"></span>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Mot de passe</label>
-                                <input name='old_password' class="form-control border-form" type="password"
-                                       placeholder="Entrer mot de passe">
+                    {% else %}
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Nom d'utilisateur <span
+                                            class="required">*</span></label>
+                                    <input class="form-control border-form" type="text" value="{{ user.username }}"
+                                           placeholder="John Doe" disabled="">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Adresse Email <span class="required">*</span></label>
+                                    <input class="form-control border-form" type="email" value="{{ user.email }}"
+                                           disabled="">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Nouveau mot de passe</label>
-                                <input name='password_1' class="form-control border-form" type="password"
-                                       placeholder="Entrer mot de passe">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Prénom <span class="required">*</span></label>
+                                    <input name="first_name" class="form-control border-form" type="text"
+                                           value="{{ user.first_name }}">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Nom <span class="required">*</span></label>
+                                    <input name="last_name" class="form-control border-form" type="text"
+                                           value="{{ user.last_name }}">
+                                </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="control-label">Confirmer nouveau mot de passe </label>
-                                <input name="password_2" class="form-control border-form" type="password"
-                                       placeholder="Entrer mot de passe">
+                        <div class="form-group">
+                            <label class="control-label">Numéro de téléphone <span class="required">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-addon">+221</span>
+                                <input name="phone_number" type="text" class="form-control border-form"
+                                       value="{{ user.info.phone_number }}">
                             </div>
                         </div>
-                    </div>
+                        <div class="form-group">
+                            <label class="control-label">Adresse </label>
+                            <input name="address" class="form-control border-form" type="text"
+                                   value="{{ user.info.address }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="avatar" class="control-label">Avatar</label>
+                            <input id="avatar" name="avatar" type="file" class="filestyle">
+                            <span class="help-block"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Mot de passe</label>
+                                    <input name='old_password' class="form-control border-form" type="password"
+                                           placeholder="Entrer mot de passe">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Nouveau mot de passe</label>
+                                    <input name='password_1' class="form-control border-form" type="password"
+                                           placeholder="Entrer mot de passe">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="control-label">Confirmer nouveau mot de passe </label>
+                                    <input name="password_2" class="form-control border-form" type="password"
+                                           placeholder="Entrer mot de passe">
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     <div class="form-group margin-bottom-none">
                         <div class="text-right">
                             <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Mettre

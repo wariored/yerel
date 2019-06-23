@@ -6,12 +6,14 @@ import string
 from io import BytesIO
 from PIL import Image
 from django.core.files import File
+from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.encoding import force_text
-from django.utils.http import urlsafe_base64_encode
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.models import User
-from .models import UserKey
+from django.utils.http import urlsafe_base64_encode
+from django.apps import apps
+from django.core.mail import EmailMessage
+from django.utils.html import strip_tags
 
 
 def similar(a, b):
@@ -52,6 +54,7 @@ def compress_image(image):
 
 
 def uid_token_generator(user, key_type):
+    UserKey = apps.get_model('yeureul.UserKey')
     uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
     key_to_update, key_created = UserKey.objects.get_or_create(user=user, key_type=key_type)
@@ -66,6 +69,7 @@ def uid_token_generator(user, key_type):
 
 
 def uid_token_decoder(uidb64, token, key_type):
+    UserKey = apps.get_model('yeureul.UserKey')
     if uidb64 is not None and token is not None:
         from django.utils.http import urlsafe_base64_decode
         uid = force_text(urlsafe_base64_decode(uidb64).decode())
@@ -81,3 +85,9 @@ def uid_token_decoder(uidb64, token, key_type):
         except (User.DoesNotExist, UserKey.DoesNotExist):
             pass
     return False
+
+
+def send_email(html_message, subject, to: list):
+    plain_message = strip_tags(html_message)
+    email = EmailMessage(subject, plain_message, to=to)
+    email.send()

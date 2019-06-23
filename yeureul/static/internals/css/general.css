@@ -42,6 +42,22 @@ a.disabled {
 
 }
 
+.breadcumb_area_showrooms{
+
+}
+.showroom_search_area{
+    padding-top: 5px;
+}
+.showroom_search_input{
+    border: 1px solid #862197 !important;
+}
+.showroom_search_button{
+    background-color: #862197;
+}
+.showroom_search_button:hover{
+    background-color: #862197 !important;
+}
+
 
 @media only screen and (min-width: 320px) {
     .ad_img {

@@ -1,4 +1,6 @@
 from django import forms
+from django.forms import ModelForm
+from .models import Showroom
 
 
 class ShowroomRegistrationForm(forms.Form):
@@ -13,3 +15,12 @@ class ShowroomRegistrationForm(forms.Form):
                                                'min_length': "Le mot de passe doit avoir au moins 5 caractères"})
     terms = forms.BooleanField(widget=forms.CheckboxInput(), required=True,
                                error_messages={'required': 'Vous devez accepté les termes'})
+
+
+class ShowroomEditInformationForm(ModelForm):
+    old_password = forms.CharField(min_length=5, widget=forms.PasswordInput, required=False, label="Ancien mot de passe")
+    new_password = forms.CharField(min_length=5, widget=forms.PasswordInput, required=False, label="Nouveau mot de passe")
+
+    class Meta:
+        model = Showroom
+        fields = ['name', 'website', 'slogan', 'description', 'phone_number_1', 'phone_number_2', 'avatar', 'address']

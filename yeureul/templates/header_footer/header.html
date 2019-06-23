@@ -82,15 +82,21 @@
                     <ul class="nav navbar-right top-nav">
                         <li class="dropdown">
                             <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown">
-
-                                {% if user.info.avatar.name %}
-                                    <img src="{{ user.info.avatar.url }}" alt="User Image" class="user-dp">
-                                    {{ user.username }}
+                                {% if user.info.avatar.name or user.showrooms.first.avatar.name %}
+                                    {% if user.showrooms.first.avatar.name %}
+                                        <img src="{{ user.showrooms.first.avatar.url }}" alt="User Image" class="user-dp">
+                                    {% else %}
+                                        <img src="{{ user.info.avatar.url }}" alt="User Image" class="user-dp">
+                                    {% endif %}
                                 {% else %}
                                     <img src="{% static 'internals/img/none_user.png' %}" alt="User Image"
-                                         class="user-dp">{{ user.username }}
+                                         class="user-dp">
                                 {% endif %}
-
+                                {% if user.showrooms %}
+                                    {{ user.showrooms.first.name|truncatechars:"15" }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
 
                                 <b class="caret"></b>
 

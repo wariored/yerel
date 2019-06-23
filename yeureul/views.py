@@ -17,6 +17,8 @@ from . import forms
 from .models import UserInfo, UserKey, ContactMessage
 from ads.models import AdUser, Ad
 from . import statics_variables, utils_functions
+import showrooms.forms as showroom_forms
+from showrooms.models import Showroom
 
 
 def handler404(request, exception):
@@ -66,7 +68,7 @@ def login_view(request):
             except User.DoesNotExist:
                 user = authenticate(request, username=email_username, password=password)
             if user is not None:
-                if user.is_active:
+                if user.is_active and user.check_password(password):
                     login(request, user)
                     if not form.data.get('remember_me'):
                         request.session.set_expiry(0)
@@ -272,23 +274,69 @@ def logout_view(request):
 
 
 @login_required
+@transaction.atomic
 def settings(request):
-    update_profile_error = request.session.get('update_profile_error')
-    update_profile_success = request.session.get('update_profile_success')
-    if update_profile_error:
-        del request.session['update_profile_error']
-    elif update_profile_success:
-        del request.session['update_profile_success']
     if 'activation' in request.session:
         activation = request.session['activation']
         del request.session['activation']
         return render(request, 'registration/account/settings.html', {'activation': activation})
 
-    ad_user = AdUser.objects.filter(email=request.user.email).first()
-    has_reached_ads_limit = ''
-    if ad_user:
-        if ad_user.has_reached_ads_limit(request):
-            has_reached_ads_limit = 'ok'
+    if request.user.showrooms:
+        has_reached_ads_limit = ''
+        showroom = Showroom.objects.filter(user=request.user).first()
+        if request.method == 'POST':
+            update_profile_error = ''
+            form = showroom_forms.ShowroomEditInformationForm(data=request.POST, files=request.FILES, instance=showroom)
+            if form.is_valid():
+                error = False
+                user = request.user
+                showroom_form = form.save(commit=False)
+                old_password = form.data['old_password']
+                new_password = form.data['new_password']
+                avatar = form.files.get('avatar')
+                if avatar and avatar.size > int(statics_variables.MAX_SIZE):
+                    update_profile_error = 'avatar'
+                    return render(request, 'registration/account/settings.html',
+                                  dict(form=form,
+                                       has_reached_ads_limit=has_reached_ads_limit,
+                                       update_profile_error=update_profile_error))
+                if old_password != '':
+                    if user.check_password(old_password) and len(new_password) >= 5:
+                        user.set_password(new_password)
+                        login(request, user)
+                    else:
+                        update_profile_error = 'old_password'
+                        return render(request, 'registration/account/settings.html',
+                                      dict(form=form,
+                                           has_reached_ads_limit=has_reached_ads_limit,
+                                           update_profile_error=update_profile_error))
+                update_profile_success = True
+                showroom_form.save()
+                user.save()
+                return render(request, 'registration/account/settings.html',
+                              dict(form=form, update_profile_success=update_profile_success,
+                                   has_reached_ads_limit=has_reached_ads_limit,
+                                   update_profile_error=update_profile_error))
+
+        else:
+            form = showroom_forms.ShowroomEditInformationForm(instance=showroom)
+        return render(request, 'registration/account/settings.html',
+                      dict(form=form,
+                           has_reached_ads_limit=has_reached_ads_limit))
+
+    else:
+        update_profile_error = request.session.get('update_profile_error')
+        update_profile_success = request.session.get('update_profile_success')
+        if update_profile_error:
+            del request.session['update_profile_error']
+        elif update_profile_success:
+            del request.session['update_profile_success']
+
+        ad_user = AdUser.objects.filter(email=request.user.email).first()
+        has_reached_ads_limit = ''
+        if ad_user:
+            if ad_user.has_reached_ads_limit(request):
+                has_reached_ads_limit = 'ok'
 
     return render(request, 'registration/account/settings.html', {'update_profile_success': update_profile_success,
                                                                   'update_profile_error': update_profile_error,
@@ -321,6 +369,7 @@ def update_profile(request):
                 if password_1:
                     if len(password_1) >= 5 and password_1 == password_2:
                         user.set_password(password_1)
+                        user.save()
                         login(request, user)
                     else:
                         request.session['update_profile_error'] = 'password'
@@ -433,6 +482,4 @@ def close_account_verification(request):
 
 def faq(request):
     return render(request, 'yeureul/faq.html')
-
-
 

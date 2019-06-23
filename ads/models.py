@@ -53,6 +53,8 @@ class AdUser(models.Model):
     user = models.OneToOneField(
         User, related_name='adUser', null=True, blank=True, on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
+    showroom = models.OneToOneField(Showroom, related_name='showroom_adUser', on_delete=models.SET_NULL, null=True,
+                                    blank=True)
 
     def __str__(self):
         return self.email

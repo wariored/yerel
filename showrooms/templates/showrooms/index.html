@@ -1,7 +1,109 @@
 {% extends 'base_showrooms.html' %}
+{% load humanize i18n staticfiles useful_in_global  timesince_ads %}
 {% block showrooms_pagination %}
     <li>index</li>
 {% endblock %}
 {% block showrooms_content %}
+    <!-- Category Grid -->
+    <section class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-9 col-md-8 col-sm-8">
+                    <div class="row">
+                        {% for showroom in showrooms %}
+                            <div class="col-lg-4">
+                                <div class="item">
+                                    <div class="item-ads-grid">
+                                        {% if showroom.is_sponsored and showroom.is_premium %}
+                                            <div class="item-badge-grid featured-ads">
+                                                <a href="#">TOP</a>
+                                            </div>
 
+                                        {% elif showroom.is_premium %}
+                                            <div class="item-badge-grid btn-primary">
+                                                <a href="#"> Premium</a>
+                                            </div>
+
+                                        {% elif showroom.is_sponsored %}
+                                            <div class="item-badge-grid premium-ads">
+                                                <a href="#">HOT</a>
+                                            </div>
+
+                                        {% endif %}
+                                        <div class="item-img-grid">
+                                            <a href="{% url 'showrooms:single_showroom' showroom.id %}">
+                                                {% if showroom.avatar.exists %}
+                                                    <img alt=""
+                                                         src="{{ showroom.avatar.url }}"
+                                                         class="img-responsive img-center ad_img">
+                                                {% else %}
+                                                    <img alt=""
+                                                         src="{% static 'internals/img/none_AD.png' %}"
+                                                         class="img-responsive img-center ad_img">
+                                                {% endif %}
+                                                <div class="item-title">
+                                                    <h4>{{ showroom.name }}</h4>
+                                                    {% if showroom.is_premium %}
+                                                        <h3>{{ showroom.slogan|truncatechars:'32' }}</h3>
+                                                    {% endif %}
+                                                </div>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-offset-4 text-center">
+                        {% define_variable '/showrooms/showrooms/?text_to_find=' as path %}
+                        {% if showrooms.has_other_pages %}
+                            <ul class="pagination pagination-sm">
+                                {% if showrooms.has_previous %}
+                                    <li><a class="paginate" id="" data-value='{{ showrooms.previous_page_number }}'
+                                           href="
+
+
+                                                   {{ path }}{{ text_to_search }}&page={{ showrooms.previous_page_number }}">«</a>
+                                    </li>
+                                {% else %}
+                                    <li class="disabled"><a href="#">«</a></li>
+                                {% endif %}
+
+                                {% for num in showrooms.paginator.page_range %}
+                                    {% if showrooms.number == num %}
+                                        <li class="active"><a class="paginate" data-value="{{ num }}"
+                                                              href="
+
+
+                                                                      {{ path }}{{ text_to_search }}&page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% elif num > showrooms.number|add:'-3' and num < showrooms.number|add:'3' %}
+                                        <li><a class="paginate" data-value="{{ num }}"
+                                               href="{{ path }}{{ text_to_search }}&page={{ num }}"> {{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if showrooms.has_next %}
+                                    <li><a class="paginate" data-value="{{ showrooms.next_page_number }}"
+                                           href="
+
+                                                   {{ path }}{{ text_to_search }}&page={{ showrooms.next_page_number }}">»</a>
+                                    <li>
+                                        {% else %}
+                                    <li class="disabled"><a href="#">»</a></li>
+                                {% endif %}
+                            </ul><br>
+                            Page {{ showrooms.number }} sur {{ showrooms.paginator.num_pages }}
+                        {% endif %}
+                    </div>
+                    {#                    <div class="text-center">#}
+                    {#                        <a class="btn btn-primary btn-load-more btn-lg" href="#"> CHARGER PLUS D'ANNONCES... </a>#}
+                    {#                    </div>#}
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Category Grid -->
 {% endblock %}
