@@ -16,22 +16,25 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li><a href="{% url 'index' %}">Accueil</a></li>
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> categories
-                        <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="{% url 'ads:categories' %}"><i class="fa fa-fw fa-angle-right"></i> Categories</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'ads:categories_grid' %}"><i class="fa fa-fw fa-angle-right"></i> Grille des
-                                Categories</a>
-                        </li>
-                    </ul>
-                </li>
+                <!--<li class="dropdown">
+                    <a {# data-toggle="dropdown" class="dropdown-toggle" aria-expanded="false" #}  href="{% url 'ads:categories' %}" > categories
+                        {# <b class="caret"></b> #}</a>
+{#                    <ul class="dropdown-menu">#}
+{#                        <li>#}
+{#                            <a href="{% url 'ads:categories' %}"><i class="fa fa-fw fa-angle-right"></i> Categories</a>#}
+{#                        </li>#}
+{#                        <li>#}
+{#                            <a href="{% url 'ads:categories_grid' %}"><i class="fa fa-fw fa-angle-right"></i> Grille des#}
+{#                                Categories</a>#}
+{#                        </li>#}
+{#                    </ul>#}
+                </li>-->
                 {#                <li><a href="{% url 'pricing:pricing' %}">Tarifs</a></li>#}
+                <li><a class="text text-success" href="{% url 'ads:create_post' %}">Poster une annonce</a></li>
+                <li><a class="text text-success" href="{% url 'showrooms:showrooms' %}">Showrooms</a></li>
                 <li><a href="{% url 'faq' %}">FAQ</a></li>
                 <li><a href="{% url 'contact' %}">Contact</a></li>
+
                 {#                <li class="dropdown">#}
                 {#                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">Blog <b#}
                 {#                            class="caret"></b></a>#}
@@ -44,32 +47,32 @@
                 {#                        </li>#}
                 {#                    </ul>#}
                 {#                </li>#}
-                <li class="dropdown">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Autres Pages <b
-                            class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="{% url 'ads:create_post' %}"><i class="fa fa-fw fa-angle-right"></i> Poster votre
-                                annonce</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'privacy' %}"><i class="fa fa-fw fa-angle-right"></i> Confidentialité</a>
-                        </li>
-                        {#                        <li>#}
-                        {#                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler chez Nous</a>#}
-                        {#                        </li>#}
-                        {#                        <li>#}
-                        {#                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>#}
-                        {#                        </li>#}
-                        <li>
-                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Nos partenaires</a>
-                        </li>
-                    </ul>
-                </li>
+                {#                <li class="dropdown">#}
+                {#                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> Autres Pages <b#}
+                {#                            class="caret"></b></a>#}
+                {#                    <ul class="dropdown-menu">#}
+                {#                        <li>#}
+                {#                            <a href="{% url 'ads:create_post' %}"><i class="fa fa-fw fa-angle-right"></i> Poster votre#}
+                {#                                annonce</a>#}
+                {#                        </li>#}
+                {#                        <li>#}
+                {#                            <a href="{% url 'privacy' %}"><i class="fa fa-fw fa-angle-right"></i> Confidentialité</a>#}
+                {#                        </li>#}
+                {#                                                <li>#}
+                {#                                                    <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler chez Nous</a>#}
+                {#                                                </li>#}
+                {#                                                <li>#}
+                {#                                                    <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Travailler avec Nous</a>#}
+                {#                                                </li>#}
+                {#                        <li>#}
+                {#                            <a href="404.html"><i class="fa fa-fw fa-angle-right"></i> Nos partenaires</a>#}
+                {#                        </li>#}
+                {#                    </ul>#}
+                {#                </li>#}
             </ul>
-
             {% if not user.is_authenticated %}
                 <div class="user-login pull-right">
+                    <a class="btn btn-md btn-info" href="{% url 'showrooms:registration' %}">Créer Showroom</a>
                     <a href="{% url 'signup' %}">S'inscrire</a>
                     <span>ou</span>
                     <a class="btn btn-md btn-primary" href="{% url 'login' %}">Connexion</a>
@@ -79,15 +82,21 @@
                     <ul class="nav navbar-right top-nav">
                         <li class="dropdown">
                             <a aria-expanded="true" href="#" class="dropdown-toggle" data-toggle="dropdown">
-
-                                {% if user.info.avatar.name %}
-                                    <img src="{{ user.info.avatar.url }}" alt="User Image" class="user-dp">
-                                    {{ user.username }}
+                                {% if user.info.avatar.name or user.showrooms.first.avatar.name %}
+                                    {% if user.showrooms.first.avatar.name %}
+                                        <img src="{{ user.showrooms.first.avatar.url }}" alt="User Image" class="user-dp">
+                                    {% else %}
+                                        <img src="{{ user.info.avatar.url }}" alt="User Image" class="user-dp">
+                                    {% endif %}
                                 {% else %}
                                     <img src="{% static 'internals/img/none_user.png' %}" alt="User Image"
-                                         class="user-dp">{{ user.username }}
+                                         class="user-dp">
                                 {% endif %}
-
+                                {% if user.showrooms %}
+                                    {{ user.showrooms.first.name|truncatechars:"15" }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
 
                                 <b class="caret"></b>
 

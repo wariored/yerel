@@ -6,6 +6,7 @@ import uuid
 import os
 from pricing.models import Account
 from yeureul import statics_variables, utils_functions
+from showrooms.models import Showroom
 
 
 def get_file_path(instance, filename):
@@ -52,6 +53,8 @@ class AdUser(models.Model):
     user = models.OneToOneField(
         User, related_name='adUser', null=True, blank=True, on_delete=models.CASCADE)
     creation_date = models.DateTimeField('date created', auto_now_add=True)
+    showroom = models.OneToOneField(Showroom, related_name='showroom_adUser', on_delete=models.SET_NULL, null=True,
+                                    blank=True)
 
     def __str__(self):
         return self.email

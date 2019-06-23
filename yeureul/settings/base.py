@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'yeureul',
     'ads.apps.AdsConfig',
     'pricing.apps.PricingConfig',
+    'showrooms.apps.ShowroomsConfig',
     'widget_tweaks',
     'django_elasticsearch_dsl',
     'django_cleanup',

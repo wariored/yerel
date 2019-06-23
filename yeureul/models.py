@@ -18,6 +18,13 @@ def one_day_hence():
     return timezone.now() + timezone.timedelta(days=1)
 
 
+# we have two types of user: Trader and Individual
+USER_TYPE = (
+    ('T', 'TRADER'),
+    ('I', 'INDIVIDUAL'),
+)
+
+
 class UserInfo(models.Model):
     """
     Other User informations
@@ -26,6 +33,7 @@ class UserInfo(models.Model):
     phone_number = models.IntegerField(null=True, blank=True)
     address = models.CharField(max_length=200, null=True, blank=True)
     avatar = models.FileField(upload_to=get_file_path, null=True, blank=True)
+    user_type = models.CharField(max_length=1, choices=USER_TYPE, default='I')
     activated_account = models.BooleanField(default=False)
     creation_date = models.DateTimeField('date created')
     updated_date = models.DateTimeField('date updated', auto_now_add=True)

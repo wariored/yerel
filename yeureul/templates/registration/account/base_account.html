@@ -1,88 +1,97 @@
 {% extends 'base.html' %}
 {% load staticfiles ads_categories useful_in_global %}
 {% block content %}
-<!-- Breadcumb -->
-<section class="profile-breadcumb">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 text-left">
-                <div class="breadcumb_section">
-                    <div class="page_pagination">
-                        <ul>
-                            {% block account_pagination %}
+    <!-- Breadcumb -->
+    <section class="profile-breadcumb">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 text-left">
+                    <div class="breadcumb_section">
+                        <div class="page_pagination">
+                            <ul>
+                                {% block account_pagination %}
 
-                            {% endblock account_pagination %}
-                        </ul>
+                                {% endblock account_pagination %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
-{% block deleteConfirmation %}
-  
-{% endblock deleteConfirmation %}
-{% block alert_message %}
+    </section>
+    {% block deleteConfirmation %}
 
-{% endblock alert_message %}
-<!-- End Breadcumb -->
-<!-- Settings -->
-<section class="settings">
-    <div class="container ">
-        <div class="row">
-            <div class="col-sm-3 mb-2 ">
-                <div class="widget profile-widget margin-bottom-none">
-                    <div class="widget-body">
-                        <div class="avatar">
-                            <a class="btn-icon" title="" data-placement="left" data-toggle="tooltip" href="#"
-                                data-original-title="Edit">
-                                <i class="fa fa-camera"></i>
-                            </a>
-                            
-                            {% if user.info.avatar is not None and user.info.avatar.url is not None %}
-                            <img class="profile-dp" alt="User Image" src="{{user.info.avatar.url}}">
-                            {% else %}
-                            <img class="profile-dp" alt="User Image" src="{% static 'internals/img/none_user.png' %}">
-                            {% endif %}
-                                
-                            
-                        </div>
-                        <div class="profile-info">
-                            <h2 class="seller-name">{{user.username}}</h2>
-                            <p class="seller-detail"> Inscrit le : <strong>{{user.date_joined|date:'d-M-Y'}}</strong></p>
-                        </div>
-                        <div class="list-group">
-                            <a class="list-group-item" href="{% url 'ads:my_ads' %}">
-                                <span class="label label-info">{{ user.adUser.id|count_ads_for_adUser }}</span>
-                                <i class="fa fa-fw fa-pencil"></i> Mes annonces
-                            </a>
-                            <a class="list-group-item" href="{% url 'ads:favourite_ads' %}">
-                                <span class="label label-success">{{ user.id|likes_number }}</span>
-                                <i class="fa fa-fw fa-heart"></i> Annonces Favorites
-                            </a>
-                            <a class="list-group-item" href="{% url 'ads:my_alerts' %}">
-                                <i class="fa fa-fw fa-clock-o"></i> Alertes
-                            </a>
-                            <a class="list-group-item" href="{% url 'settings' %}">
-                                <i class="fa fa-fw fa-gear"></i> Paramètres
-                            </a>
-                            <a class="list-group-item" href="{% url 'logout' %}">
-                                <i class="fa fa-fw fa-power-off"></i> Se déconnecter</a>
-                            </a>
+    {% endblock deleteConfirmation %}
+    {% block alert_message %}
+
+    {% endblock alert_message %}
+    <!-- End Breadcumb -->
+    <!-- Settings -->
+    <section class="settings">
+        <div class="container ">
+            <div class="row">
+                <div class="col-sm-3 mb-2 ">
+                    <div class="widget profile-widget margin-bottom-none">
+                        <div class="widget-body">
+                            <div class="avatar">
+                                <a class="btn-icon" title="" data-placement="left" data-toggle="tooltip" href="#"
+                                   data-original-title="Edit">
+                                    <i class="fa fa-camera"></i>
+                                </a>
+                                {% if user.info.avatar.name or user.showrooms.first.avatar.name %}
+                                    {% if user.showrooms.first.avatar.name %}
+                                        <img src="{{ user.showrooms.first.avatar.url }}" alt="User Image"
+                                             class="profile-dp">
+                                    {% else %}
+                                        <img src="{{ user.info.avatar.url }}" alt="User Image" class="profile-dp">
+                                    {% endif %}
+                                {% else %}
+                                    <img src="{% static 'internals/img/none_user.png' %}" alt="User Image"
+                                         class="profile-dp">
+                                {% endif %}
+                            </div>
+                            <div class="profile-info">
+                                {% if user.showrooms %}
+                                    <h2 class="seller-name">{{ user.showrooms.first.name|truncatechars:"20" }}</h2>
+                                {% else %}
+                                    <h2 class="seller-name">{{ user.username }}</h2>
+                                {% endif %}
+                                <p class="seller-detail"> Inscrit le :
+                                    <strong>{{ user.date_joined|date:'d-M-Y' }}</strong></p>
+                            </div>
+                            <div class="list-group">
+                                <a class="list-group-item" href="{% url 'ads:my_ads' %}">
+                                    <span class="label label-info">{{ user.adUser.id|count_ads_for_adUser }}</span>
+                                    <i class="fa fa-fw fa-pencil"></i> Mes annonces
+                                </a>
+                                <a class="list-group-item" href="{% url 'ads:favourite_ads' %}">
+                                    <span class="label label-success">{{ user.id|likes_number }}</span>
+                                    <i class="fa fa-fw fa-heart"></i> Annonces Favorites
+                                </a>
+                                <a class="list-group-item" href="{% url 'ads:my_alerts' %}">
+                                    <i class="fa fa-fw fa-clock-o"></i> Alertes
+                                </a>
+                                <a class="list-group-item" href="{% url 'settings' %}">
+                                    <i class="fa fa-fw fa-gear"></i> Paramètres
+                                </a>
+                                <a class="list-group-item" href="{% url 'logout' %}">
+                                    <i class="fa fa-fw fa-power-off"></i> Se déconnecter</a>
+                                </a>
+                            </div>
                         </div>
                     </div>
+                    <a href="{% url 'close_account' %}" class="btn btn-danger btn-block"><i class="fa fa-trash"></i>
+                        Supprimer le compte</a><br>
                 </div>
-                <a href="{% url 'close_account' %}" class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Supprimer le compte</a><br>
-            </div>
-            
-            {% block account_content %}
-                
-            {% endblock account_content %}
-                
 
+                {% block account_content %}
+
+                {% endblock account_content %}
+
+
+            </div>
         </div>
-    </div>
-</section>
-<!-- End Settings -->
+    </section>
+    <!-- End Settings -->
 
 {% endblock content %}

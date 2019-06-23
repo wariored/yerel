@@ -1,0 +1,13 @@
+{% load ads_categories useful_in_global %}
+
+<form action="{% url 'showrooms:showrooms' %}" method="GET">
+    <div class="col-md-offset-3 col-md-4 col-sm-4">
+        <input name="text_to_find" placeholder="Rechercher une boutique" class="form-control input-lg search-form showroom_search_input"
+               type="text" {% if text_to_search %} value="{{ text_to_search }}"{% endif %}>
+    </div>
+    <div class="col-md-2 col-sm-2 search-input">
+        <button class="btn btn-primary btn-lg simple-btn btn-block showroom_search_button">
+            <i class="fa fa-search"></i> Rechercher
+        </button>
+    </div>
+</form>
