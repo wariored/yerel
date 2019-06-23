@@ -92,7 +92,7 @@
                                     <img src="{% static 'internals/img/none_user.png' %}" alt="User Image"
                                          class="user-dp">
                                 {% endif %}
-                                {% if user.showrooms %}
+                                {% if user.showrooms.all.exists %}
                                     {{ user.showrooms.first.name|truncatechars:"15" }}
                                 {% else %}
                                     {{ user.username }}
