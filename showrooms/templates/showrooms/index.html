@@ -32,13 +32,13 @@
                                         {% endif %}
                                         <div class="item-img-grid">
                                             <a href="{% url 'showrooms:single_showroom' showroom.id %}">
-                                                {% if showroom.avatar.exists %}
+                                                {% if showroom.avatar.name %}
                                                     <img alt=""
                                                          src="{{ showroom.avatar.url }}"
                                                          class="img-responsive img-center ad_img">
                                                 {% else %}
                                                     <img alt=""
-                                                         src="{% static 'internals/img/none_AD.png' %}"
+                                                         src="{% static 'internals/img/none_ad.png' %}"
                                                          class="img-responsive img-center ad_img">
                                                 {% endif %}
                                                 <div class="item-title">
