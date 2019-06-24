@@ -43,8 +43,10 @@
                                                 {% endif %}
                                                 <div class="item-title">
                                                     <h4>{{ showroom.name }}</h4>
-                                                    {% if showroom.is_premium %}
-                                                        <h3>{{ showroom.slogan|truncatechars:'32' }}</h3>
+                                                    {% if showroom.is_premium or showroom.is_sponsored %}
+                                                        {% if showroom.slogan is not None and showroom.slogan != '' %}
+                                                            <h3>{{ showroom.slogan|truncatechars:'32' }}</h3>
+                                                        {% endif %}
                                                     {% endif %}
                                                 </div>
                                             </a>
@@ -64,6 +66,7 @@
                                            href="
 
 
+
                                                    {{ path }}{{ text_to_search }}&page={{ showrooms.previous_page_number }}">«</a>
                                     </li>
                                 {% else %}
@@ -74,6 +77,7 @@
                                     {% if showrooms.number == num %}
                                         <li class="active"><a class="paginate" data-value="{{ num }}"
                                                               href="
+
 
 
                                                                       {{ path }}{{ text_to_search }}&page={{ num }}">{{ num }}</a>
@@ -88,6 +92,7 @@
                                 {% if showrooms.has_next %}
                                     <li><a class="paginate" data-value="{{ showrooms.next_page_number }}"
                                            href="
+
 
                                                    {{ path }}{{ text_to_search }}&page={{ showrooms.next_page_number }}">»</a>
                                     <li>
