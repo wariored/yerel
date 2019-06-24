@@ -14,7 +14,7 @@ def get_file_path(instance, filename):
 class Showroom(models.Model):
     name = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
-    website = models.CharField(validators=[URLValidator()], unique=True, null=True, blank=True)
+    website = models.CharField(max_length=220, validators=[URLValidator()], unique=True, null=True, blank=True)
     description = models.TextField(max_length=2000, null=True, blank=True)
     slogan = models.CharField(max_length=100, validators=[MinLengthValidator(3)], null=True, blank=True)
     phone_number_1 = models.PositiveIntegerField(null=True)
