@@ -129,7 +129,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
-                            {% if request.user.showrooms.first.is_premium or request.user.showrooms.first.is_sponsored %}
+                            {% if user.showrooms.first.is_premium or user.showrooms.first.is_sponsored %}
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label class="control-label">Slogan </label>
