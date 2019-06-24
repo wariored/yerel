@@ -6,7 +6,7 @@ register = template.Library()
 
 
 @register.filter(name="ads_number_category_showroom")
-def ads_number_category_showroom(user_id, id_category):
+def ads_number_category_showroom(id_category, user_id):
     subcategories = []
     try:
         category = Category.objects.get(id=id_category, category_type='T')
