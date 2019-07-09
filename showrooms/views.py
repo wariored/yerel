@@ -85,8 +85,9 @@ def registration(request):
             if not user:
                 last_id = User.objects.order_by('-id')[0].pk
                 username = email.split("@")[0] + str(last_id + 1)
-                user = User.objects.create_user(username=username, email=email, password=password)
-                UserInfo.objects.create(user=user, creation_date=timezone.now(), user_type='T')
+                user = User.objects.create_user(username=username, email=email, password=password, first_name="shop",
+                                                last_name="shop")
+                UserInfo.objects.create(user=user, creation_date=timezone.now(), user_type='T', phone_number=7777777)
                 try:
                     Showroom.objects.get(name=showroom_name)
                 except Showroom.DoesNotExist:
@@ -234,4 +235,3 @@ def single_showroom(request, id_showroom):
                        selected_condition=selected_condition, selected_subcategories=selected_subcategories,
                        filter_by_price=filter_by_price, price_order_type=price_order_type,
                        selected_location=selected_location, text_to_search=text_to_search, all_locations=all_locations))
-
