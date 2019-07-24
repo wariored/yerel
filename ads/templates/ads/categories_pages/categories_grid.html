@@ -190,43 +190,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="widget listing-filter-block margin-bottom-none">
-                            <div class="widget-header">
-                                <h1>Tendances </h1>
-                            </div>
-                            {% trending_ads_list as trending_ads %}
-                            <div class="widget-body">
-                                {% for trending_ad in trending_ads|slice:'5' %}
-                                    <div class="similar-ads">
-                                        <a href="{% url 'ads:single_item' trending_ad.random_url.hex %}">
-                                            {% if trending_ad.img.exists %}
-                                                <div class="similar-ad-left">
-                                                    <img class="img-responsive img-center"
-                                                         src="{{ trending_ad.img.first.media.url }}"
-                                                         alt="tendance_{{ trending_ad.id }}">
-                                                </div>
-                                            {% else %}
-                                                <div class="similar-ad-left">
-                                                    <img class="img-responsive img-center"
-                                                         src="{% static 'internals/img/none_ad.png' %}"
-                                                         alt="tendance_{{ trending_ad.id }}">
-                                                </div>
-                                            {% endif %}
-                                            <div class="similar-ad-right">
-                                                <h4>{{ trending_ad.title|truncatechars:'20' }}</h4>
-                                                <p style="font-size: 11px;">
-                                                    {% if trending_ad.price != 0.0 %}
-                                                        {% language 'fr' %}{{ trending_ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}F -
-                                                    {% endif %} <i
-                                                        class="fa fa-map-marker"></i> {{ trending_ad.location.name }}
-                                                </p>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </a>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-8 col-sm-8">
@@ -334,6 +297,47 @@
                     {#                    <div class="text-center">#}
                     {#                        <a class="btn btn-primary btn-load-more btn-lg" href="#"> CHARGER PLUS D'ANNONCES... </a>#}
                     {#                    </div>#}
+                </div>
+                <div class="col-lg-3 col-md-4 col-sm-4 trending_ad">
+                    <div class="widget listing-filter-block margin-bottom-none">
+                            <div class="widget-header">
+                                <h1>Tendances </h1>
+                            </div>
+                            {% trending_ads_list as trending_ads %}
+                            <div class="widget-body">
+                                {% for trending_ad in trending_ads|slice:'5' %}
+                                    <div class="similar-ads">
+                                        <a href="{% url 'ads:single_item' trending_ad.random_url.hex %}">
+                                            {% if trending_ad.img.exists %}
+                                                <div class="similar-ad-left">
+                                                    <img class="img-responsive img-center"
+                                                         src="{{ trending_ad.img.first.media.url }}"
+                                                         alt="tendance_{{ trending_ad.id }}">
+                                                </div>
+                                            {% else %}
+                                                <div class="similar-ad-left">
+                                                    <img class="img-responsive img-center"
+                                                         src="{% static 'internals/img/none_ad.png' %}"
+                                                         alt="tendance_{{ trending_ad.id }}">
+                                                </div>
+                                            {% endif %}
+                                            <div class="similar-ad-right">
+                                                <h4>{{ trending_ad.title|truncatechars:'20' }}</h4>
+                                                <p style="font-size: 11px;">
+                                                    {% if trending_ad.price != 0.0 %}
+                                                        {% language 'fr' %}
+                                                            {{ trending_ad.price|floatformat:"-1"|intcomma }}{% endlanguage %}
+                                                        F -
+                                                    {% endif %} <i
+                                                        class="fa fa-map-marker"></i> {{ trending_ad.location.name }}
+                                                </p>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
