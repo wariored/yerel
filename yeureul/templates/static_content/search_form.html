@@ -6,7 +6,7 @@
 {% endif %}
 <form action="{% url 'ads:categories_grid' %}" method="GET">
     <div class="col-md-4 col-sm-4 search-input">
-        <input name="text_to_find" placeholder=ﬂ"Que recherchez-vous...?" class="form-control input-lg search-form"
+        <input name="text_to_find" placeholder="Que recherchez-vous...?" class="form-control input-lg search-form"
                type="text" {% if text_to_search %} value="{{ text_to_search }}"{% endif %}>
     </div>
     <div class="col-md-3 col-sm-3 search-input">
@@ -37,7 +37,7 @@
         </select>
     </div>
     <div class="col-md-2 col-sm-2 search-input">
-        <button class="btn btn-primary btn-lg simple-btn btn-block">
+        <button class="btn btn-primary btn-lg simple-btn btn-block search-button">
             <i class="fa fa-search"></i> Rechercher
         </button>
     </div>
